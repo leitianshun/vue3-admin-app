@@ -4,6 +4,9 @@ const count = ref(0)
 onMounted(() => {
   console.log(111)
 })
+const open = () => {
+  ElMessage.success('hello')
+}
 </script>
 
 <template>
@@ -11,6 +14,7 @@ onMounted(() => {
 
   <div class="card">
     <button type="button" @click="count++">count is {{ count }}</button>
+    <el-button type="primary" @click="open">Primary</el-button>
   </div>
 
 </template>
