@@ -23,6 +23,7 @@
     "eslint": "^8.41.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.2",
+    "sass": "^1.62.1",
     "typescript": "^5.0.2",
     "unocss": "^0.51.13",
     "unplugin-auto-import": "^0.16.0",
