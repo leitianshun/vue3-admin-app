@@ -3,8 +3,7 @@
 
 <template>
   <div>
-    <img src="./assets/vue.svg" class="logo" alt="">
-    <HelloWorld msg="Vite + Vue"  />
+<router-view></router-view>
   </div>
 </template>
 
