@@ -1,19 +1,21 @@
 <script setup lang="ts">
+
 defineProps<{ msg: string }>()
-const count = ref(0)
 onMounted(() => {
   console.log(111)
 })
 const open = () => {
   ElMessage.success('hello')
 }
+const {setCount} = useUserStore()
+const {getCount } = storeToRefs(useUserStore())
 </script>
 
 <template>
-  <h1 class="text-red-500  ">{{ msg }}</h1>
+  <h1 class="text-red-500  ">{{ getCount}}</h1>
   <div class="card">
-    <button type="button" @click="count++">count is {{ count }}</button>
     <el-button type="primary" @click="open">Primary</el-button>
+    <el-button type="primary" @click="setCount()">addcount</el-button>
   </div>
 </template>
 

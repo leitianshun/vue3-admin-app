@@ -3,4 +3,8 @@ import './style.css'
 import App from './App.vue'
 import 'virtual:uno.css'
 
-createApp(App).mount('#app')
+
+const app = createApp(App)
+setPinia(app)
+app.mount('#app')
+// createApp(App ).mount('#app')
