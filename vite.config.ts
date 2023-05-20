@@ -3,6 +3,8 @@ import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import VueComponents from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import UnoCSS from 'unocss/vite'
+
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -17,5 +19,7 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
       types: [],
     }),
-    vue()],
+    vue(),
+     UnoCSS()
+  ],
 })
