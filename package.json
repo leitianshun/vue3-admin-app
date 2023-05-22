@@ -4,10 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --open",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
     "prepare": "husky install",
+    "lint":"eslint .",
     "lint:fix": "eslint --fix"
   },
   "dependencies": {
@@ -19,12 +20,15 @@
     "vue-router": "^4.2.1"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^0.39.1",
     "@commitlint/cli": "^17.6.3",
     "@commitlint/config-conventional": "^17.6.3",
     "@types/node": "^20.2.1",
+    "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.59.6",
     "@vitejs/plugin-vue": "^4.2.3",
     "eslint": "^8.41.0",
+    "eslint-plugin-vue": "^9.13.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.2",
     "sass": "^1.62.1",

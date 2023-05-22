@@ -1,7 +1,37 @@
+
+//不使用antfu的配置时将.eslintrc 改为 .eslintrc.cjs
+// module.exports = {
+//     "env": {
+//         "browser": true,
+//         "es6":true,
+//         "es2021": true,
+//         "node":true
+//     },
+//     "extends": [
+//         "eslint:recommended",
+//         "plugin:vue/vue3-essential",
+//         "plugin:@typescript-eslint/recommended"
+//     ],
+//     "overrides": [
+//     ],
+//     "parser": "vue-eslint-parser",
+//     "parserOptions": {
+//         "parser": "@typescript-eslint/parser",
+//         "ecmaVersion": "latest",
+//         "sourceType": "module"
+//     },
+//     "plugins": [
+//         "vue",
+//         "@typescript-eslint"
+//     ],
+//     "rules": {
+//     }
+// }
 {
-  "parser": "vue-eslint-parser",
-  "parserOptions": {
-    "parser": "@typescript-eslint/parser"
-    // "parser": "babel-eslint"
-  }
+    "extends": [
+        "@antfu"
+    ],
+    "rules": {
+        "no-console": "off"
+      }
 }
