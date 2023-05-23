@@ -1,4 +1,3 @@
-
 //不使用antfu的配置时将.eslintrc 改为 .eslintrc.cjs
 // module.exports = {
 //     "env": {
@@ -28,10 +27,12 @@
 //     }
 // }
 {
-    "extends": [
+    "root": true,   
+    "extends":  
+    [
         "@antfu"
     ],
     "rules": {
         "no-console": "off"
-      }
+    }
 }
