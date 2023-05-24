@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "prepare": "husky install",
     "lint":"eslint .",
-    "lint:fix": "eslint --fix"
+    "lint:fix": "eslint --fix",
+    "build:test": "vue-tsc && vite build --mode test",
+    "build:pro": "vue-tsc && vite build --mode production"
   },
   "dependencies": {
     "dayjs": "^1.11.7",
