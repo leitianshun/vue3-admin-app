@@ -8,7 +8,7 @@
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
     "prepare": "husky install",
-    "lint":"eslint .",
+    "lint": "eslint .",
     "lint:fix": "eslint --fix",
     "build:test": "vue-tsc && vite build --mode test",
     "build:pro": "vue-tsc && vite build --mode production"
@@ -39,6 +39,7 @@
     "unplugin-auto-import": "^0.16.0",
     "unplugin-vue-components": "^0.24.1",
     "vite": "^4.3.8",
+    "vite-plugin-svg-icons": "^2.0.1",
     "vue-eslint-parser": "^9.3.0",
     "vue-tsc": "^1.6.5"
   }

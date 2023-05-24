@@ -26,6 +26,9 @@ const router = useRouter()
     <el-button type="primary" @click="router.push('/login')">
       addcount
     </el-button>
+    <div>
+      <svgIcons icon="search" width="40px" height="40px" color="red" />
+    </div>
   </div>
 </template>
 
