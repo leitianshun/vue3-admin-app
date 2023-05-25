@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import ElementPlus from 'element-plus'
 import 'virtual:svg-icons-register'
+import './styles/index.scss'
 
 // @ts-expect-error ts忽略下一行代码类型检查
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'

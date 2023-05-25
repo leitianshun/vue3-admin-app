@@ -29,11 +29,18 @@ const router = useRouter()
     <div>
       <svgIcons icon="search" width="40px" height="40px" color="red" />
     </div>
+    <div class="box">
+      11
+    </div>
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+$red:blue; //定义变量
 .read-the-docs {
   color: #888;
+}
+.box{
+  color:$color
 }
 </style>
