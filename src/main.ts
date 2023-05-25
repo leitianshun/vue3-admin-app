@@ -10,6 +10,12 @@ import App from './App.vue'
 import 'virtual:uno.css'
 import { setRouter } from './router'
 
+// axios({ // 请求mock接口假数据
+//   url: '/api/user/login',
+//   method: 'post',
+//   data: { username: 'admin', password: '111111' },
+// })
+
 const app = createApp(App)
 setPinia(app)
 setRouter(app)

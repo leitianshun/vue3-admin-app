@@ -10,6 +10,16 @@ const { setCount } = useUserStore()
 const { getCount } = storeToRefs(useUserStore())
 
 const router = useRouter()
+// /admin/acl/index/login
+function login() {
+  request({
+    url: '/admin/acl/index/login',
+    method: 'post',
+    data: { username: 'admin', password: 'atguigu123' }, // 111111
+  })
+}
+login()
+// console.log(request)
 </script>
 
 <template>
