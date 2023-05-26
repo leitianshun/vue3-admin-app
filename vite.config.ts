@@ -50,9 +50,9 @@ export default defineConfig(({ command, mode }) => {
     server: {
       proxy: {
         [env.VITE_APP_BASE_API]: {
-          target: env.BASE_SERVER,
-          // changeOrigin: true,
-          rewrite: path => path.replace(/^\/api/, ''),
+          target: env.VITE_SERVER, // 目标url
+          changeOrigin: true, // 需要代理跨域,这个要打开
+          rewrite: path => path.replace(/^\/api/, ''), // 路径重写
         },
       },
     },

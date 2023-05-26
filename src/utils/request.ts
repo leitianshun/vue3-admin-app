@@ -5,9 +5,10 @@ const request = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API,
   timeout: 3000,
   validateStatus: status => status >= 200 && status < 300,
-//   headers: {
-//     'Content-Type': 'application/x-www-formencoded',
-//   },
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/x-www-formencoded',
+  },
 })
 
 request.interceptors.request.use((config) => {

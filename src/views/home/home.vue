@@ -16,6 +16,9 @@ function login() {
     url: '/admin/acl/index/login',
     method: 'post',
     data: { username: 'admin', password: 'atguigu123' }, // 111111
+  }).then((res) => {
+    console.log(res)
+    ElMessage({ type: 'success', message: '登录成功' })
   })
 }
 login()
