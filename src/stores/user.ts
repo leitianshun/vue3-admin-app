@@ -1,25 +1,26 @@
+import type { loginForm } from '@/types/user'
+
 interface userInfo {
-  name: string
-  age: number
-  count: number
+  token: string
 }
 
 export const useUserStore = defineStore({
   id: 'user',
   persist: true,
   state: (): userInfo => ({
-    name: 'hello',
-    age: 17,
-    count: 0,
+    token: '',
   }),
   getters: {
-    getCount(): number {
-      return this.count
+    getToken(): string {
+      return this.token
     },
   },
   actions: {
-    setCount() {
-      this.count += 1
+    async  login(data: loginForm) {
+      const res = await login(data)
+      if (res.data)
+        console.log(res.data.data)
+      this.token = res.data.data
     },
   },
 })

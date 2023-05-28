@@ -6,12 +6,13 @@ const request = axios.create({
   timeout: 3000,
   validateStatus: status => status >= 200 && status < 300,
   withCredentials: true,
-  headers: {
-    'Content-Type': 'application/x-www-formencoded',
-  },
+  // header: {
+  //   'Content-Type': 'application/x-www-form-urlencoded',
+  // },
 })
 
 request.interceptors.request.use((config) => {
+  start()
   const token = useUserStore().token
   if (token)
     config.headers.Authorization = token
@@ -22,6 +23,7 @@ request.interceptors.request.use((config) => {
 })
 
 request.interceptors.response.use((res: any) => {
+  close()
   if (res.status === 200)
     return res
 }, (err) => {

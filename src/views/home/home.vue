@@ -6,35 +6,16 @@ onMounted(() => {
 function open() {
   ElMessage.success('hello')
 }
-const { setCount } = useUserStore()
-const { getCount } = storeToRefs(useUserStore())
-
+const { login } = useUserStore()
+// const { getCount } = storeToRefs(useUserStore())
+login({ username: 'admin', password: 'atguigu123' })
 const router = useRouter()
-// /admin/acl/index/login
-function login() {
-  request({
-    url: '/admin/acl/index/login',
-    method: 'post',
-    data: { username: 'admin', password: 'atguigu123' }, // 111111
-  }).then((res) => {
-    console.log(res)
-    ElMessage({ type: 'success', message: '登录成功' })
-  })
-}
-login()
-// console.log(request)
 </script>
 
 <template>
-  <h1 class="text-red-500  ">
-    {{ getCount }}
-  </h1>
   <div class="card">
     <el-button type="primary" @click="open">
       Primary
-    </el-button>
-    <el-button type="primary" @click="setCount()">
-      addcount
     </el-button>
     <el-button type="primary" @click="router.push('/login')">
       addcount
