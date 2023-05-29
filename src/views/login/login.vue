@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { Lock, User } from '@element-plus/icons-vue'
+
 const formRef = ref()
 const router = useRouter()
 const route = useRoute()
@@ -60,11 +62,16 @@ async function submitForm() {
         :rules="rules"
       >
         <el-form-item label="用户名" prop="username">
-          <el-input v-model="ruleForm.username" autocomplete="off" placeholder="请输入用户名" />
+          <el-input
+            v-model="ruleForm.username" autocomplete="off"
+            :prefix-icon="User"
+            placeholder="请输入用户名"
+          />
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input
             v-model="ruleForm.password"
+            :prefix-icon="Lock"
             type="password"
             autocomplete="off"
             placeholder="请输入密码"

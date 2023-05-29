@@ -33,11 +33,22 @@ const routes = [
       icon: 'DocumentDelete',
     },
   },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/404',
+    name: 'anyRouter',
+  },
 ]
 
 export const router = createRouter({
   history: createWebHistory(), // createWebHashHistory URL带#，createWebHistory URL不带#
   routes,
+  scrollBehavior() { // 滚动行为
+    return {
+      left: 0,
+      top: 0,
+    }
+  },
 })
 
 console.log(router.hasRoute('login'))

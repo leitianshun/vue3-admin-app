@@ -14,6 +14,7 @@
     "build:pro": "vue-tsc && vite build --mode production"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.1.0",
     "axios": "^1.4.0",
     "dayjs": "^1.11.7",
     "element-plus": "^2.3.5",
