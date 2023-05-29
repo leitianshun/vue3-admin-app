@@ -2,8 +2,8 @@
 defineProps({
   icon: String,
   color: String,
-  width: String,
-  height: String,
+  width: { type: String, default: '40px' },
+  height: { type: String, default: '40px' },
   prefix: {
     type: String,
     default: '#icon-',

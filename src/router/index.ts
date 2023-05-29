@@ -4,12 +4,34 @@ import type { App } from 'vue'
 const routes = [
   {
     path: '/',
-    component: () => import('../views/home/home.vue'),
+    redirect: '/home',
+    children: [
+      {
+        path: 'home',
+        component: () => import('@/views/home/home.vue'),
+        meta: {
+          title: '首页',
+        },
+      },
+    ],
   },
   {
     path: '/login',
     name: 'login',
-    component: () => import('../views/login/login.vue'),
+    meta: {
+      title: '登录',
+      hidden: true,
+    },
+    component: () => import('@/views/login/login.vue'),
+  },
+  {
+    path: '/404',
+    component: () => import('@/views/404/404.vue'),
+    meta: {
+      title: '404',
+      hidden: true,
+      icon: 'DocumentDelete',
+    },
   },
 ]
 

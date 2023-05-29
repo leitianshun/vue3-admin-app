@@ -15,7 +15,7 @@ request.interceptors.request.use((config) => {
   start()
   const token = useUserStore().token
   if (token)
-    config.headers.Authorization = token
+    config.headers.token = token // 这里验证token的方式可能不是Authorization,可以自定义
   return config
 }, (error) => {
   ElMessage({ type: 'error', message: error })
@@ -25,7 +25,7 @@ request.interceptors.request.use((config) => {
 request.interceptors.response.use((res: any) => {
   close()
   if (res.status === 200)
-    return res
+    return res.data
 }, (err) => {
   let message = ''
   const status = err.response.status
@@ -51,3 +51,25 @@ request.interceptors.response.use((res: any) => {
 })
 
 export { request }
+
+// axios.defaults.baseURL = import.meta.env.VITE_APP_BASE_API
+// axios.defaults.timeout = 30000
+// axios.defaults.withCredentials = true
+// // axios.defaults.headers.common['Ahthorization'] = 'token'
+// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+
+// axios.interceptors.request.use((config) => {
+//   const token = useUserStore().token
+//   if (token)
+//     config.headers.Authorization = token
+//   return config
+// }, (error) => {
+//   return Promise.reject(error)
+// })
+
+// axios.interceptors.response.use((res: any) => {
+//   if (res.status === 200)
+//     return res
+// }, (error) => {
+//   return Promise.reject(error)
+// })

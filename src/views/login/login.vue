@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 const formRef = ref()
 const router = useRouter()
+const route = useRoute()
+const loading = ref(false)
 const ruleForm = reactive({
   password: 'atguigu123',
   username: 'admin',
@@ -23,27 +25,30 @@ const rules = ref({
   ],
 
 })
-function submitForm() {
-  formRef.value.validate((res: any) => {
-    if (res) {
-      useUserStore().login(ruleForm).then(() => {
-        router.push('/')
-        ElNotification({
-          type: 'success',
-          message: '欢迎回来',
-          title: `Hello ${getTime()}好`,
-        })
-      }).catch((err) => {
-        ElMessage({ type: 'error', message: err })
-      })
-    }
-  })
+async function submitForm() {
+  await formRef.value.validate()
+  loading.value = true
+  try {
+    await useUserStore().login(ruleForm)
+    const redirect: any = route.query.redirect
+    router.push({ path: redirect || '/' })
+    ElNotification({
+      type: 'success',
+      message: '欢迎回来',
+      title: `Hello ${getTime()}好`,
+    })
+    loading.value = false
+  }
+  catch (err) {
+    loading.value = false
+    ElMessage({ type: 'error', message: (err as Error).message })
+  }
 }
 </script>
 
 <template>
-  <div class="w-full h-screen bg relative  flex items-center justify-end">
-    <div class="p-6 mr-60 w-1/3  rounded-xl bg-gradient-to-b from-indigo-500 to-blue-400">
+  <div class="w-full h-screen bg relative  flex items-center justify-center xl:justify-end">
+    <div class="p-6 xl:mr-60 xl:w-1/3  rounded-xl bg-gradient-to-b from-indigo-500 to-blue-400">
       <h3 class="text-center text-2xl my-3 text-white">
         欢迎来到小雷甄选运行平台
       </h3>
@@ -67,7 +72,7 @@ function submitForm() {
           />
         </el-form-item>
         <div class="text-center ">
-          <el-button type="success" class="w-full" @click="submitForm()">
+          <el-button type="success" class="w-full" :loading="loading" @click="submitForm()">
             登录
           </el-button>
         </div>

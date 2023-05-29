@@ -9,6 +9,7 @@ import './style.css'
 import App from './App.vue'
 import 'virtual:uno.css'
 import { setRouter } from './router'
+import './permisstion'
 
 // axios({ // 请求mock接口假数据
 //   url: '/api/user/login',

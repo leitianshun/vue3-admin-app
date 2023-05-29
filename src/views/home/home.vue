@@ -1,23 +1,21 @@
 <script setup lang="ts">
 defineProps<{ msg: string }>()
 onMounted(() => {
-  console.log(111)
 })
 function open() {
   ElMessage.success('hello')
 }
-const { login } = useUserStore()
+const { getUserInfo, logout } = useUserStore()
 // const { getCount } = storeToRefs(useUserStore())
-login({ username: 'admin', password: 'atguigu123' })
 const router = useRouter()
 </script>
 
 <template>
   <div class="card">
-    <el-button type="primary" @click="open">
-      Primary
+    <el-button type="primary" @click="logout()">
+      退出登录
     </el-button>
-    <el-button type="primary" @click="router.push('/login')">
+    <el-button type="primary" @click="router.push('/404')">
       addcount
     </el-button>
     <div>
