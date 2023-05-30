@@ -29,9 +29,8 @@ const rules = ref({
 })
 async function submitForm() {
   await formRef.value.validate()
-  loading.value = true
-  try {
-    await useUserStore().login(ruleForm)
+  useUserStore().login(ruleForm).then((res) => {
+    console.log(res)
     const redirect: any = route.query.redirect
     router.push({ path: redirect || '/' })
     ElNotification({
@@ -40,11 +39,10 @@ async function submitForm() {
       title: `Hello ${getTime()}好`,
     })
     loading.value = false
-  }
-  catch (err) {
+  }).catch((err) => {
     loading.value = false
     ElMessage({ type: 'error', message: (err as Error).message })
-  }
+  })
 }
 </script>
 
@@ -76,6 +74,7 @@ async function submitForm() {
             autocomplete="off"
             placeholder="请输入密码"
             show-password
+            @keydown.enter="submitForm"
           />
         </el-form-item>
         <div class="text-center ">

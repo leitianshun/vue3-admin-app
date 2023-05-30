@@ -25,9 +25,16 @@ export const useUserStore = defineStore({
   },
   actions: {
     async  login(data: loginForm) {
-      const res = await login(data)
-      if (res.data)
-        this.token = res.data
+      try {
+        const res = await login(data)
+        if (res.code === 200)
+          this.token = res.data
+        else
+          return Promise.reject(new Error('登录失败'))
+      }
+      catch (err) {
+        return Promise.reject(err)
+      }
     },
     async getUserInfo() {
       const res = await getUserInfo()

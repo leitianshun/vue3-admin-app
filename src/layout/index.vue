@@ -5,19 +5,21 @@ import Main from './main/index.vue'
 </script>
 
 <template>
-  <div class="w-full h-screen flex overflow-hidden">
-    <div class="w-64 h-screen bg-red-400 transition-500">
+  <div class="w-full h-screen flex overflow-hidden ">
+    <div class="w-70 h-screen    bg-blue-gray-800 transition-500">
       <logo />
       <el-scrollbar class="w-full menu">
         <el-menu
           default-active="2"
           class=""
+          text-color="white"
+          background-color="#1e293b"
         >
           <Menu />
         </el-menu>
       </el-scrollbar>
     </div>
-    <div class="w-full h-full">
+    <div class="w-full h-full overflow-auto">
       <div class="h-15 bg-blue w-full ">
         header
       </div>
@@ -26,15 +28,19 @@ import Main from './main/index.vue'
       </div>
       <div class="h-full w-full bg-pink-300 ">
         <Main />
+        <div />
       </div>
     </div>
   </div>
 </template>
 
 <style scoped lang='scss'>
-.menu{
+ .menu{
   .el-menu{
     border-right: none;
+  }
+  .el-menu--vertical{
+    background-color: #1e293b;
   }
 }
 </style>
