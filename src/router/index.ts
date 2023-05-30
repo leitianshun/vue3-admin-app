@@ -5,12 +5,14 @@ const routes = [
   {
     path: '/',
     redirect: '/home',
+    component: () => import('@/layout/index.vue'),
     children: [
       {
         path: 'home',
         component: () => import('@/views/home/home.vue'),
         meta: {
           title: '首页',
+          keepAlive: true,
         },
       },
     ],
@@ -21,6 +23,7 @@ const routes = [
     meta: {
       title: '登录',
       hidden: true,
+      keepAlive: false,
     },
     component: () => import('@/views/login/login.vue'),
   },
@@ -30,6 +33,7 @@ const routes = [
     meta: {
       title: '404',
       hidden: true,
+      keepAlive: false,
       icon: 'DocumentDelete',
     },
   },
