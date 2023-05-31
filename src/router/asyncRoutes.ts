@@ -4,7 +4,7 @@ export const asyncRoutes = [
     name: 'Acl',
     component: () => import('@/layout/index.vue'),
     meta: {
-      tilte: '权限管理',
+      title: '权限管理',
       icon: 'Lock',
     },
     redirect: '/acl/user',
@@ -33,7 +33,7 @@ export const asyncRoutes = [
         component: () => import('@/views/acl/permission/index.vue'),
         meta: {
           title: '菜单管理',
-          icon: 'Menu',
+          icon: 'Memo',
         },
       },
     ],

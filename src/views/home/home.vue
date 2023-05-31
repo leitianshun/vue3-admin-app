@@ -7,7 +7,6 @@ function open() {
 }
 const { getUserInfo, logout } = useUserStore()
 // const { getCount } = storeToRefs(useUserStore())
-getUserInfo()
 const router = useRouter()
 </script>
 

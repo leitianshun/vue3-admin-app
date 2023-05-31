@@ -1,7 +1,7 @@
-// import { asyncRoutes } from './../router/asyncRoutes';
 import type { RouteRecordRaw } from 'vue-router'
+import { anyRoute, asyncRoutes } from './../router/asyncRoutes'
 import type { loginForm } from '@/types/user'
-import { routes } from '@/router/index'
+import { router, routes } from '@/router/index'
 
 interface userInfo {
   token: string
@@ -9,18 +9,18 @@ interface userInfo {
   avatar: string
   buttons: any[]
   name: string
+  routes: any[]
 }
 
-// filterAsyncRoute(asyncRoute:typeRouteRecordRaw,routes:string[]){
-//   return asyncRoutes.filter(item => {
-//     if (routes.includes(item.name)) {
-//       if (item.children && item.children.length > 0) {
-//         item.children = filterAsyncRoute(item.children,routes)
-//       }
-//     }
-//   })
-
-// }
+function filterAsyncRoute(asyncRoutes: any[], routes: string[]) {
+  return asyncRoutes.filter((item: any) => {
+    if (routes.includes(item.name)) {
+      if (item.children && item.children.length > 0)
+        item.children = filterAsyncRoute(item.children, routes)
+    }
+    return true
+  })
+}
 
 export const useUserStore = defineStore({
   id: 'user',
@@ -31,6 +31,7 @@ export const useUserStore = defineStore({
     avatar: '',
     buttons: [],
     name: '',
+    routes: [],
   }),
   getters: {
     getToken(): string {
@@ -56,6 +57,14 @@ export const useUserStore = defineStore({
         this.avatar = res.data.avatar
         this.name = res.data.name
         this.buttons = res.data.buttons
+        this.routes = res.data.routes
+        const userAsyncRoutes = filterAsyncRoute(asyncRoutes, this.routes)
+        this.menuRoutes = [...routes, ...userAsyncRoutes, anyRoute]
+        const asyncRoute = [...userAsyncRoutes, anyRoute]
+        asyncRoute.forEach((route: any) => {
+          router.addRoute(route)
+        })
+        // console.log(routes)
       }
     },
     async logout() {

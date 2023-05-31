@@ -2,9 +2,9 @@
 import Menu from './menu/index.vue'
 import logo from './logo/index.vue'
 import Main from './main/index.vue'
-import { routes } from '@/router/index'
 
 const route = useRoute()
+const userStore = useUserStore()
 </script>
 
 <template>
@@ -19,7 +19,7 @@ const route = useRoute()
           text-color="white"
           background-color="#1e293b"
         >
-          <Menu :menu-list="routes" />
+          <Menu :menu-list="userStore.menuRoutes" />
         </el-menu>
       </el-scrollbar>
     </div>

@@ -34,7 +34,7 @@ export default {
       </template>
     </el-menu-item>
     <!-- 有子路由且子路由的个数大于1 -->
-    <el-sub-menu v-if="item.children && item.children.length > 1">
+    <el-sub-menu v-if="item.children && item.children.length > 1" :index="item.path">
       <template #title>
         <el-icon>
           <component :is="item.meta.icon" />
