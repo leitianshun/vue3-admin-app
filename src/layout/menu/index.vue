@@ -1,63 +1,60 @@
 <script setup lang='ts'>
-import {
-  Menu as IconMenu,
-  Location,
-  Setting,
-} from '@element-plus/icons-vue'
-
+defineProps(['menuList'])
 const isCollapse = ref(false)
 </script>
 
+<script lang="ts">
+export default {
+  // 禁用下一行规则,后面填写规格名称  //eslint-disable-next-line  vue/no-reserved-component-names
+  // 禁用此行规则  // eslint-disable-line  no-eval
+  // eslint-disable-next-line vue/no-reserved-component-names
+  name: 'Menu',
+}
+</script>
+
 <template>
-  <div>
-    <el-sub-menu index="1">
+  <!-- 没有子路由的 -->
+  <template v-for="(item, index) in menuList" :key="index">
+    <!-- 没有子路由的 -->
+    <el-menu-item v-if="!item.children && !item.meta.hidden" :index="item.path">
+      <el-icon>
+        <component :is="item.meta.icon" />
+      </el-icon>
       <template #title>
-        <el-icon><Location /></el-icon>
-        <span>Navigator One</span>
+        {{ item.meta.title }}
       </template>
-      <el-menu-item-group>
+    </el-menu-item>
+    <!-- 有子路由且只有一个的，直接显示，不使用折叠 -->
+    <el-menu-item v-if="item.children && item.children.length === 1 && !item.meta.hidden" :index="item.path">
+      <template #title>
+        <el-icon>
+          <component :is="item.children[0].meta.icon" />
+        </el-icon>
+        {{ item.children[0].meta.title }}
+      </template>
+    </el-menu-item>
+    <!-- 有子路由且子路由的个数大于1 -->
+    <el-sub-menu v-if="item.children && item.children.length > 1">
+      <template #title>
+        <el-icon>
+          <component :is="item.meta.icon" />
+        </el-icon>
+        {{ item.meta.title }}
+      </template>
+      <!-- 递归组件，如果有子路由再次调用这个组件，会走只有一个子路由的逻辑判断，渲染el-menu-item 标签 -->
+      <Menu :menu-list="item.children" />
+
+      <!-- <el-menu-item v-for="item2 in item.children" :key="item2.path" :index="item2.path">
+        <el-icon>
+          <component :is="item2.meta.icon" />
+        </el-icon>
         <template #title>
-          <span>Group One</span>
+          {{ item2.meta.title }}
         </template>
-        <el-menu-item index="1-1">
-          item one
-        </el-menu-item>
-        <el-menu-item index="1-2">
-          item two
-        </el-menu-item>
-      </el-menu-item-group>
-      <el-menu-item-group title="Group Two">
-        <el-menu-item index="1-3">
-          item three
-        </el-menu-item>
-      </el-menu-item-group>
-      <el-sub-menu index="1-4">
-        <template #title>
-          <span>item four</span>
-        </template>
-        <el-menu-item index="1-4-1">
-          item one
-        </el-menu-item>
-      </el-sub-menu>
+      </el-menu-item> -->
     </el-sub-menu>
-    <el-menu-item index="2">
-      <el-icon><IconMenu /></el-icon>
-      <template #title>
-        Navigator Two
-      </template>
-    </el-menu-item>
-    <el-menu-item index="4">
-      <el-icon><Setting /></el-icon>
-      <template #title>
-        Navigator Four
-      </template>
-    </el-menu-item>
-  </div>
+  </template>
 </template>
 
 <style scoped lang='scss'>
-// .el-menu-vertical-demo:not(.el-menu--collapse) {
-//   width: 200px;
-//   min-height: 400px;
-// }
 </style>

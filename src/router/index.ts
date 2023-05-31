@@ -1,10 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { App } from 'vue'
 
-const routes = [
+export const routes = [
   {
     path: '/',
     redirect: '/home',
+    meta: {
+      hidden: false,
+    },
     component: () => import('@/layout/index.vue'),
     children: [
       {
@@ -12,7 +15,9 @@ const routes = [
         component: () => import('@/views/home/home.vue'),
         meta: {
           title: '首页',
+          hidden: false,
           keepAlive: true,
+          icon: 'HomeFilled',
         },
       },
     ],
@@ -38,9 +43,14 @@ const routes = [
     },
   },
   {
-    path: '/:pathMatch(.*)*',
-    redirect: '/404',
-    name: 'anyRouter',
+    path: '/screen',
+    component: () => import('@/views/screen/screen.vue'),
+    name: 'screen',
+    meta: {
+      keepAlive: false,
+      title: '数据大屏',
+      icon: 'DataBoard',
+    },
   },
 ]
 

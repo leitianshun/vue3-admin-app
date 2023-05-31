@@ -1,19 +1,33 @@
+// import { asyncRoutes } from './../router/asyncRoutes';
+import type { RouteRecordRaw } from 'vue-router'
 import type { loginForm } from '@/types/user'
+import { routes } from '@/router/index'
 
 interface userInfo {
   token: string
-  menuRoutes: any[]
+  menuRoutes: RouteRecordRaw[]
   avatar: string
   buttons: any[]
   name: string
 }
+
+// filterAsyncRoute(asyncRoute:typeRouteRecordRaw,routes:string[]){
+//   return asyncRoutes.filter(item => {
+//     if (routes.includes(item.name)) {
+//       if (item.children && item.children.length > 0) {
+//         item.children = filterAsyncRoute(item.children,routes)
+//       }
+//     }
+//   })
+
+// }
 
 export const useUserStore = defineStore({
   id: 'user',
   persist: true,
   state: (): userInfo => ({
     token: '',
-    menuRoutes: [],
+    menuRoutes: routes,
     avatar: '',
     buttons: [],
     name: '',

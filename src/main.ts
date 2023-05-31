@@ -6,6 +6,7 @@ import './styles/index.scss'
 // @ts-expect-error ts忽略下一行代码类型检查
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import './style.css'
+import * as ElementPlusIcons from '@element-plus/icons-vue'
 import App from './App.vue'
 import 'virtual:uno.css'
 import { setRouter } from './router'
@@ -20,6 +21,9 @@ import './permisstion'
 const app = createApp(App)
 setPinia(app)
 setRouter(app)
+for (const [key, component] of Object.entries(ElementPlusIcons))
+  app.component(key, component)
+
 app.use(ElementPlus, {
   locale: zhCn,
 })

@@ -1,4 +1,4 @@
 export default {
-  title: '小黑子甄选运营平台',
+  title: '小雷甄选运营平台',
   logo: '/src/assets/image/jntm.gif',
 }

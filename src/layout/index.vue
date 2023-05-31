@@ -2,6 +2,9 @@
 import Menu from './menu/index.vue'
 import logo from './logo/index.vue'
 import Main from './main/index.vue'
+import { routes } from '@/router/index'
+
+const route = useRoute()
 </script>
 
 <template>
@@ -10,12 +13,13 @@ import Main from './main/index.vue'
       <logo />
       <el-scrollbar class="w-full menu">
         <el-menu
-          default-active="2"
+          router
+          :default-active="route.path"
           class=""
           text-color="white"
           background-color="#1e293b"
         >
-          <Menu />
+          <Menu :menu-list="routes" />
         </el-menu>
       </el-scrollbar>
     </div>
