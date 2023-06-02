@@ -17,10 +17,10 @@ export default {
   <template v-for="(item, index) in menuList" :key="index">
     <!-- 没有子路由的 -->
     <el-menu-item v-if="!item.children && !item.meta.hidden" :index="item.path">
-      <el-icon>
-        <component :is="item.meta.icon" />
-      </el-icon>
       <template #title>
+        <el-icon>
+          <component :is="item.meta.icon" />
+        </el-icon>
         {{ item.meta.title }}
       </template>
     </el-menu-item>

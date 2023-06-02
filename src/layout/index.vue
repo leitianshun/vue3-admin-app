@@ -2,6 +2,7 @@
 import Menu from './menu/index.vue'
 import logo from './logo/index.vue'
 import Main from './main/index.vue'
+import TabBar from './tabbar/index.vue'
 
 const route = useRoute()
 const userStore = useUserStore()
@@ -24,13 +25,10 @@ const userStore = useUserStore()
       </el-scrollbar>
     </div>
     <div class="w-full h-full overflow-auto">
-      <div class="h-15 bg-blue w-full ">
-        header
+      <div class="h-15 w-full ">
+        <TabBar />
       </div>
-      <div class="h-10 bg-cyan-400 w-full ">
-        tag
-      </div>
-      <div class="h-full w-full bg-pink-300 ">
+      <div class="overflow-y-auto w-full bg-pink-300 " style="height:calc(100vh - 60px)">
         <Main />
         <div />
       </div>
