@@ -1,62 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { App } from 'vue'
-
-export const routes = [
-  {
-    path: '/',
-    redirect: '/home',
-    meta: {
-      hidden: false,
-    },
-    component: () => import('@/layout/index.vue'),
-    children: [
-      {
-        path: 'home',
-        component: () => import('@/views/home/home.vue'),
-        meta: {
-          title: '首页',
-          hidden: false,
-          keepAlive: true,
-          icon: 'HomeFilled',
-        },
-      },
-    ],
-  },
-  {
-    path: '/login',
-    name: 'login',
-    meta: {
-      title: '登录',
-      hidden: true,
-      keepAlive: false,
-    },
-    component: () => import('@/views/login/login.vue'),
-  },
-  {
-    path: '/404',
-    component: () => import('@/views/404/404.vue'),
-    meta: {
-      title: '404',
-      hidden: true,
-      keepAlive: false,
-      icon: 'DocumentDelete',
-    },
-  },
-  {
-    path: '/screen',
-    component: () => import('@/views/screen/screen.vue'),
-    name: 'screen',
-    meta: {
-      keepAlive: false,
-      title: '数据大屏',
-      icon: 'DataBoard',
-    },
-  },
-]
+import { constantRoute } from './routes'
 
 export const router = createRouter({
   history: createWebHistory(), // createWebHashHistory URL带#，createWebHistory URL不带#
-  routes,
+  routes: constantRoute,
   scrollBehavior() { // 滚动行为
     return {
       left: 0,
@@ -65,8 +13,8 @@ export const router = createRouter({
   },
 })
 
-console.log(router.hasRoute('login'))
-console.log(router.getRoutes())
+// console.log(router.hasRoute('login'))
+// console.log(router.getRoutes())
 export function resetRouter(): void { // 重置路由
   const resetWhiteNameList = ['register', 'login'] // 路由白名单
   router.getRoutes().forEach((route) => { // 获取所有router数组

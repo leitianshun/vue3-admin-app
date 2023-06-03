@@ -29,7 +29,7 @@ const rules = ref({
 })
 async function submitForm() {
   await formRef.value.validate()
-  useUserStore().login(ruleForm).then((res) => {
+  useUserStore().login(ruleForm).then(() => {
     const redirect: any = route.query.redirect
     router.push({ path: redirect || '/' })
     ElNotification({

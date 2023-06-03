@@ -1,7 +1,8 @@
 import type { RouteRecordRaw } from 'vue-router'
-import { anyRoute, asyncRoutes } from './../router/asyncRoutes'
+import { anyRoute, asyncRoutes, constantRoute } from '../router/routes'
 import type { loginForm } from '@/types/user'
-import { router, routes } from '@/router/index'
+import { router } from '@/router/index'
+import layout from '@/layout/index.vue'
 
 interface userInfo {
   token: string
@@ -12,7 +13,7 @@ interface userInfo {
   routes: any[]
 }
 
-function filterAsyncRoute(asyncRoutes: any[], routes: string[]) {
+function filterAsyncRoute(asyncRoutes: any[], routes: any) {
   return asyncRoutes.filter((item: any) => {
     if (routes.includes(item.name)) {
       if (item.children && item.children.length > 0)
@@ -22,12 +23,23 @@ function filterAsyncRoute(asyncRoutes: any[], routes: string[]) {
   })
 }
 
+function addRute(route: any) {
+  route.forEach((route: any) => {
+    if (!route.children)
+      route.component = layout
+    else
+      route.component = () => import(`@/views/${route.path}`)
+    if (route.children && route.children.length > 0)
+      route.children = addRute(route.children)
+  })
+}
+
 export const useUserStore = defineStore({
   id: 'user',
   persist: true,
   state: (): userInfo => ({
     token: '',
-    menuRoutes: routes,
+    menuRoutes: constantRoute,
     avatar: '',
     buttons: [],
     name: '',
@@ -51,26 +63,25 @@ export const useUserStore = defineStore({
         return Promise.reject(err)
       }
     },
-    async getUserInfo() {
+    async userInfo() {
       const res = await getUserInfo()
       if (res.data) {
         this.avatar = res.data.avatar
         this.name = res.data.name
         this.buttons = res.data.buttons
         this.routes = res.data.routes
-        const userAsyncRoutes = filterAsyncRoute(asyncRoutes, this.routes)
-        this.menuRoutes = [...routes, ...userAsyncRoutes, anyRoute]
+        const userAsyncRoutes = filterAsyncRoute(asyncRoutes, res.data.routes)
+        this.menuRoutes = [...constantRoute, ...userAsyncRoutes, anyRoute]
         const asyncRoute = [...userAsyncRoutes, anyRoute]
         asyncRoute.forEach((route: any) => {
           router.addRoute(route)
         })
-        // console.log(routes)
       }
     },
     async logout() {
       await logout()
       this.$reset()
-      // useRouter().push('/login')
+      router.push('/login')
     },
   },
 })

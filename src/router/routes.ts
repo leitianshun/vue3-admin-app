@@ -1,3 +1,56 @@
+export const constantRoute = [
+  {
+    path: '/',
+    component: () => import('@/layout/index.vue'),
+    redirect: '/home',
+    meta: {
+      hidden: false,
+    },
+    children: [
+      {
+        path: 'home',
+        component: () => import('@/views/home/home.vue'),
+        meta: {
+          title: '首页',
+          hidden: false,
+          keepAlive: true,
+          icon: 'HomeFilled',
+        },
+      },
+    ],
+  },
+  {
+    path: '/login',
+    component: () => import('@/views/login/login.vue'),
+    name: 'login',
+    meta: {
+      title: '登录',
+      hidden: true,
+      keepAlive: false,
+    },
+  },
+  {
+    path: '/404',
+    component: () => import('@/views/404/404.vue'),
+    meta: {
+      title: '404',
+      hidden: true,
+      keepAlive: false,
+      icon: 'DocumentDelete',
+    },
+  },
+  {
+    path: '/screen/:id',
+    component: () => import('@/views/screen/screen.vue'),
+    name: 'screen',
+    meta: {
+      keepAlive: false,
+      title: '数据大屏',
+      icon: 'DataBoard',
+    },
+  },
+]
+
 export const asyncRoutes = [
   {
     path: '/acl',
@@ -11,8 +64,8 @@ export const asyncRoutes = [
     children: [
       {
         path: '/acl/user',
-        name: 'User',
         component: () => import('@/views/acl/user/index.vue'),
+        name: 'User',
         meta: {
           title: '用户管理',
           icon: 'User',
@@ -20,8 +73,8 @@ export const asyncRoutes = [
       },
       {
         path: '/acl/role',
-        name: 'Role',
         component: () => import('@/views/acl/role/index.vue'),
+        name: 'Role',
         meta: {
           title: '角色管理',
           icon: 'UserFilled',
@@ -29,8 +82,8 @@ export const asyncRoutes = [
       },
       {
         path: '/acl/permission',
-        name: 'Permission',
         component: () => import('@/views/acl/permission/index.vue'),
+        name: 'Permission',
         meta: {
           title: '菜单管理',
           icon: 'Memo',
@@ -40,9 +93,9 @@ export const asyncRoutes = [
   },
   {
     path: '/product',
+    component: () => import('@/layout/index.vue'),
     name: 'Product',
     redirect: '/product/trademark',
-    component: () => import('@/layout/index.vue'),
     meta: {
       title: '商品管理',
       icon: 'Handbag',

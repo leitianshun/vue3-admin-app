@@ -1,4 +1,4 @@
-import { router } from '@/router'
+import { resetRouter, router } from '@/router/index'
 
 router.beforeEach(async (to: any, from: any, next: any) => {
   start()
@@ -14,8 +14,8 @@ router.beforeEach(async (to: any, from: any, next: any) => {
       }
       else {
         try {
-          await useUserStore().getUserInfo()
-          next({ ...to, replace: true }) // 防止刷新的时候是异步路由,有可能获取到用户信息、异步路由还没有加载完毕,出现空白的效果  hank方法
+          await useUserStore().userInfo()
+          next({ ...to }) // 防止刷新的时候是异步路由,有可能获取到用户信息、异步路由还没有加载完毕,出现空白的效果  hank方法
         }
         catch (err) {
           useUserStore().logout()
@@ -27,7 +27,8 @@ router.beforeEach(async (to: any, from: any, next: any) => {
     if (to.path === '/login')
       next()
     else
-      next({ path: '/login', query: { redirect: to.path } })
+      resetRouter()
+    next({ path: '/login', query: { redirect: to.path } })
   }
 })
 
