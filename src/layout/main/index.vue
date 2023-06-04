@@ -1,11 +1,18 @@
 <script setup lang='ts'>
-// const route = useRoute()
+const refresh = ref(true)
+const layoutStore = useLayoutStore()
+watch(() => layoutStore.refresh, () => { // 监听store里的refresh变化，让组件销毁重建，然后重新挂载获取数据
+  refresh.value = false
+  nextTick(() => {
+    refresh.value = true // 等待dom渲染完成后修改数据
+  })
+})
 </script>
 
 <template>
   <router-view v-slot="{ Component }">
     <Transition name="fade" mode="out-in">
-      <component :is="Component" />
+      <component :is="Component" v-if="refresh" />
     </Transition>
   </router-view>
 

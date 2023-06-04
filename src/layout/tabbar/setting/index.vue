@@ -2,6 +2,7 @@
 import screenfull from 'screenfull'
 
 const userStore = useUserStore()
+const layoutStore = useLayoutStore()
 function setFullScreen() {
   if (screenfull.isEnabled)
     screenfull.toggle()
@@ -10,7 +11,7 @@ function setFullScreen() {
 
 <template>
   <div class="flex items-center justify-around">
-    <el-button icon="Refresh" circle />
+    <el-button icon="Refresh" circle @click="layoutStore.setRefresh" />
     <el-button icon="FullScreen" circle @click="setFullScreen" />
     <el-button icon="Setting" circle />
     <img src="@/assets/image/jntm.gif" class="w-11 h-11 rounded-full border border-solid border-black border-opacity-20 mx-5" alt="">
