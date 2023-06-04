@@ -1,10 +1,14 @@
 <script setup lang='ts'>
+const layoutStore = useLayoutStore()
+function changeIcon() {
+  layoutStore.setCollapse()
+}
 </script>
 
 <template>
   <div class="flex items-center">
-    <el-icon>
-      <Fold />
+    <el-icon @click="changeIcon">
+      <component :is="layoutStore.isCollapse ? 'Fold' : 'Expand'" />
     </el-icon>
     <div class="ml-3">
       <el-breadcrumb separator-icon="ArrowRight">

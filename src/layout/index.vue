@@ -6,37 +6,44 @@ import TabBar from './tabbar/index.vue'
 
 const route = useRoute()
 const userStore = useUserStore()
+const layoutStore = useLayoutStore()
 </script>
 
 <template>
-  <div class="w-full h-screen flex overflow-hidden ">
-    <div class="w-70 h-screen    bg-blue-gray-800 transition-500">
+  <div class="w-full h-screen flex overflow-hidden layout-container">
+    <div class=" h-screen  layout-slide  bg-blue-gray-800 w-65" :class="{ collapse: layoutStore.isCollapse }">
       <logo />
       <el-scrollbar class="w-full menu">
         <el-menu
           router
           :default-active="route.path"
-          class=""
+          collapse-transition
           text-color="white"
           background-color="#1e293b"
+          :collapse="layoutStore.isCollapse"
         >
           <Menu :menu-list="userStore.menuRoutes" />
         </el-menu>
       </el-scrollbar>
     </div>
-    <div class="w-full h-full overflow-auto">
-      <div class="h-15 w-full ">
+    <div class=" overflow-auto flex-1 layout-main">
+      <div class=" w-full nav-bar ">
         <TabBar />
       </div>
-      <div class="overflow-y-auto w-full bg-pink-300 " style="height:calc(100vh - 60px)">
+      <div class="overflow-y-auto w-full main bg-pink-300 ">
         <Main />
-        <div />
       </div>
     </div>
   </div>
 </template>
 
 <style scoped lang='scss'>
+.layout-container{
+
+.layout-slide {
+  width: $base-menu-width;
+  transition: all .5s;
+
  .menu{
   .el-menu{
     border-right: none;
@@ -44,5 +51,21 @@ const userStore = useUserStore()
   .el-menu--vertical{
     background-color: #1e293b;
   }
+}
+}
+
+.collapse{
+  transition: all .5s;
+  width: $base-menu-min-width;
+}
+
+.layout-main{
+.nav-bar{
+  height: $base-top-nav-height;
+}
+.main{
+  height:calc(100vh  -  $base-top-nav-height)
+}
+}
 }
 </style>

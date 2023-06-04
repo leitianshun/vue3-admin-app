@@ -1,6 +1,5 @@
 <script setup lang='ts'>
 defineProps(['menuList'])
-const isCollapse = ref(false)
 </script>
 
 <script lang="ts">
@@ -17,20 +16,24 @@ export default {
   <template v-for="(item, index) in menuList" :key="index">
     <!-- 没有子路由的 -->
     <el-menu-item v-if="!item.children && !item.meta.hidden" :index="item.path">
+      <el-icon>
+        <component :is="item.meta.icon" />
+      </el-icon>
       <template #title>
-        <el-icon>
-          <component :is="item.meta.icon" />
-        </el-icon>
-        {{ item.meta.title }}
+        <span>
+          {{ item.meta.title }}
+        </span>
       </template>
     </el-menu-item>
     <!-- 有子路由且只有一个的，直接显示，不使用折叠 -->
     <el-menu-item v-if="item.children && item.children.length === 1 && !item.meta.hidden" :index="item.path">
+      <el-icon>
+        <component :is="item.children[0].meta.icon" />
+      </el-icon>
       <template #title>
-        <el-icon>
-          <component :is="item.children[0].meta.icon" />
-        </el-icon>
-        {{ item.children[0].meta.title }}
+        <span>
+          {{ item.children[0].meta.title }}
+        </span>
       </template>
     </el-menu-item>
     <!-- 有子路由且子路由的个数大于1 -->
@@ -39,7 +42,9 @@ export default {
         <el-icon>
           <component :is="item.meta.icon" />
         </el-icon>
-        {{ item.meta.title }}
+        <span>
+          {{ item.meta.title }}
+        </span>
       </template>
       <!-- 递归组件，如果有子路由再次调用这个组件，会走只有一个子路由的逻辑判断，渲染el-menu-item 标签 -->
       <Menu :menu-list="item.children" />

@@ -1,5 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router'
-import { anyRoute, asyncRoutes, constantRoute } from '../router/routes'
+import { anyRoute, asyncRoutes, constantRoute } from '@/router/routes'
 import type { loginForm } from '@/types/user'
 import { router } from '@/router/index'
 import layout from '@/layout/index.vue'

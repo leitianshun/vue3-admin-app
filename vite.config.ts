@@ -15,7 +15,7 @@ export default defineConfig(({ command, mode }) => {
     plugins: [
       AutoImport({
         imports: ['vue', 'pinia', 'vue-router'],
-        dirs: ['src/stores', 'src/utils', 'src/api'],
+        dirs: ['src/stores', 'src/stores/modules', 'src/utils', 'src/api'],
         resolvers: [ElementPlusResolver()],
       }),
       VueComponents({
