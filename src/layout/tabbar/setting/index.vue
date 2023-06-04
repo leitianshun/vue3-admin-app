@@ -7,6 +7,14 @@ function setFullScreen() {
   if (screenfull.isEnabled)
     screenfull.toggle()
 }
+
+// function fullScreen() {  //不使用插件实现全屏
+//   const isFullScreen = document.fullscreenElement  //用来判断是否为全屏幕，如果是全屏则返回true，否则返回 null/false
+//   if (!isFullScreen)  //如果不是全屏页面，则进行全屏操作
+//     document.documentElement.requestFullscreen()
+//   else
+//     document.exitFullscreen()  //退出全屏操作
+// }
 </script>
 
 <template>
