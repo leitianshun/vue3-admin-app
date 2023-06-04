@@ -11,7 +11,7 @@ const layoutStore = useLayoutStore()
 
 <template>
   <div class="w-full h-screen flex overflow-hidden layout-container">
-    <div class=" h-screen  layout-slide  bg-blue-gray-800 w-65" :class="{ collapse: layoutStore.isCollapse }">
+    <div class=" h-screen  layout-slide  bg-blue-gray-800 " :class="{ collapse: layoutStore.isCollapse }">
       <logo />
       <el-scrollbar class="w-full menu">
         <el-menu
@@ -45,6 +45,7 @@ const layoutStore = useLayoutStore()
   transition: all .5s;
 
  .menu{
+  height: calc(100vh - $base-top-nav-height );
   .el-menu{
     border-right: none;
   }
