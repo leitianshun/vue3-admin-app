@@ -66,7 +66,7 @@ export const useUserStore = defineStore({
     },
     async userInfo() {
       const res = await getUserInfo()
-      if (res.data) {
+      if (res.code === 200) {
         this.avatar = res.data.avatar
         this.name = res.data.name
         this.buttons = res.data.buttons
@@ -77,12 +77,22 @@ export const useUserStore = defineStore({
         asyncRoute.forEach((route: any) => {
           router.addRoute(route)
         })
+        return true
+      }
+      else {
+        return Promise.reject(new Error(res.message))
       }
     },
     async logout() {
-      await logout()
-      this.$reset()
-      router.push('/login')
+      const res = await logout()
+      if (res.code === 200) {
+        this.$reset()
+        router.push('/login')
+        return 'ok'
+      }
+      else {
+        return Promise.reject(new Error(res.message))
+      }
     },
   },
 })
