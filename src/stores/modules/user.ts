@@ -58,10 +58,10 @@ export const useUserStore = defineStore({
         if (res.code === 200)
           this.token = res.data
         else
-          return Promise.reject(new Error('登录失败'))
+          return Promise.reject(new Error(res.data))
       }
       catch (err) {
-        return Promise.reject(err)
+        console.log(err)
       }
     },
     async userInfo() {
