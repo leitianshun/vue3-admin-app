@@ -2,7 +2,6 @@ import type { RouteRecordRaw } from 'vue-router'
 import { anyRoute, asyncRoutes, constantRoute } from '@/router/routes'
 import type { loginForm } from '@/types/user'
 import { router } from '@/router/index'
-import layout from '@/layout/index.vue'
 
 interface userInfo {
   token: string
@@ -23,20 +22,22 @@ function filterAsyncRoute(asyncRoutes: any[], routes: any) {
   })
 }
 
-function addRute(route: any) {
-  route.forEach((route: any) => {
-    if (!route.children)
-      route.component = layout
-    else
-      route.component = () => import(`@/views/${route.path}`)
-    if (route.children && route.children.length > 0)
-      route.children = addRute(route.children)
-  })
-}
+// function addRute(route: any) {
+//   route.forEach((route: any) => {
+//     if (!route.children)
+//       route.component = layout
+//     else
+//       route.component = () => import(`@/views/${route.path}`)
+//     if (route.children && route.children.length > 0)
+//       route.children = addRute(route.children)
+//   })
+// }
 
 export const useUserStore = defineStore({
   id: 'user',
-  persist: true,
+  persist: {
+    paths: ['token', 'menuRoutes', 'avatar', 'buttons', 'routes', 'asyncRoutes'], // 这里配置需要持久化的数据，name就不会被持久化会存储，所以路由守卫可以根据他来重新获取路由数据
+  },
   state: (): userInfo => ({
     token: '',
     menuRoutes: constantRoute,

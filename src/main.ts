@@ -23,7 +23,6 @@ setPinia(app)
 setRouter(app)
 for (const [key, component] of Object.entries(ElementPlusIcons))
   app.component(key, component)
-
 app.use(ElementPlus, {
   locale: zhCn,
 })
