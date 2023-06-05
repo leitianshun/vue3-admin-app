@@ -15,6 +15,32 @@ function setFullScreen() {
 //   else
 //     document.exitFullscreen()  //退出全屏操作
 // }
+
+async function logout() {
+  ElMessageBox.confirm(
+    '是否确认退出登录?',
+    '提示',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    },
+  )
+    .then(() => {
+      userStore.logout().then(() => {
+        ElMessage({
+          type: 'info',
+          message: '已退出',
+        })
+      }).catch(() => {
+        ElMessage({
+          type: 'info',
+          message: '退出失败',
+        })
+        useRouter().push('/login')
+      })
+    })
+}
 </script>
 
 <template>
@@ -32,7 +58,7 @@ function setFullScreen() {
       </span>
       <template #dropdown>
         <el-dropdown-menu>
-          <el-dropdown-item @click="userStore.logout()">
+          <el-dropdown-item @click="logout">
             退出登录
           </el-dropdown-item>
         </el-dropdown-menu>
