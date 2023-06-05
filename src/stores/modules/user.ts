@@ -77,7 +77,7 @@ export const useUserStore = defineStore({
         asyncRoute.forEach((route: any) => {
           router.addRoute(route)
         })
-        return true
+        return true // 保证获取成功，返回成功的promise
       }
       else {
         return Promise.reject(new Error(res.message))
@@ -88,7 +88,7 @@ export const useUserStore = defineStore({
       if (res.code === 200) {
         this.$reset()
         router.push('/login')
-        return 'ok'
+        return 'ok' // 保证退出成功，返回成功的promise
       }
       else {
         return Promise.reject(new Error(res.message))
