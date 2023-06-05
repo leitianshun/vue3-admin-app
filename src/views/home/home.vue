@@ -1,38 +1,26 @@
 <script setup lang="ts">
-defineProps<{ msg: string }>()
-onMounted(() => {
-})
-function open() {
-  ElMessage.success('hello')
-}
-const { getUserInfo, logout } = useUserStore()
-// const { getCount } = storeToRefs(useUserStore())
-const router = useRouter()
+import { getTime } from '@/utils/time'
+
+const userStore = useUserStore()
 </script>
 
 <template>
-  <div class="card">
-    <el-button type="primary" @click="logout()">
-      退出登录
-    </el-button>
-    <el-button type="primary" @click="router.push('/404')">
-      addcount
-    </el-button>
-    <div>
-      <svgIcons icon="search" width="40px" height="40px" color="red" />
+  <div class="p-3 w-full h-full">
+    <div class="flex p-3  shadow-gray-200 rounded-xl  shadow-xl items-center border border-solid border-gray-100 w-full h-20">
+      <img src="/src/assets/image/dog.gif" class="w-15 h-15 rounded-full" alt="">
+      <div class="ml-3 text-2xl font-bold ">
+        {{ getTime() }}好呀，{{ userStore.name }}
+      </div>
     </div>
-    <div class="box">
-      11
+    <div class="text-center mt-5">
+      <svgIcons icon="welcome" width="640px" height="640px" color="red" />
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
 $red:blue; //定义变量
-.read-the-docs {
-  color: #888;
-}
 .box{
-  color:$color
+  color:$red
 }
 </style>

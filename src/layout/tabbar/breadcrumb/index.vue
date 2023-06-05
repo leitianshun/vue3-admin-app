@@ -5,7 +5,7 @@ function changeIcon() {
 }
 
 const route = useRoute()
-console.log(route.matched)
+// console.log(route.matched)  //可以获取到当前匹配的路由，也就是点击的路由
 </script>
 
 <template>

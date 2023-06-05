@@ -1,7 +1,6 @@
 import { resetRouter, router } from '@/router/index'
 
 router.beforeEach(async (to: any, from: any, next: any) => {
-  console.log(to)
   start()
   document.title = `${to.meta.title}` ? `小雷甄选运营平台-${to.meta.title}` : '小雷甄选运营平台'
   const token = useUserStore().token
