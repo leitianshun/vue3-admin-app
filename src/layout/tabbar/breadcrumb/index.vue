@@ -16,11 +16,14 @@ const route = useRoute()
     <div class="ml-3">
       <el-breadcrumb separator-icon="ArrowRight">
         <el-breadcrumb-item v-for="(item, index) in route.matched" v-show="item.meta.title" :key="index" :to="item.path">
-          <div class="flex items-center">
+          <div class="flex items-center group cursor-pointer">
             <el-icon>
               <component :is="item.meta.icon" class="w-4.5 h-4.5" />
             </el-icon>
             <span class="ml-1">{{ item.meta.title }}</span>
+            <el-icon class="ml-1 !hidden group-hover:!block ">
+              <Close />
+            </el-icon>
           </div>
         </el-breadcrumb-item>
       </el-breadcrumb>

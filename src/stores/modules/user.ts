@@ -22,17 +22,6 @@ function filterAsyncRoute(asyncRoutes: any[], routes: any) {
   })
 }
 
-// function addRute(route: any) {
-//   route.forEach((route: any) => {
-//     if (!route.children)
-//       route.component = layout
-//     else
-//       route.component = () => import(`@/views/${route.path}`)
-//     if (route.children && route.children.length > 0)
-//       route.children = addRute(route.children)
-//   })
-// }
-
 export const useUserStore = defineStore({
   id: 'user',
   persist: {
