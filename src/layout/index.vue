@@ -30,7 +30,7 @@ const layoutStore = useLayoutStore()
       <div class=" w-full nav-bar ">
         <TabBar />
       </div>
-      <div class="overflow-y-auto w-full main ">
+      <div class="overflow-y-auto w-full main p-5">
         <Main />
       </div>
     </div>
