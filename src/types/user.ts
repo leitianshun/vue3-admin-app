@@ -19,6 +19,10 @@ export interface loginResponseData extends responseData {
   data: string
 }
 
+export interface logoutResponseData extends responseData {
+  data: null
+}
+
 export interface userInfo extends responseData {
   data: {
     avatar: string
