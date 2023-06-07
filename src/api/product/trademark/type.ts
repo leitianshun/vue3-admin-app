@@ -1,5 +1,24 @@
-enum API {
-  trademark_URL = '/admin/product/baseTrademark/', // 已有品牌接口
+export interface responseData {
+  code: number
+  message: string
+  ok: boolean
 }
 
-export const getTrademark = (page: number, limit: number) => request.get(`${API.trademark_URL}${page}/${limit}`)
+export interface tradmerk {
+  id?: number
+  tmName: string
+  logoUrl: string
+}
+
+export type recordsData = tradmerk[]
+
+export interface trademarkResponseData extends responseData {
+  data: {
+    current: number
+    pages: number
+    records: recordsData
+    size: number
+    searchCount: boolean
+    total: number
+  }
+}

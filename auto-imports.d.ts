@@ -22,6 +22,7 @@ declare global {
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
   const getTime: typeof import('./src/utils/time')['getTime']
+  const getTrademark: typeof import('./src/api/product/trademark/trademark')['getTrademark']
   const getUserInfo: typeof import('./src/api/user/user')['getUserInfo']
   const h: typeof import('vue')['h']
   const inject: typeof import('vue')['inject']
