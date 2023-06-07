@@ -7,6 +7,7 @@ watch(() => layoutStore.refresh, () => { // 监听store里的refresh变化，让
     refresh.value = true // 等待dom渲染完成后修改数据
   })
 })
+// const route = useRoute()
 </script>
 
 <template>
@@ -15,10 +16,10 @@ watch(() => layoutStore.refresh, () => { // 监听store里的refresh变化，让
       <component :is="Component" v-if="refresh" />
     </Transition>
   </router-view>
-
-  <!-- <keep-alive>
+<!--
+  <Keep-Alive>
     <router-view v-if="route.meta.keepAlive" />
-  </keep-alive>
+  </Keep-Alive>
   <router-view v-if="!route.meta.keepAlive" /> -->
 </template>
 
