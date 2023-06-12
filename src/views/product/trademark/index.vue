@@ -12,16 +12,27 @@ const dialogVisible = ref(false)
 const dialogImageUrl = ref('')
 const disabled = ref(false)
 const ruleFormRef = ref<FormInstance>()
+const isAdd = ref<boolean>(false)
+const total = ref<number>(0)
+const uploadRef = ref()
 const rules = reactive<FormRules>({
   tmName: [{ required: true, message: '请输入品牌名称', trigger: 'blur' },
     { min: 2, max: 15, message: '品牌名称长度在2-15之间', trigger: 'blur' }],
   logoUrl: [
-    { required: true, message: '请上传品牌LOGO', trigger: 'blur' },
+    // { required: true, message: '请上传品牌LOGO', trigger: 'blur' },
+    { required: true, validator: logoUrlRuleFun },
   ],
 })
+function logoUrlRuleFun(rule: any, value: any, callback: any) {
+  if (value)
+    callback()
+  else
+    callback(new Error('请上传品牌LOGO'))
+}
+
 const formData = ref<tradmerk>({
   tmName: '',
-  logoUrl: '',
+  logoUrl: '123',
 })
 function handleSizeChange(size: number) {
   console.log(size)
@@ -37,10 +48,40 @@ function getData() {
   getTrademark(currentPage.value, pageSize.value).then((res) => {
     console.log(res)
     tableData.value = res.data.records
+    total.value = res.data.total
   })
 }
-function addTradmark() {
+function handleTradmark(row: any) {
   dialogFormVisible.value = true
+  if (row && row.id) {
+    isAdd.value = false
+    Object.assign(formData.value, row)
+  }
+  else {
+    isAdd.value = true
+    formData.value = {} as tradmerk
+    formData.value.logoUrl = '1'
+  }
+}
+
+async function submitForm() {
+  let params = {}
+  if (isAdd) {
+    params = formData.value
+  }
+  else {
+    delete formData.value?.createTime
+    delete formData.value?.updateTime
+    params = formData.value
+  }
+  await ruleFormRef.value?.validate()
+  console.log(params)
+  // console.log(params)
+  // addTradmark(params).then(res => {
+  //   console.log(res)
+  // })
+  console.log(formData.value)
+  dialogFormVisible.value = false
 }
 function deleteTradmark(row: any) {
   console.log(row)
@@ -67,6 +108,7 @@ function handleDownload(file: UploadFile) {
   console.log(file)
 }
 function handleRemove(file: UploadFile) {
+  uploadRef.value.clearFiles()
   console.log(file)
 }
 
@@ -74,7 +116,23 @@ const onSuccess: UploadProps['onSuccess'] = (
   response,
   uploadFile,
 ) => {
+  console.log(response, uploadFile)
+  console.log(1)
   formData.value.logoUrl = URL.createObjectURL(uploadFile.raw!)
+}
+const beforUpload: UploadProps['beforeUpload'] = (rawFile) => {
+  console.log(rawFile)
+  const isLimit = rawFile.size / 1024 / 1024 < 4
+  const isImg = rawFile.type === 'image/jpg' || 'image/png' || 'image/jpeg'
+  if (!isLimit) {
+    ElMessage.error('图片大小不能超过4m')
+    return false
+  }
+  if (!isImg) {
+    ElMessage.error('上传图片格式为: png,jpeg,jpg')
+    return false
+  }
+  return true
 }
 onMounted(() => {
   getData()
@@ -84,7 +142,7 @@ onMounted(() => {
 <template>
   <el-card class="box-card">
     <template #header>
-      <el-button class="button" type="primary" icon="Plus" @click="addTradmark">
+      <el-button class="button" type="primary" icon="Plus" @click="handleTradmark">
         添加品牌
       </el-button>
     </template>
@@ -98,18 +156,18 @@ onMounted(() => {
       </el-table-column>
       <el-table-column prop="品牌操作" label="品牌操作" align="center">
         <template #default="{ row }">
-          <el-button type="warning" icon="Edit" />
+          <el-button type="warning" icon="Edit" @click="handleTradmark(row)" />
           <el-button type="danger" icon="Delete" @click="deleteTradmark(row)" />
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog v-model="dialogFormVisible" title="添加品牌" align-center>
+    <el-dialog v-model="dialogFormVisible" :title="isAdd ? '添加品牌' : '修改品牌'" align-center>
       <el-form ref="ruleFormRef" :model="formData" :rules="rules">
         <el-form-item label="品牌名称" prop="tmName">
           <el-input v-model="formData.tmName" autocomplete="off" class="!w-1/2" />
         </el-form-item>
         <el-form-item label="品牌LOGO" label-width="" prop="logoUrl">
-          <el-upload action="#" list-type="picture-card" :auto-upload="false" @on-success="onSuccess">
+          <el-upload ref="uploadRef" action="/api/admin/product/fileUpload" list-type="picture-card" :auto-upload="false" :on-success="onSuccess" :before-upload="beforUpload">
             <div class="text-center">
               <el-icon><Plus /></el-icon>
               <div>
@@ -158,7 +216,7 @@ onMounted(() => {
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false">
+          <el-button type="primary" @click="submitForm ">
             确定
           </el-button>
         </span>
@@ -171,7 +229,7 @@ onMounted(() => {
       class="my-5"
       :page-sizes="[10, 20, 50, 100]"
       layout=" prev, pager, next, jumper,->,sizes,total"
-      :total="400"
+      :total="total"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
