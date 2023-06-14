@@ -3,7 +3,7 @@ import type { trademarkResponseData, tradmerk } from './type'
 enum API {
   trademark_URL = '/admin/product/baseTrademark/', // 已有品牌接口
   addTradmark_URL = '/admin/product/baseTrademark/save', // 添加品牌
-  updateTradmark_URL = '/admin/product/baseTrademark/save', // 更新
+  updateTradmark_URL = '/admin/product/baseTrademark/update', // 更新
   delTradmark_URL = '/admin/product/baseTrademark/remove/', // 删除
 }
 
