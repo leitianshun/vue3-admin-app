@@ -15,6 +15,9 @@ const ruleFormRef = ref()
 const isAdd = ref<boolean>(false)
 const total = ref<number>(0)
 const uploadRef = ref()
+// watch([currentPage, pageSize], ([n1, n2], [o1, o2]) => {
+//   getData()
+// })
 const rules = reactive({
   tmName: [{ required: true, message: '请输入品牌名称', trigger: 'blur' },
     { min: 2, max: 15, message: '品牌名称长度在2-15之间', trigger: 'blur' }],
@@ -40,10 +43,10 @@ function handleSizeChange(size: number) {
   getData()
 }
 function handleCurrentChange(page: number) {
-  currentPage.value = page
+  currentPage.value = page // 这里也可以不写，因为双向绑定了，页数会自动改变
   getData()
 }
-function getData() {
+function getData() { // 这可以写为getData(page = 1){ currentPage.value = page} 当切换size时自动获取第一页的数据
   getTrademark(currentPage.value, pageSize.value).then((res) => {
     tableData.value = res.data.records
     total.value = res.data.total
@@ -52,8 +55,12 @@ function getData() {
 function handleTradmark(row: any) {
   dialogFormVisible.value = true
   if (row && row.id) {
+    console.log(row)
     isAdd.value = false
-    Object.assign(formData.value, row)
+    formData.value.id = row.id
+    formData.value.tmName = row.tmName
+    formData.value.logoUrl = row.logoUrl
+    // Object.assign(formData.value, row)
   }
   else {
     isAdd.value = true
@@ -208,6 +215,7 @@ onMounted(() => {
         </span>
       </template>
     </el-dialog>
+    <!-- 这里可以直接绑定获取数据的函数 v-model:current-page="getData" -->
     <el-pagination
       v-model:current-page="currentPage"
       v-model:page-size="pageSize"
