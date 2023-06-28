@@ -104,7 +104,7 @@ function deleteTradmark(row: any) {
     delTradmark(row.id).then((res: any) => {
       if (res.code === 200) {
         ElMessage.success('操作成功')
-        getData()
+        getData() // getData(tableData.value.length>1 ? pageSize.value : pageSize.value - 1)  //如果当前页有数据，就用当前页，否则获取上一页的数据
       }
       else {
         ElMessage.error(res.data)
