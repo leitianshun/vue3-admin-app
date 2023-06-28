@@ -12,7 +12,6 @@ const dialogVisible = ref(false)
 const dialogImageUrl = ref('')
 const disabled = ref(false)
 const ruleFormRef = ref()
-const isAdd = ref<boolean>(false)
 const total = ref<number>(0)
 const uploadRef = ref()
 // watch([currentPage, pageSize], ([n1, n2], [o1, o2]) => {
@@ -34,7 +33,6 @@ function logoUrlRuleFun(rule: any, value: any, callback: any) {
 }
 
 const formData = ref<tradmerk>({
-  id: 0,
   tmName: '',
   logoUrl: '',
 })
@@ -48,51 +46,69 @@ function handleCurrentChange(page: number) {
 }
 function getData() { // 这可以写为getData(page = 1){ currentPage.value = page} 当切换size时自动获取第一页的数据
   getTrademark(currentPage.value, pageSize.value).then((res) => {
-    tableData.value = res.data.records
-    total.value = res.data.total
+    if (res.code === 200) {
+      tableData.value = res.data.records
+      total.value = res.data.total
+    }
   })
 }
-function handleTradmark(row: any) {
+function handleTradmark(row?: tradmerk) {
   dialogFormVisible.value = true
+  nextTick(() => {
+    ruleFormRef.value?.clearValidate()
+  })
   if (row && row.id) {
-    console.log(row)
-    isAdd.value = false
     formData.value.id = row.id
     formData.value.tmName = row.tmName
     formData.value.logoUrl = row.logoUrl
     // Object.assign(formData.value, row)
   }
   else {
-    isAdd.value = true
     formData.value = {} as tradmerk
   }
 }
 
 async function submitForm() {
   await ruleFormRef.value?.validate()
-  addTradmark(formData.value).then((res) => {
-    console.log(res)
-    ElMessage.success(isAdd.value ? '添加成功' : '修改成功')
-    uploadRef.value.clearFiles()
-    getData()
-    dialogFormVisible.value = false
+  addTradmark(formData.value).then((res: any) => {
+    if (res.code === 200) {
+      ElMessage.success(!formData.value.id ? '添加成功' : '修改成功') // 这里也可以通过formData.id来判断类型是增加还是修改
+      uploadRef.value.clearFiles()
+      getData()
+      dialogFormVisible.value = false
+    }
+    else {
+      ElMessage.error(!formData.value.id ? '添加失败' : '修改失败') // 这里也可以通过formData.id来判断类型是增加还是修改
+      dialogFormVisible.value = false
+    }
   }).catch(() => {
     dialogFormVisible.value = false
   })
   console.log(formData.value)
 }
+function dialogFormVisibleClose() {
+  dialogFormVisible.value = false
+  formData.value = {} as tradmerk
+  ruleFormRef.value?.clearValidate()
+}
+
 function deleteTradmark(row: any) {
   ElMessageBox.confirm(
-    '是否确认删除?',
+    `是否确认删除${row.tmName}?`,
     '提示',
     {
       type: 'warning',
       icon: markRaw(Delete),
     },
   ).then(() => {
-    delTradmark(row.id).then(() => {
-      ElMessage.success('操作成功')
-      getData()
+    delTradmark(row.id).then((res: any) => {
+      if (res.code === 200) {
+        ElMessage.success('操作成功')
+        getData()
+      }
+      else {
+        ElMessage.error(res.data)
+      }
     }).catch((err) => {
       return Promise.reject(err)
     })
@@ -105,15 +121,15 @@ function handlePictureCardPreview(file: UploadFile) {
 function handleDownload(file: UploadFile) {
   console.log(file)
 }
-function handleRemove(file: UploadFile) {
+function handleRemove() {
   uploadRef.value.clearFiles()
 }
 
 const onSuccess: UploadProps['onSuccess'] = (
   response,
-  uploadFile,
 ) => {
   if (response.code === 200) {
+    ruleFormRef.value?.clearValidate('logoUrl')
     ElMessage.success('上传成功')
     formData.value.logoUrl = response.data
   }
@@ -158,14 +174,14 @@ onMounted(() => {
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog v-model="dialogFormVisible" :title="isAdd ? '添加品牌' : '修改品牌'" align-center>
+    <el-dialog v-model="dialogFormVisible" :title="!formData.id ? '添加品牌' : '修改品牌'" align-center>
       <el-form ref="ruleFormRef" :model="formData" :rules="rules">
         <el-form-item label="品牌名称" prop="tmName">
           <el-input v-model="formData.tmName" autocomplete="off" class="!w-1/2" />
         </el-form-item>
         <el-form-item label="品牌LOGO" label-width="" prop="logoUrl">
-          <el-upload ref="uploadRef" action="/api/admin/product/fileUpload" list-type="picture-card" :on-success="onSuccess" :before-upload="beforeUpload">
-            <img v-if="formData.logoUrl && !isAdd" :src="formData.logoUrl" class="w-full h-full p-3" alt="">
+          <el-upload ref="uploadRef" action="/api/admin/product/fileUpload" list-type="picture-card" :on-success="onSuccess" :limit="1" :before-upload="beforeUpload">
+            <img v-if="formData.logoUrl && formData.id" :src="formData.logoUrl" class="w-full h-full p-3" alt="">
             <div v-else class="text-center">
               <el-icon><Plus /></el-icon>
               <div>
@@ -208,7 +224,7 @@ onMounted(() => {
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取消</el-button>
+          <el-button @click="dialogFormVisibleClose">取消</el-button>
           <el-button type="primary" @click="submitForm ">
             确定
           </el-button>
