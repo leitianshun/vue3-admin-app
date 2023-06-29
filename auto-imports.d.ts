@@ -21,6 +21,7 @@ declare global {
   const delTradmark: typeof import('./src/api/product/trademark/trademark')['delTradmark']
   const effectScope: typeof import('vue')['effectScope']
   const getActivePinia: typeof import('pinia')['getActivePinia']
+  const getAttrList: typeof import('./src/api/product/attr/attr')['getAttrList']
   const getCategory1: typeof import('./src/api/product/attr/attr')['getCategory1']
   const getCategory2: typeof import('./src/api/product/attr/attr')['getCategory2']
   const getCategory3: typeof import('./src/api/product/attr/attr')['getCategory3']

@@ -25,8 +25,15 @@ function handlerChange2() {
 }
 
 function handlerChange3() {
-  categoryStore.getAttrListData()
+  // categoryStore.getAttrListData()
 }
+watch(() => categoryStore.category3Id, () => {
+  categoryStore.attrListData = []
+  if (!categoryStore.category3Id)
+    return
+  categoryStore.getAttrListData()
+})
+
 onMounted(() => {
   getC1Data()
 })
