@@ -16,19 +16,23 @@ export interface categoryData extends responseData {
 }
 
 export interface attrValueListObj {
-  attrId: number
-  id: number
-  valueName: string
+  attrId?: number
+  id?: number
+  valueName?: string
 }
 
 export interface attrObj {
   attrName: string
   attrValueList: attrValueListObj[]
-  categoryId: number
+  categoryId: number | string
   categoryLevel: number
-  id: number
+  id?: number | string
 }
 
 export interface attrListData extends responseData {
   data: attrObj[]
+}
+
+export interface addAttrResponseType extends responseData {
+  data: null
 }
