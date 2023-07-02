@@ -1,11 +1,18 @@
 <script setup lang='ts'>
 import type { attrObj } from '@/api/product/attr/type'
-import { addAttr } from '@/api/product/attr/attr'
+import { addAttr, delAttr } from '@/api/product/attr/attr'
 
 const show = ref<boolean>(true)
-
-function handleDelete(row: any) {}
 const categoryStore = useCategoryStore()
+const flag = ref<boolean>(true)
+
+async function handleDelete(row: attrObj) {
+  const res = await delAttr(row.id as number)
+  if (res.code === 200) {
+    ElMessage.success('删除成功')
+    categoryStore.getAttrListData()
+  }
+}
 const addPrams = ref<attrObj>({
   attrName: '', // 属性名称
   attrValueList: [
@@ -28,7 +35,7 @@ function addAttrs() {
 }
 
 function addAttrValue() {
-  addPrams.value.attrValueList.push({ valueName: '' })
+  addPrams.value.attrValueList.push({ valueName: '', flag: true })
 }
 function deleteAttrVal(index: number) {
   addPrams.value.attrValueList.splice(index, 1)
@@ -38,6 +45,7 @@ async function save() {
   if (res.code === 200)
     show.value = true
   ElMessage.success(addPrams.value.id ? '修改成功' : '添加成功')
+  categoryStore.getAttrListData()
   console.log(res)
 }
 function cancel() {
@@ -72,7 +80,11 @@ function cancel() {
           <el-table-column label="操作" width="150" align="center">
             <template #default="{ row }">
               <el-button type="warning" icon="Edit" @click="handleUpload(row)" />
-              <el-button type="danger" icon="Delete" @click="handleDelete(row)" />
+              <el-popconfirm :title="`是否确认删除${row.attrName}?`" @confirm="handleDelete(row)">
+                <template #reference>
+                  <el-button type="danger" icon="Delete" />
+                </template>
+              </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>
@@ -93,7 +105,10 @@ function cancel() {
           <el-table-column type="index" label="序号" width="100" align="center" />
           <el-table-column label="属性值名称" prop="valueName" align="center">
             <template #default="{ row }">
-              <el-input v-model="row.valueName" placeholder="请输入属性值名称" />
+              <el-input v-if="row.flag" v-model="row.valueName" autofocus placeholder="请输入属性值名称" @blur="row.flag = false" />
+              <div v-else class="p-2 w-full text-white bg-gradient-to-r  from-yellow-200 via-blue-500 via-yellow-600 to-red-500" @click="row.flag = true">
+                {{ row.valueName }}
+              </div>
             </template>
           </el-table-column>
           <el-table-column label="属性值操作" align="center">

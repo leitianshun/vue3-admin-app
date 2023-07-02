@@ -1,4 +1,4 @@
-import type { addAttrResponseType, attrListData, attrObj, categoryData } from './type'
+import type { addAttrResponseType, attrListData, attrObj, categoryData, delAttrResponseType } from './type'
 
 enum API {
   getCategory1 = '/admin/product/getCategory1', // 获取一级分类接口地址
@@ -26,3 +26,4 @@ export function getCategory3(category2Id: number) {
 export const getAttrList = (c1Id: number, c2Id: number, c3Id: number) => request.get<any, attrListData>(`${API.getAttrList}${c1Id}/${c2Id}/${c3Id}`)
 
 export const addAttr = (data: attrObj) => request.post<any, addAttrResponseType>(API.addAttr, data)
+export const delAttr = (id: number) => request.delete<any, delAttrResponseType>(API.delAttr + id)

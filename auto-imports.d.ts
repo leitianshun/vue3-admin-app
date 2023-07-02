@@ -9,6 +9,7 @@ declare global {
   const ElMessageBox: typeof import('element-plus/es')['ElMessageBox']
   const ElNotification: typeof import('element-plus/es')['ElNotification']
   const acceptHMRUpdate: typeof import('pinia')['acceptHMRUpdate']
+  const addAttr: typeof import('./src/api/product/attr/attr')['addAttr']
   const addTradmark: typeof import('./src/api/product/trademark/trademark')['addTradmark']
   const close: typeof import('./src/utils/nprogress')['close']
   const computed: typeof import('vue')['computed']
