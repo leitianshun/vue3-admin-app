@@ -19,6 +19,7 @@ declare global {
   const defineAsyncComponent: typeof import('vue')['defineAsyncComponent']
   const defineComponent: typeof import('vue')['defineComponent']
   const defineStore: typeof import('pinia')['defineStore']
+  const delAttr: typeof import('./src/api/product/attr/attr')['delAttr']
   const delTradmark: typeof import('./src/api/product/trademark/trademark')['delTradmark']
   const effectScope: typeof import('vue')['effectScope']
   const getActivePinia: typeof import('pinia')['getActivePinia']

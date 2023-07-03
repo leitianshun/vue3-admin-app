@@ -26,7 +26,7 @@ const addPrams = ref<attrObj>({
 
 function handleUpload(row: any) {
   show.value = false
-  Object.assign(addPrams.value, row)
+  Object.assign(addPrams.value, JSON.parse(JSON.stringify(row)))
   console.log(row)
 }
 function addAttrs() {
@@ -54,6 +54,10 @@ function cancel() {
   addPrams.value.attrValueList = []
   addPrams.value.id = ''
 }
+
+onBeforeUnmount(() => { // 组件销毁时，清空仓库数据
+  categoryStore.$reset()
+})
 </script>
 
 <template>
