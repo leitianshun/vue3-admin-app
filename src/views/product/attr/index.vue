@@ -1,11 +1,10 @@
 <script setup lang='ts'>
-import type { attrObj } from '@/api/product/attr/type'
+import type { attrObj, attrValueListObj } from '@/api/product/attr/type'
 import { addAttr, delAttr } from '@/api/product/attr/attr'
 
 const show = ref<boolean>(true)
 const categoryStore = useCategoryStore()
-const flag = ref<boolean>(true)
-
+const inpRefArr = ref<any>([])
 async function handleDelete(row: attrObj) {
   const res = await delAttr(row.id as number)
   if (res.code === 200) {
@@ -24,10 +23,9 @@ const addPrams = ref<attrObj>({
   categoryLevel: 3, // 代表的是三级分类，也就是第三级
 })
 
-function handleUpload(row: any) {
+function handleEdit(row: any) {
   show.value = false
   Object.assign(addPrams.value, JSON.parse(JSON.stringify(row)))
-  console.log(row)
 }
 function addAttrs() {
   show.value = false
@@ -36,11 +34,22 @@ function addAttrs() {
 
 function addAttrValue() {
   addPrams.value.attrValueList.push({ valueName: '', flag: true })
+  nextTick(() => {
+    inpRefArr.value[addPrams.value.attrValueList.length - 1].focus()
+  })
 }
 function deleteAttrVal(index: number) {
   addPrams.value.attrValueList.splice(index, 1)
 }
 async function save() {
+  if (addPrams.value.attrName === '') {
+    ElMessage.error('属性名称不能为空')
+    return
+  }
+  if (addPrams.value.attrValueList.length === 0) {
+    ElMessage.error('属性值不能为空')
+    return
+  }
   const res = await addAttr(addPrams.value)
   if (res.code === 200)
     show.value = true
@@ -57,6 +66,48 @@ function cancel() {
 
 onBeforeUnmount(() => { // 组件销毁时，清空仓库数据
   categoryStore.$reset()
+})
+
+function toView(row: attrValueListObj, index: number) {
+  if (row.valueName?.trim() === '') { // 判断输入值是否为空
+    addPrams.value.attrValueList.splice(index, 1) // 如果为空，删除掉
+    ElMessage.error('属性值不能为空')
+    return
+  }
+
+  // const repeat = addPrams.value.attrValueList.find((item) => { // 判断属性值是否重复
+  //   if (item !== row)  //这里注意一定要判断两个对象不相等,否则无法通过判断逻辑
+  //     return item.valueName === row.valueName
+  //   return false
+  // })
+
+  let repeat = false
+  addPrams.value.attrValueList.map((item) => {
+    if (item !== row && item.valueName === row.valueName) // 这里注意一定要判断两个对象不相等,否则无法通过判断逻辑
+      repeat = true
+    return false
+  })
+
+  if (repeat) {
+    addPrams.value.attrValueList.splice(index, 1)
+    ElMessage.error('属性值不能重复')
+    return
+  }
+
+  row.flag = false
+}
+function toEdit(row: attrValueListObj, index: number) {
+  row.flag = true
+  nextTick(() => { // 获取更新后的dom
+    inpRefArr.value[index].focus() // 获取焦点
+  })
+}
+
+watch(() => categoryStore.category3Id, () => {
+  categoryStore.attrListData = []
+  if (!categoryStore.category3Id)
+    return
+  categoryStore.getAttrListData()
 })
 </script>
 
@@ -83,7 +134,7 @@ onBeforeUnmount(() => { // 组件销毁时，清空仓库数据
           </el-table-column>
           <el-table-column label="操作" width="150" align="center">
             <template #default="{ row }">
-              <el-button type="warning" icon="Edit" @click="handleUpload(row)" />
+              <el-button type="warning" icon="Edit" @click="handleEdit(row)" />
               <el-popconfirm :title="`是否确认删除${row.attrName}?`" @confirm="handleDelete(row)">
                 <template #reference>
                   <el-button type="danger" icon="Delete" />
@@ -108,9 +159,9 @@ onBeforeUnmount(() => { // 组件销毁时，清空仓库数据
         <el-table border class="my-5" :data="addPrams.attrValueList">
           <el-table-column type="index" label="序号" width="100" align="center" />
           <el-table-column label="属性值名称" prop="valueName" align="center">
-            <template #default="{ row }">
-              <el-input v-if="row.flag" v-model="row.valueName" autofocus placeholder="请输入属性值名称" @blur="row.flag = false" />
-              <div v-else class="p-2 w-full text-white bg-gradient-to-r  from-yellow-200 via-blue-500 via-yellow-600 to-red-500" @click="row.flag = true">
+            <template #default="{ row, $index }">
+              <el-input v-if="row.flag" :ref="(vc:any) => inpRefArr[$index] = vc" v-model="row.valueName" autofocus placeholder="请输入属性值名称" @blur="toView(row, $index)" />
+              <div v-else class="p-2 w-full text-white bg-gradient-to-r  from-yellow-200 via-blue-500 via-yellow-600 to-red-500" @click="toEdit(row, $index)">
                 {{ row.valueName }}
               </div>
             </template>
@@ -121,7 +172,7 @@ onBeforeUnmount(() => { // 组件销毁时，清空仓库数据
             </template>
           </el-table-column>
         </el-table>
-        <el-button type="primary" @click="save">
+        <el-button type="primary" :disabled="addPrams.attrValueList.length === 0" @click="save">
           保存
         </el-button>
         <el-button type="info" @click="cancel ">

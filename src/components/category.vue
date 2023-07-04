@@ -6,11 +6,6 @@ defineProps({
   },
 })
 const categoryStore = useCategoryStore()
-
-// watch(() => categoryStore.category1Id, (n) => {
-//   if (n)
-//     categoryStore.getC2()
-// })
 function getC1Data() {
   categoryStore.getC1()
 }
@@ -33,12 +28,6 @@ function handlerChange2() {
 function handlerChange3() {
   // categoryStore.getAttrListData()
 }
-watch(() => categoryStore.category3Id, () => {
-  categoryStore.attrListData = []
-  if (!categoryStore.category3Id)
-    return
-  categoryStore.getAttrListData()
-})
 
 onMounted(() => {
   getC1Data()

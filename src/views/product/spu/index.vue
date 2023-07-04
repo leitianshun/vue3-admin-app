@@ -1,24 +1,37 @@
 <script setup lang='ts'>
-import { getSpuList } from '@/api/product/spu/spu'
+import { deleteSpu, getSpuList } from '@/api/product/spu/spu'
+import type { recordsDataArr } from '@/api/product/spu/type'
 
 const show = ref<boolean>(true)
 const currentPage = ref<number>(1)
 const total = ref<number>(0)
-const spuData = ref([])
+const spuData = ref<recordsDataArr>([])
 const pageSize = ref<number>(10)
 const categoryStore = useCategoryStore()
 function handleEdit() {}
-function handleDelete() {}
-function getInfo() {}
-function handleSizeChange(size: number) {
-  pageSize.value = size
+async function handleDelete(id: number) {
+  const res = await deleteSpu(id)
+  if (res.code === 200) {
+    ElMessage.success('删除成功')
+    getSpuData()
+  }
+  console.log(res)
 }
-function handleCurrentChange(page: number) {
-  currentPage.value = page // 这里也可以不写，因为双向绑定了，页数会自动改变
+function getInfo() {}
+function handleSizeChange() {
+  // pageSize.value = size
+  getSpuData()
+}
+function handleCurrentChange() {
+  // currentPage.value = page // 这里也可以不写，因为双向绑定了，页数会自动改变
+  getSpuData()
 }
 async function getSpuData() {
   const res = await getSpuList(currentPage.value, pageSize.value, categoryStore.category3Id)
-  spuData.value = res.data.records
+  if (res.code === 200)
+    spuData.value = res.data.records
+  currentPage.value = res.data.current
+  total.value = res.data.total
   console.log(res)
 }
 watch(() => categoryStore.category3Id, () => {
@@ -39,21 +52,13 @@ watch(() => categoryStore.category3Id, () => {
       <el-table :data="spuData" border height="calc(100vh - 300px)" class="mt-5">
         <el-table-column type="index" width="80" align="center" label="序号" />
         <el-table-column prop="spuName" label="SPU名称" align="center" />
-        <el-table-column prop="description" label="SPU描述" align="center">
-          <!-- <template #default="{ row }">
-            <div>
-              <el-button v-for="item in row.attrValueList" :key="item.id" type="primary" size="small">
-                {{ item.valueName }}
-              </el-button>
-            </div>
-          </template> -->
-        </el-table-column>
+        <el-table-column prop="description" label="SPU描述" align="center" />
         <el-table-column label="操作" align="center">
           <template #default="{ row }">
             <el-button type="primary" icon="Plus" @click="handleEdit(row)" />
             <el-button type="warning" icon="Edit" @click="handleEdit(row)" />
             <el-button type="info" icon="InfoFilled" @click="getInfo(row)" />
-            <el-popconfirm :title="`是否确认删除${row.attrName}?`" @confirm="handleDelete(row)">
+            <el-popconfirm :title="`是否确认删除${row.spuName}?`" @confirm="handleDelete(row.id)">
               <template #reference>
                 <el-button type="danger" icon="Delete" />
               </template>
