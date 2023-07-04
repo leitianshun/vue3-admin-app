@@ -4,6 +4,28 @@ export interface responseData {
   ok: boolean
 }
 
+export interface spuImageListType {
+  id: number
+  imgName: string
+  imgUrl: string
+  spuId: number
+}
+
+export interface spuPosterList {
+  id: number
+  imgName: string
+  imgUrl: string
+  spuId: number
+}
+export interface spuSaleAttrListType {
+  baseSaleAttrId: number
+  id: number
+  saleAttrName: string
+  spuId: number
+  spuSaleAttrValueList: []
+
+}
+
 export interface DataObj {
   current: number
   hitCount: boolean
@@ -16,19 +38,23 @@ export interface DataObj {
 }
 
 export interface recordsDataObj {
-  category3Id: number
-  createTime: string
+  category3Id: number | string
   description: string
-  id: number
-  spuImageList: null
+  id?: number
+  spuImageList: null | spuImageListType[]
   spuName: string
-  spuPosterList: null
-  spuSaleAttrList: null
+  spuSaleAttrList: null | spuSaleAttrListType[]
   tmId: number
+  spuPosterList?: null | spuPosterList[]
+
 }
 
 export type recordsDataArr = recordsDataObj[]
 
 export interface spuResponseDataType extends responseData {
   data: DataObj
+}
+
+export interface deleteSpuResponseType extends responseData {
+  data: null | string
 }
