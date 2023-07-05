@@ -1,4 +1,5 @@
 <script setup lang='ts'>
+import spuForm from './spuForm.vue'
 import { deleteSpu, getSpuInfo, getSpuList } from '@/api/product/spu/spu'
 import type { recordsDataArr } from '@/api/product/spu/type'
 
@@ -8,21 +9,7 @@ const total = ref<number>(0)
 const spuData = ref<recordsDataArr>([])
 const pageSize = ref<number>(10)
 const categoryStore = useCategoryStore()
-const value = ref('')
-const options = [
-  {
-    value: 'Option1',
-    label: '小米',
-  },
-  {
-    value: 'Option2',
-    label: '华为',
-  },
-  {
-    value: 'Option3',
-    label: '苹果',
-  },
-]
+
 async function handleEdit(id: number) {
   // show.value = false
   const res = await getSpuInfo(id)
@@ -31,7 +18,11 @@ async function handleEdit(id: number) {
 async function handleDelete(id: number) {
   const res = await deleteSpu(id)
   if (res.code === 200) {
-    ElMessage.success('删除成功')
+    ElNotification({
+      title: '删除成功',
+      message: '提示信息',
+      type: 'success',
+    })
     getSpuData(spuData.value.length > 1 ? currentPage.value : currentPage.value - 1)
   }
   else {
@@ -43,10 +34,10 @@ function handleSizeChange() {
   // pageSize.value = size
   getSpuData()
 }
-function handleCurrentChange() {
-  // currentPage.value = page // 这里也可以不写，因为双向绑定了，页数会自动改变
-  getSpuData()
-}
+// function handleCurrentChange() {
+//   // currentPage.value = page // 这里也可以不写，因为双向绑定了，页数会自动改变
+//   getSpuData()
+// }
 async function getSpuData(page = 1) {
   currentPage.value = page
   const res = await getSpuList(currentPage.value, pageSize.value, categoryStore.category3Id)
@@ -65,8 +56,6 @@ watch(() => categoryStore.category3Id, () => {
 function addSpu() {
   show.value = false
 }
-function onSuccess() {}
-function beforeUpload() {}
 </script>
 
 <template>
@@ -104,52 +93,19 @@ function beforeUpload() {}
           layout=" prev, pager, next, jumper,->,sizes,total"
           :total="total"
           @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
+          @current-change="getSpuData"
         />
         <!-- @current-change="getSpuData" 这里可以直接调用函数 -->
       </div>
       <div v-show="!show">
-        <el-form>
-          <el-form-item label="spu名称">
-            <el-input placeholder="请输入spu名称" />
-          </el-form-item>
-          <el-form-item label="spu品牌">
-            <el-select v-model="value" placeholder="请选择品牌">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="spu描述">
-            <el-input type="textarea" placeholder="请输入描述" />
-          </el-form-item>
-          <el-form-item label="spu图片">
-            <el-upload
-              class="avatar-uploader"
-              action="/api/admin/product/fileUpload" list-type="picture-card"
-              :on-success="onSuccess"
-              :before-upload="beforeUpload"
-            >
-              <img v-if="imageUrl" :src="imageUrl" class="avatar">
-              <div v-else class="text-center">
-                <el-icon><Plus /></el-icon>
-                <div>
-                  点击上传图片
-                </div>
-              </div>
-            </el-upload>
-          </el-form-item>
-          <el-button type="primary">
-            确定
-          </el-button>
-          <el-button @click="show = true">
-            取消
-          </el-button>
-        </el-form>
+        <spuForm />
       </div>
+      <el-button type="primary">
+        确定
+      </el-button>
+      <el-button @click="show = true">
+        取消
+      </el-button>
     </el-card>
   </div>
 </template>
