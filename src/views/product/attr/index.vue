@@ -2,7 +2,7 @@
 import type { attrObj, attrValueListObj } from '@/api/product/attr/type'
 import { addAttr, delAttr } from '@/api/product/attr/attr'
 
-const show = ref<boolean>(true)
+const scene = ref<number>(0)
 const categoryStore = useCategoryStore()
 const inpRefArr = ref<any>([])
 async function handleDelete(row: attrObj) {
@@ -24,11 +24,11 @@ const addPrams = ref<attrObj>({
 })
 
 function handleEdit(row: any) {
-  show.value = false
+  scene.value = 1
   Object.assign(addPrams.value, JSON.parse(JSON.stringify(row)))
 }
 function addAttrs() {
-  show.value = false
+  scene.value = 1
   addPrams.value.categoryId = categoryStore.category3Id
 }
 
@@ -52,13 +52,13 @@ async function save() {
   }
   const res = await addAttr(addPrams.value)
   if (res.code === 200)
-    show.value = true
+    scene.value = 0
   ElMessage.success(addPrams.value.id ? '修改成功' : '添加成功')
   categoryStore.getAttrListData()
   console.log(res)
 }
 function cancel() {
-  show.value = true
+  scene.value = 0
   addPrams.value.attrName = ''
   addPrams.value.attrValueList = []
   addPrams.value.id = ''
@@ -113,9 +113,9 @@ watch(() => categoryStore.category3Id, () => {
 
 <template>
   <div>
-    <Category :show="show" />
+    <Category :scene="scene" />
     <el-card class="mt-3">
-      <div v-show="show">
+      <div v-show="scene === 0">
         <!-- 通过判断是否有三级分类id 决定按钮的禁用  也可以写成 !categoryStore.category3Id 来判断 -->
         <el-button icon="Plus" type="primary" :disabled="categoryStore.category3Id ? false : true" @click="addAttrs ">
           添加平台属性
@@ -144,7 +144,7 @@ watch(() => categoryStore.category3Id, () => {
           </el-table-column>
         </el-table>
       </div>
-      <div v-show="!show">
+      <div v-show="scene === 1">
         <el-form :inline="true">
           <el-form-item label="属性名称" prop="attrName">
             <el-input v-model="addPrams.attrName" placeholder="请输入属性名称" />

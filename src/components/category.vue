@@ -1,8 +1,8 @@
 <script setup lang='ts'>
 defineProps({
-  show: {
-    type: Boolean,
-    default: false,
+  scene: {
+    type: Number,
+    default: 0,
   },
 })
 const categoryStore = useCategoryStore()
@@ -53,17 +53,17 @@ onMounted(() => {
       </el-row> -->
       <el-form :inline="true">
         <el-form-item label="一级分类">
-          <el-select v-model="categoryStore.category1Id" :disabled="!show" @change="handlerChange">
+          <el-select v-model="categoryStore.category1Id" :disabled="scene === 1" @change="handlerChange">
             <el-option v-for="item in categoryStore.c1Data" :key="item.id" :value="item.id" :label="item.name" />
           </el-select>
         </el-form-item>
         <el-form-item label="二级分类">
-          <el-select v-model="categoryStore.category2Id" :disabled="!show" @change="handlerChange2">
+          <el-select v-model="categoryStore.category2Id" :disabled="scene === 1" @change="handlerChange2">
             <el-option v-for="item in categoryStore.c2Data" :key="item.id" :value="item.id" :label="item.name" />
           </el-select>
         </el-form-item>
         <el-form-item label="三级分类">
-          <el-select v-model="categoryStore.category3Id" :disabled="!show" @change="handlerChange3">
+          <el-select v-model="categoryStore.category3Id" :disabled="scene === 1" @change="handlerChange3">
             <el-option v-for="item in categoryStore.c3Data" :key="item.id" :value="item.id" :label="item.name" />
           </el-select>
         </el-form-item>

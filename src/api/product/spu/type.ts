@@ -58,3 +58,13 @@ export interface spuResponseDataType extends responseData {
 export interface deleteSpuResponseType extends responseData {
   data: null | string
 }
+
+export interface trademarkObj {
+  id: number
+  tmName: string
+  logoUrl: string
+}
+
+export interface TrademarkType extends responseData {
+  data: trademarkObj[]
+}

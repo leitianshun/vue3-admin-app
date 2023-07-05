@@ -1,9 +1,10 @@
 <script setup lang='ts'>
 import spuForm from './spuForm.vue'
+import sKuForm from './skuForm.vue'
 import { deleteSpu, getSpuInfo, getSpuList } from '@/api/product/spu/spu'
 import type { recordsDataArr } from '@/api/product/spu/type'
 
-const show = ref<boolean>(true)
+const scene = ref<number>(0)
 const currentPage = ref<number>(1)
 const total = ref<number>(0)
 const spuData = ref<recordsDataArr>([])
@@ -11,7 +12,7 @@ const pageSize = ref<number>(10)
 const categoryStore = useCategoryStore()
 
 async function handleEdit(id: number) {
-  // show.value = false
+  scene.value = 1
   const res = await getSpuInfo(id)
   console.log(res)
 }
@@ -29,7 +30,6 @@ async function handleDelete(id: number) {
     ElMessage.error(res.data as string)
   }
 }
-function getInfo() {}
 function handleSizeChange() {
   // pageSize.value = size
   getSpuData()
@@ -54,15 +54,22 @@ watch(() => categoryStore.category3Id, () => {
   getSpuData()
 })
 function addSpu() {
-  show.value = false
+  scene.value = 1
 }
+function cancel(e: number) {
+  scene.value = e
+}
+function handleAdd() {
+  scene.value = 2
+}
+function handleView() {}
 </script>
 
 <template>
   <div>
-    <category :show="show" />
+    <category :scene="scene" />
     <el-card class="mt-5">
-      <div v-show="show">
+      <div v-show="scene === 0">
         <el-button type="primary" icon="Plus" :disabled="!categoryStore.category3Id" @click="addSpu">
           添加SPU
         </el-button>
@@ -73,9 +80,9 @@ function addSpu() {
           <!-- show-overflow-tooltip 表格内容溢出隐藏 -->
           <el-table-column label="操作" align="center">
             <template #default="{ row }">
-              <el-button type="primary" icon="Plus" title="添加SKU" @click="handleEdit(row)" />
+              <el-button type="primary" icon="Plus" title="添加SKU" @click="handleAdd(row)" />
               <el-button type="warning" icon="Edit" title="修改SPU" @click="handleEdit(row.id)" />
-              <el-button type="info" icon="View" title="查看SKU列表" @click="getInfo(row)" />
+              <el-button type="info" icon="View" title="查看SKU列表" @click="handleView(row)" />
               <el-popconfirm :title="`是否确认删除${row.spuName}?`" @confirm="handleDelete(row.id)">
                 <template #reference>
                   <el-button type="danger" icon="Delete" />
@@ -97,15 +104,12 @@ function addSpu() {
         />
         <!-- @current-change="getSpuData" 这里可以直接调用函数 -->
       </div>
-      <div v-show="!show">
-        <spuForm />
+      <div v-show="scene === 1">
+        <spuForm @cancel="cancel" />
       </div>
-      <el-button type="primary">
-        确定
-      </el-button>
-      <el-button @click="show = true">
-        取消
-      </el-button>
+      <div v-show="scene === 2">
+        <sKuForm />
+      </div>
     </el-card>
   </div>
 </template>
