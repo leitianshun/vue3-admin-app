@@ -11,12 +11,10 @@ const spuData = ref<recordsDataArr>([])
 const pageSize = ref<number>(10)
 const categoryStore = useCategoryStore()
 const spu = ref()
-const spuId = ref<number>(0)
 async function handleEdit(row: recordsDataObj) {
   scene.value = 1
   // const res = await getSpuInfo(id)
-  spuId.value = row.id as number
-  spu.value.getHasSpuData()
+  spu.value.getHasSpuData(row) // 调用子组件defineExpose的方法，并传值
 }
 async function handleDelete(id: number) {
   const res = await deleteSpu(id)
@@ -107,7 +105,7 @@ function handleView() {}
         <!-- @current-change="getSpuData" 这里可以直接调用函数 -->
       </div>
       <div v-show="scene === 1">
-        <spuForm ref="spu" :spu-id="spuId" @cancel="cancel" />
+        <spuForm ref="spu" @cancel="cancel" />
       </div>
       <div v-show="scene === 2">
         <sKuForm />

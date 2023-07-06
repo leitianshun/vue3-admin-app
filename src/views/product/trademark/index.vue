@@ -208,7 +208,7 @@ onMounted(() => {
                   <span
                     v-if="!disabled"
                     class="el-upload-list__item-delete"
-                    @click="handleRemove(file)"
+                    @click="handleRemove()"
                   >
                     <el-icon><Delete /></el-icon>
                   </span>

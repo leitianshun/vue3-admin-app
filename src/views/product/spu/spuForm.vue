@@ -1,34 +1,39 @@
 <script setup lang='ts'>
-// import {getTrademarkList,getSpuImage,getSpuSaleAttrList_URL,getBaseSaleAttrList_URL} from '@/api/product/spu/spu'
-const props = defineProps({
-  spuId: Number,
-})
+import { getTrademarkList } from '@/api/product/spu/spu'
+
+import type { baseAttrArr, recordsDataObj, saleAttrType, spuImageObj } from '@/api/product/spu/type'
+
 const emits = defineEmits(['cancel'])
 const value = ref('')
-const options = [
-  {
-    value: 'Option1',
-    label: '小米',
-  },
-  {
-    value: 'Option2',
-    label: '华为',
-  },
-  {
-    value: 'Option3',
-    label: '苹果',
-  },
-]
+interface optionType {
+  label: string
+  value: number
+}
+const options = ref<optionType[]>([])
+const imgList = ref<spuImageObj[]>([])
+const saleAttr = ref<saleAttrType[]>([])
+const baseAttr = ref<baseAttrArr>([])
 function onSuccess() {}
 function beforeUpload() {}
 function cancel() {
   emits('cancel', 0)
 }
-function getHasSpuData() {
-  console.log(props.spuId)
+async function getHasSpuData(row: recordsDataObj) { // 这里的row是父组件使用ref调用方法传递过来的值
+  const res = await getTrademarkList()
+  const tempTrademark = res.data.map((item) => {
+    return { label: item.tmName, value: item.id }
+  })
+  options.value = tempTrademark
+  const res2 = await getSpuImage(row.id as number)
+  const res3 = await getSpuSaleAttrList(row.id as number) // 类型断言 row.id as number 因为id是可选属性，可能为undefined,所以需要断言
+  const res4 = await getBaseSaleAttrList()
+  imgList.value = res2.data
+  saleAttr.value = res3.data
+  baseAttr.value = res4.data
+  // console.log(res3, res4)
 }
 
-defineExpose({ getHasSpuData })
+defineExpose({ getHasSpuData }) // 子组件导出方法，以供父组件使用
 </script>
 
 <template>
