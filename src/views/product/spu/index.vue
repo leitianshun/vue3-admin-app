@@ -1,8 +1,8 @@
 <script setup lang='ts'>
 import spuForm from './spuForm.vue'
 import sKuForm from './skuForm.vue'
-import { deleteSpu, getSpuInfo, getSpuList } from '@/api/product/spu/spu'
-import type { recordsDataArr } from '@/api/product/spu/type'
+import { deleteSpu, getSpuList } from '@/api/product/spu/spu'
+import type { recordsDataArr, recordsDataObj } from '@/api/product/spu/type'
 
 const scene = ref<number>(0)
 const currentPage = ref<number>(1)
@@ -10,11 +10,13 @@ const total = ref<number>(0)
 const spuData = ref<recordsDataArr>([])
 const pageSize = ref<number>(10)
 const categoryStore = useCategoryStore()
-
-async function handleEdit(id: number) {
+const spu = ref()
+const spuId = ref<number>(0)
+async function handleEdit(row: recordsDataObj) {
   scene.value = 1
-  const res = await getSpuInfo(id)
-  console.log(res)
+  // const res = await getSpuInfo(id)
+  spuId.value = row.id as number
+  spu.value.getHasSpuData()
 }
 async function handleDelete(id: number) {
   const res = await deleteSpu(id)
@@ -81,7 +83,7 @@ function handleView() {}
           <el-table-column label="操作" align="center">
             <template #default="{ row }">
               <el-button type="primary" icon="Plus" title="添加SKU" @click="handleAdd(row)" />
-              <el-button type="warning" icon="Edit" title="修改SPU" @click="handleEdit(row.id)" />
+              <el-button type="warning" icon="Edit" title="修改SPU" @click="handleEdit(row)" />
               <el-button type="info" icon="View" title="查看SKU列表" @click="handleView(row)" />
               <el-popconfirm :title="`是否确认删除${row.spuName}?`" @confirm="handleDelete(row.id)">
                 <template #reference>
@@ -105,7 +107,7 @@ function handleView() {}
         <!-- @current-change="getSpuData" 这里可以直接调用函数 -->
       </div>
       <div v-show="scene === 1">
-        <spuForm @cancel="cancel" />
+        <spuForm ref="spu" :spu-id="spuId" @cancel="cancel" />
       </div>
       <div v-show="scene === 2">
         <sKuForm />

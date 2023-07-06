@@ -1,4 +1,8 @@
 <script setup lang='ts'>
+// import {getTrademarkList,getSpuImage,getSpuSaleAttrList_URL,getBaseSaleAttrList_URL} from '@/api/product/spu/spu'
+const props = defineProps({
+  spuId: Number,
+})
 const emits = defineEmits(['cancel'])
 const value = ref('')
 const options = [
@@ -20,6 +24,11 @@ function beforeUpload() {}
 function cancel() {
   emits('cancel', 0)
 }
+function getHasSpuData() {
+  console.log(props.spuId)
+}
+
+defineExpose({ getHasSpuData })
 </script>
 
 <template>
