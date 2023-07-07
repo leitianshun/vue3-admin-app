@@ -1,4 +1,4 @@
-import type { SpuImageType, TrademarkType, baseAttrListType, deleteSpuResponseType, saleAttrResponseType, spuResponseDataType } from './type'
+import type { SpuImageType, TrademarkType, addOrUpdateSpuResponseType, baseAttrListType, deleteSpuResponseType, recordsDataObj, saleAttrResponseType, spuResponseDataType } from './type'
 
 enum API {
   getSpuList_URL = '/admin/product/', // 获取已有的spu数据
@@ -19,9 +19,9 @@ export const getTrademarkList = () => request.get<any, TrademarkType>(API.getTra
 export const getSpuImage = (spuId: number) => request.get<any, SpuImageType>(API.getSpuImage_URL + spuId)
 export const getSpuSaleAttrList = (spuId: number) => request.get<any, saleAttrResponseType>(API.getSpuSaleAttrList_URL + spuId)
 export const getBaseSaleAttrList = () => request.get<any, baseAttrListType>(API.getBaseSaleAttrList_URL)
-export function addSpuOrUpdateSpu(data: any) {
+export function addSpuOrUpdateSpu(data: recordsDataObj) {
   if (data.id)
-    return request.post<any, any>(API.updateSpu_URL, data)
+    return request.post<any, addOrUpdateSpuResponseType>(API.updateSpu_URL, data)
   else
-    return request.post<any, any>(API.addSpu_URL, data)
+    return request.post<any, addOrUpdateSpuResponseType>(API.addSpu_URL, data)
 }

@@ -5,7 +5,7 @@ export interface responseData {
 }
 
 export interface spuImageListType {
-  id: number
+  id?: number
   imgName: string
   imgUrl: string
   spuId: number
@@ -19,7 +19,7 @@ export interface spuPosterList {
 }
 export interface spuSaleAttrListType {
   baseSaleAttrId: number
-  id: number
+  id?: number
   saleAttrName: string
   spuId: number
   spuSaleAttrValueList: []
@@ -44,9 +44,8 @@ export interface recordsDataObj {
   spuImageList: null | spuImageListType[]
   spuName: string
   spuSaleAttrList: null | spuSaleAttrListType[]
-  tmId: number
+  tmId: number | string
   spuPosterList?: null | spuPosterList[]
-
 }
 
 export type recordsDataArr = recordsDataObj[]
@@ -70,10 +69,12 @@ export interface TrademarkType extends responseData { // 品牌数据的类型
 }
 
 export interface spuImageObj { // 商品图片的类型
-  id: number
-  spuId: number
-  imgName: string
-  imgUrl: string
+  id?: number
+  spuId?: number
+  imgName?: string
+  imgUrl?: string
+  name?: string
+  url?: string
 }
 export interface SpuImageType extends responseData { // 已有的spu照片墙数据类型
   data: spuImageObj[]
@@ -81,9 +82,10 @@ export interface SpuImageType extends responseData { // 已有的spu照片墙数
 
 export interface SaleAttrValueListType { // 已有销售属性值对象类型
   id?: number
-  spuId: number
+  spuId?: number
   saleAttrValueName: string
-  saleAttrName: string
+  baseSaleAttrId: number
+  saleAttrName?: string
 }
 
 export type SaleAttrValueArr = SaleAttrValueListType[] // 已有销售属性值数组类型
@@ -109,4 +111,8 @@ export type baseAttrArr = baseSaleAttrObj[]
 
 export interface baseAttrListType extends responseData { // 销售属性类型 [颜色，版本，尺码]
   data: baseAttrArr
+}
+
+export interface addOrUpdateSpuResponseType extends responseData { // 添加spu或者修改，返回类型
+  data: null
 }
