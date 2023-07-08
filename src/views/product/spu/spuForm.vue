@@ -62,9 +62,9 @@ async function getHasSpuData(row: recordsDataObj) { // 这里的row是父组件�
   const tempImgList = res2.data.map((item) => {
     return { name: item.imgName, url: item.imgUrl }
   })
-  imgList.value = tempImgList
-  saleAttr.value = res3.data
-  baseAttr.value = res4.data
+  imgList.value = tempImgList // spu对应商品图片
+  saleAttr.value = res3.data // 已有的销售属性
+  baseAttr.value = res4.data // 全部的销售属性
   // console.log(res3, res4)
 }
 
@@ -75,6 +75,17 @@ async function getHasSpuData(row: recordsDataObj) { // 这里的row是父组件�
 function delAttrVal(rowIndex: number, index: number) {
   saleAttr.value[rowIndex].spuSaleAttrValueList.splice(index, 1)
 }
+
+// 计算出当前spu还未拥有的销售属性,从全部属性中过滤出还未选择的销售属性
+const unSelectSaleAttr = computed(() => {
+  const unSelectArr = baseAttr.value.filter((item) => {
+    return saleAttr.value.every((item2) => {
+      return item.name !== item2.saleAttrName
+    })
+  })
+  return unSelectArr
+})
+
 defineExpose({ getHasSpuData }) // 子组件导出方法，以供父组件使用
 </script>
 
@@ -120,8 +131,8 @@ defineExpose({ getHasSpuData }) // 子组件导出方法，以供父组件使用
         </el-dialog>
       </el-form-item>
       <el-form-item label="SPU销售属性">
-        <el-select>
-          <el-option v-for="item in baseAttr" :key="item.id" :label="item.name" :value="item.id" />
+        <el-select :placeholder="unSelectSaleAttr.length > 0 ? `还有${unSelectSaleAttr.length}条未选择` : '无'">
+          <el-option v-for="item in unSelectSaleAttr" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
         <el-button type="primary" icon="Plus" class="ml-3">
           添加销售属性
