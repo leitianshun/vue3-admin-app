@@ -20,7 +20,7 @@ const baseAttr = ref<baseAttrArr>([])
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
 function onSuccess() {}
-
+const saleAttrAndValueName = ref<string>('')
 const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
   const isLimit = rawFile.size / 1024 / 1024 < 4
   const isImg = rawFile.type === 'image/jpg' || rawFile.type === 'image/png' || rawFile.type === 'image/jpeg'
@@ -86,6 +86,18 @@ const unSelectSaleAttr = computed(() => {
   return unSelectArr
 })
 
+function addSaleAttr() {
+  const [baseSaleAttrId, saleAttrName] = saleAttrAndValueName.value.split(':')
+  saleAttr.value.push({
+    // id: baseSaleAttrId,
+    // spuId: 5,
+    baseSaleAttrId,
+    saleAttrName,
+    spuSaleAttrValueList: [],
+  })
+  saleAttrAndValueName.value = '' // 添加完成后置为空，防止在再次添加
+}
+
 defineExpose({ getHasSpuData }) // 子组件导出方法，以供父组件使用
 </script>
 
@@ -131,10 +143,10 @@ defineExpose({ getHasSpuData }) // 子组件导出方法，以供父组件使用
         </el-dialog>
       </el-form-item>
       <el-form-item label="SPU销售属性">
-        <el-select :placeholder="unSelectSaleAttr.length > 0 ? `还有${unSelectSaleAttr.length}条未选择` : '无'">
-          <el-option v-for="item in unSelectSaleAttr" :key="item.id" :label="item.name" :value="item.id" />
+        <el-select v-model="saleAttrAndValueName" :placeholder="unSelectSaleAttr.length > 0 ? `还有${unSelectSaleAttr.length}条未选择` : '无'">
+          <el-option v-for="item in unSelectSaleAttr" :key="item.id" :value="`${item.id}:${item.name}`" :label="item.name" />
         </el-select>
-        <el-button type="primary" icon="Plus" class="ml-3">
+        <el-button type="primary" icon="Plus" class="ml-3" :disabled="!saleAttrAndValueName" @click="addSaleAttr">
           添加销售属性
         </el-button>
         <el-table border class="mt-5" :data="saleAttr">

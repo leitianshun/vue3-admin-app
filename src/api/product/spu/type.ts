@@ -81,7 +81,7 @@ export interface SpuImageType extends responseData { // 已有的spu照片墙数
 }
 
 export interface SaleAttrValueListType { // 已有销售属性值对象类型
-  id?: number
+  id?: number | string
   spuId?: number
   saleAttrValueName: string
   baseSaleAttrId: number
@@ -91,9 +91,9 @@ export interface SaleAttrValueListType { // 已有销售属性值对象类型
 export type SaleAttrValueArr = SaleAttrValueListType[] // 已有销售属性值数组类型
 
 export interface saleAttrType { // 销售属性响应类型
-  id?: number
-  spuId: number
-  baseSaleAttrId: number
+  id?: number | string
+  spuId?: number
+  baseSaleAttrId: number | string
   saleAttrName: string
   spuSaleAttrValueList: SaleAttrValueArr
 }
