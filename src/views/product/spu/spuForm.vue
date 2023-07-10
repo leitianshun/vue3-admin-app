@@ -21,6 +21,9 @@ const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
 function onSuccess() {}
 const saleAttrAndValueName = ref<string>('')
+const inpRefArr = ref<any>([])
+const saleAttrVal = ref<string>('')
+
 const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
   const isLimit = rawFile.size / 1024 / 1024 < 4
   const isImg = rawFile.type === 'image/jpg' || rawFile.type === 'image/png' || rawFile.type === 'image/jpeg'
@@ -87,15 +90,35 @@ const unSelectSaleAttr = computed(() => {
 })
 
 function addSaleAttr() {
-  const [baseSaleAttrId, saleAttrName] = saleAttrAndValueName.value.split(':')
+  const [baseSaleAttrId, saleAttrName] = saleAttrAndValueName.value.split(':') // 解构出销售id以及销售属性名称
   saleAttr.value.push({
     // id: baseSaleAttrId,
     // spuId: 5,
-    baseSaleAttrId,
+    baseSaleAttrId: Number(baseSaleAttrId),
     saleAttrName,
     spuSaleAttrValueList: [],
   })
   saleAttrAndValueName.value = '' // 添加完成后置为空，防止在再次添加
+}
+
+function addSaleVal(row: saleAttrType, index: number) { // blur 时 添加销售属性值
+  // saleAttr.value[index].spuSaleAttrValueList.push({
+  row.flag = false
+  if (saleAttrVal.value.trim() !== '') {
+    saleAttr.value[index].spuSaleAttrValueList.push({ saleAttrValueName: saleAttrVal.value })
+    saleAttrAndValueName.value = ''
+  }
+  else {
+    // saleAttr.value[index].spuSaleAttrValueList[index]
+
+  }
+}
+
+function toEdit(row: saleAttrType, index: number) {
+  row.flag = true
+  nextTick(() => {
+    inpRefArr.value[index].focus()
+  })
 }
 
 defineExpose({ getHasSpuData }) // 子组件导出方法，以供父组件使用
@@ -157,7 +180,8 @@ defineExpose({ getHasSpuData }) // 子组件导出方法，以供父组件使用
               <el-tag v-for="(item, index) in row.spuSaleAttrValueList" :key="item.id" closable type="success" class="mx-2" @close="delAttrVal($index, index)">
                 {{ item.saleAttrValueName }}
               </el-tag>
-              <el-button icon="Plus" size="small" type="primary" />
+              <el-input v-if="row.flag" :ref="(vc:any) => inpRefArr[$index] = vc" v-model="saleAttrVal" placeholder="请输入属性值" size="small" style="width: 100px;" @blur="addSaleVal(row, $index)" />
+              <el-button v-else icon="Plus" size="small" type="primary" class="ml-3" @click="toEdit(row, $index)" />
             </template>
           </el-table-column>
           <el-table-column label="操作" width="130px" align="center">

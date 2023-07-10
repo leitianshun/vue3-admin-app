@@ -93,9 +93,10 @@ export type SaleAttrValueArr = SaleAttrValueListType[] // 已有销售属性值�
 export interface saleAttrType { // 销售属性响应类型
   id?: number | string
   spuId?: number
-  baseSaleAttrId: number | string
+  baseSaleAttrId: number
   saleAttrName: string
   spuSaleAttrValueList: SaleAttrValueArr
+  flag?: boolean
 }
 
 export interface saleAttrResponseType extends responseData {
