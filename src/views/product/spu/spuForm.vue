@@ -22,7 +22,6 @@ const dialogVisible = ref(false)
 function onSuccess() {}
 const saleAttrAndValueName = ref<string>('')
 const inpRefArr = ref<any>([])
-const saleAttrVal = ref<string>('')
 
 const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
   const isLimit = rawFile.size / 1024 / 1024 < 4
@@ -53,7 +52,6 @@ const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
 
 async function getHasSpuData(row: recordsDataObj) { // 这里的row是父组件使用ref调用此方法传递过来的值
   spuParams.value = row
-  console.log(row)
   const res = await getTrademarkList() // 所有品牌的数据
   AllTrademarkOptions.value = res.data
   // const tempTrademark = res.data.map((item) => {
@@ -68,16 +66,15 @@ async function getHasSpuData(row: recordsDataObj) { // 这里的row是父组件�
   imgList.value = tempImgList // spu对应商品图片
   saleAttr.value = res3.data // 已有的销售属性
   baseAttr.value = res4.data // 全部的销售属性
-  // console.log(res3, res4)
 }
 
-// function deleteAttr(index: number) {  //删除销售属性对象
+// function deleteAttr(index: number) {  //删除销售属性对象 已在dom中写
 //   saleAttr.value.splice(index, 1)
 // }
 
-function delAttrVal(rowIndex: number, index: number) {
-  saleAttr.value[rowIndex].spuSaleAttrValueList.splice(index, 1)
-}
+// function delAttrVal(rowIndex: number, index: number) {  //删除属性值对应的对象 已在dom中写
+//   saleAttr.value[rowIndex].spuSaleAttrValueList.splice(index, 1)
+// }
 
 // 计算出当前spu还未拥有的销售属性,从全部属性中过滤出还未选择的销售属性
 const unSelectSaleAttr = computed(() => {
@@ -103,22 +100,34 @@ function addSaleAttr() {
 
 function addSaleVal(row: saleAttrType, index: number) { // blur 时 添加销售属性值
   // saleAttr.value[index].spuSaleAttrValueList.push({
-  row.flag = false
-  if (saleAttrVal.value.trim() !== '') {
-    saleAttr.value[index].spuSaleAttrValueList.push({ saleAttrValueName: saleAttrVal.value })
-    saleAttrAndValueName.value = ''
+  const { baseSaleAttrId, saleAttrValueName, saleAttrName } = row
+  if (saleAttrValueName?.trim() === '') {
+    ElMessage.error('属性值不能为空')
+    return
   }
   else {
-    // saleAttr.value[index].spuSaleAttrValueList[index]
+    // const repeat = row.spuSaleAttrValueList.find((item) => { // 使用find查找是否有重复元素，如果有，就不添加 find返回布尔值
+    //   return item.saleAttrValueName === saleAttrValueName
+    // })
+    const repeat = row.spuSaleAttrValueList.some((item) => { // 使用some查找是否有重复元素，有一项满足就返回true
+      return item.saleAttrValueName === saleAttrValueName
+    })
 
+    if (repeat) {
+      ElMessage.error('该属性值已经存在于销售属性列表中')
+      return
+    }
+    row.spuSaleAttrValueList.push({ baseSaleAttrId, saleAttrValueName: saleAttrValueName!, saleAttrName }) // 对于可选属性，可能为undefined,所以需要用到断言  类型断言saleAttrValueName: saleAttrValueName as string ，saleAttrValueName: saleAttrValueName! 非空断言
   }
+  row.flag = false
 }
 
-function toEdit(row: saleAttrType, index: number) {
+function toEdit(row: saleAttrType, index: number) { // 点击添加时，收集数据
   row.flag = true
   nextTick(() => {
     inpRefArr.value[index].focus()
   })
+  row.saleAttrValueName = ''
 }
 
 defineExpose({ getHasSpuData }) // 子组件导出方法，以供父组件使用
@@ -177,10 +186,10 @@ defineExpose({ getHasSpuData }) // 子组件导出方法，以供父组件使用
           <el-table-column label="属性名" width="130px" prop="saleAttrName" align="center" />
           <el-table-column label="属性值" align="center" prop="spuSaleAttrValueList">
             <template #default="{ row, $index }">
-              <el-tag v-for="(item, index) in row.spuSaleAttrValueList" :key="item.id" closable type="success" class="mx-2" @close="delAttrVal($index, index)">
+              <el-tag v-for="(item, index) in row.spuSaleAttrValueList" :key="item.id" closable type="success" class="mx-2" @close="row.spuSaleAttrValueList.splice(index, 1)">
                 {{ item.saleAttrValueName }}
               </el-tag>
-              <el-input v-if="row.flag" :ref="(vc:any) => inpRefArr[$index] = vc" v-model="saleAttrVal" placeholder="请输入属性值" size="small" style="width: 100px;" @blur="addSaleVal(row, $index)" />
+              <el-input v-if="row.flag" :ref="(vc:any) => inpRefArr[$index] = vc" v-model="row.saleAttrValueName" placeholder="请输入属性值" size="small" style="width: 100px;" @blur="addSaleVal(row, $index)" />
               <el-button v-else icon="Plus" size="small" type="primary" class="ml-3" @click="toEdit(row, $index)" />
             </template>
           </el-table-column>

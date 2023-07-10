@@ -97,6 +97,7 @@ export interface saleAttrType { // 销售属性响应类型
   saleAttrName: string
   spuSaleAttrValueList: SaleAttrValueArr
   flag?: boolean
+  saleAttrValueName?: string
 }
 
 export interface saleAttrResponseType extends responseData {
