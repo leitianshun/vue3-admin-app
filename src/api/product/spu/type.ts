@@ -17,14 +17,6 @@ export interface spuPosterList {
   imgUrl: string
   spuId: number
 }
-export interface spuSaleAttrListType {
-  baseSaleAttrId: number
-  id?: number
-  saleAttrName: string
-  spuId: number
-  spuSaleAttrValueList: []
-
-}
 
 export interface DataObj { // 已有spu接口返回的数据类型
   current: number
@@ -43,7 +35,7 @@ export interface recordsDataObj {
   description: string
   spuImageList: null | spuImageObj[]
   spuName: string
-  spuSaleAttrList: null | spuSaleAttrListType[]
+  spuSaleAttrList: null | saleAttrType[]
   tmId: number | string
   spuPosterList?: null | spuPosterList[]
 }

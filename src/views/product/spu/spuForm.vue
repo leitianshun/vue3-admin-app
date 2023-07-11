@@ -3,9 +3,9 @@ import type { UploadProps } from 'element-plus'
 import { addSpuOrUpdateSpu, getTrademarkList } from '@/api/product/spu/spu'
 import type { baseAttrArr, recordsDataObj, saleAttrType, spuImageObj, trademarkObj } from '@/api/product/spu/type'
 
-const emits = defineEmits(['cancel'])
+const emits = defineEmits(['changeScene'])
 const spuParams = ref<recordsDataObj>({ // 储存已有spu对象
-  id: '',
+  id: 0,
   category3Id: '',
   spuName: '',
   description: '',
@@ -13,7 +13,7 @@ const spuParams = ref<recordsDataObj>({ // 储存已有spu对象
   spuSaleAttrList: [],
   tmId: '',
 })
-const parent = inject('getData') // 使用inject注入父组件传递的方法
+// const parent: any = inject('getData') // 使用inject注入父组件传递的方法
 const AllTrademarkOptions = ref<trademarkObj[] >([])
 const imgList = ref<spuImageObj[]>([])
 const saleAttr = ref<saleAttrType[]>([])
@@ -38,7 +38,7 @@ const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
   return true
 }
 function cancel() {
-  emits('cancel', 0)
+  emits('changeScene', 0)
 }
 
 const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
@@ -53,20 +53,20 @@ const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
 async function getHasSpuData(row: recordsDataObj) { // 这里的row是父组件使用ref调用此方法传递过来的值
   if (row.id)
     spuParams.value = row
-  const res = await getTrademarkList() // 所有品牌的数据
-  AllTrademarkOptions.value = res.data
+  const allTrademark = await getTrademarkList() // 所有品牌的数据
+  AllTrademarkOptions.value = allTrademark.data
   // const tempTrademark = res.data.map((item) => {
   //   return { label: item.tmName, value: item.id }
   // })
-  const res2 = await getSpuImage(row.id!) // spu对应商品图片   as 是类型断言    !是非空断言 意思是不会为空，undefined
-  const res3 = await getSpuSaleAttrList(row.id as number) // 类型断言 row.id as number 因为id是可选属性，可能为undefined,所以需要断言为number，此处还可以写为 row.id!, '!'是非空断言，意思就是row.id不为空,undefined
-  const res4 = await getBaseSaleAttrList() // 全部的销售属性
-  const tempImgList = res2.data.map((item) => {
+  const spuImgData = await getSpuImage(row.id!) // spu对应商品图片   as 是类型断言    !是非空断言 意思是不会为空，undefined
+  const hasSaleAttr = await getSpuSaleAttrList(row.id as number) // 类型断言 row.id as number 因为id是可选属性，可能为undefined,所以需要断言为number，此处还可以写为 row.id!, '!'是非空断言，意思就是row.id不为空,undefined
+  const allSaleAttr = await getBaseSaleAttrList() // 全部的销售属性
+  const tempImgList = spuImgData.data.map((item) => {
     return { name: item.imgName, url: item.imgUrl }
   })
   imgList.value = tempImgList // spu对应商品图片
-  saleAttr.value = res3.data // 已有的销售属性
-  baseAttr.value = res4.data // 全部的销售属性
+  saleAttr.value = hasSaleAttr.data // 已有的销售属性
+  baseAttr.value = allSaleAttr.data // 全部的销售属性
 }
 
 // function deleteAttr(index: number) {  //删除销售属性对象 已在dom中写
@@ -139,15 +139,25 @@ async function submit() { // 保存按钮，提交
     }
   })
   spuParams.value.spuSaleAttrList = saleAttr.value
-  console.log(spuParams.value)
+  if (spuParams.value.spuSaleAttrList.length === 0) {
+    ElMessage.error('请添加销售属性')
+    return
+  }
   const res = await addSpuOrUpdateSpu(spuParams.value)
   if (res.code === 200)
-    parent.getSpuData() // 调用父组件的方法
+    // parent.getSpuData() // 调用父组件的方法,重新获取数据
+    emits('changeScene', 0) // 添加或者修改成功后触发事件告诉父组件，从新获取数据
   ElMessage.success(spuParams.value.id ? '修改成功' : '添加成功')
   cancel()
 }
+async function addSpuInit() { // 添加销售属性时，初始化数据
+  const res = await getTrademarkList() // 所有品牌的数据
+  AllTrademarkOptions.value = res.data
+  const allSaleAttr = await getBaseSaleAttrList() // 全部的销售属性
+  baseAttr.value = allSaleAttr.data
+}
 
-defineExpose({ getHasSpuData }) // 子组件导出方法，以供父组件使用
+defineExpose({ getHasSpuData, addSpuInit }) // 子组件导出方法，以供父组件使用
 </script>
 
 <template>

@@ -11,7 +11,7 @@ const spuData = ref<recordsDataArr>([])
 const pageSize = ref<number>(10)
 const categoryStore = useCategoryStore()
 const spu = ref()
-provide('getData', { getSpuData })
+provide('getData', { getSpuData }) // 父组件提供方法，给子组件使用
 async function handleEdit(row: recordsDataObj) {
   scene.value = 1
   // const res = await getSpuInfo(id)
@@ -55,9 +55,11 @@ watch(() => categoryStore.category3Id, () => {
 })
 function addSpu() {
   scene.value = 1
+  spu.value.addSpuInit()
 }
-function cancel(e: number) {
+function handleChange(e: number) {
   scene.value = e
+  getSpuData()
 }
 function handleAdd() {
   scene.value = 2
@@ -105,7 +107,7 @@ function handleView() {}
         <!-- @current-change="getSpuData" 这里可以直接调用函数 -->
       </div>
       <div v-show="scene === 1">
-        <spuForm ref="spu" @cancel="cancel" />
+        <spuForm ref="spu" @change-scene="handleChange" />
       </div>
       <div v-show="scene === 2">
         <sKuForm />
