@@ -11,6 +11,7 @@ const spuData = ref<recordsDataArr>([])
 const pageSize = ref<number>(10)
 const categoryStore = useCategoryStore()
 const spu = ref()
+provide('getData', { getSpuData })
 async function handleEdit(row: recordsDataObj) {
   scene.value = 1
   // const res = await getSpuInfo(id)
@@ -45,7 +46,6 @@ async function getSpuData(page = 1) {
     spuData.value = res.data.records
   currentPage.value = res.data.current
   total.value = res.data.total
-  console.log(res)
 }
 watch(() => categoryStore.category3Id, () => {
   spuData.value = []

@@ -135,10 +135,10 @@ const onSuccess: UploadProps['onSuccess'] = (
   }
 }
 const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
-  const isLimit = rawFile.size / 1024 / 1024 < 4
+  const isLimit = rawFile.size / 1024 / 1024 < 1
   const isImg = rawFile.type === 'image/jpg' || rawFile.type === 'image/png' || rawFile.type === 'image/jpeg'
   if (!isLimit) {
-    ElMessage.error('图片大小不能超过4m')
+    ElMessage.error('图片大小不能超过1m')
     return false
   }
   if (!isImg) {

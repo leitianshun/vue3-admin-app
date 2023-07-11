@@ -4,12 +4,12 @@ export interface responseData {
   ok: boolean
 }
 
-export interface spuImageListType {
-  id?: number
-  imgName: string
-  imgUrl: string
-  spuId: number
-}
+// export interface spuImageListType {
+//   id?: number
+//   imgName: string
+//   imgUrl: string
+//   spuId?: number
+// }
 
 export interface spuPosterList {
   id: number
@@ -26,7 +26,7 @@ export interface spuSaleAttrListType {
 
 }
 
-export interface DataObj {
+export interface DataObj { // 已有spu接口返回的数据类型
   current: number
   hitCount: boolean
   optimizeCountSql: boolean
@@ -38,10 +38,10 @@ export interface DataObj {
 }
 
 export interface recordsDataObj {
+  id?: number
   category3Id: number | string
   description: string
-  id?: number
-  spuImageList: null | spuImageListType[]
+  spuImageList: null | spuImageObj[]
   spuName: string
   spuSaleAttrList: null | spuSaleAttrListType[]
   tmId: number | string

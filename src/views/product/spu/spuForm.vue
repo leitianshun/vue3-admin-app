@@ -1,10 +1,11 @@
 <script setup lang='ts'>
-import type { UploadProps, UploadUserFile } from 'element-plus'
-import { getTrademarkList } from '@/api/product/spu/spu'
+import type { UploadProps } from 'element-plus'
+import { addSpuOrUpdateSpu, getTrademarkList } from '@/api/product/spu/spu'
 import type { baseAttrArr, recordsDataObj, saleAttrType, spuImageObj, trademarkObj } from '@/api/product/spu/type'
 
 const emits = defineEmits(['cancel'])
 const spuParams = ref<recordsDataObj>({ // 储存已有spu对象
+  id: '',
   category3Id: '',
   spuName: '',
   description: '',
@@ -12,23 +13,22 @@ const spuParams = ref<recordsDataObj>({ // 储存已有spu对象
   spuSaleAttrList: [],
   tmId: '',
 })
-
+const parent = inject('getData') // 使用inject注入父组件传递的方法
 const AllTrademarkOptions = ref<trademarkObj[] >([])
-const imgList = ref<spuImageObj[] | UploadUserFile[]>([])
+const imgList = ref<spuImageObj[]>([])
 const saleAttr = ref<saleAttrType[]>([])
 const baseAttr = ref<baseAttrArr>([])
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
-function onSuccess() {}
 const saleAttrAndValueName = ref<string>('')
 const inpRefArr = ref<any>([])
 
 const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
-  const isLimit = rawFile.size / 1024 / 1024 < 4
+  const isLimit = rawFile.size / 1024 / 1024 < 1
   const isImg = rawFile.type === 'image/jpg' || rawFile.type === 'image/png' || rawFile.type === 'image/jpeg'
   // return  rawFile.type === 'image/jpg' || rawFile.type === 'image/png' || rawFile.type === 'image/jpeg' //这里可以简写
   if (!isLimit) {
-    ElMessage.error('图片大小不能超过4m')
+    ElMessage.error('图片大小不能超过1m')
     return false
   }
   if (!isImg) {
@@ -51,7 +51,8 @@ const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
 }
 
 async function getHasSpuData(row: recordsDataObj) { // 这里的row是父组件使用ref调用此方法传递过来的值
-  spuParams.value = row
+  if (row.id)
+    spuParams.value = row
   const res = await getTrademarkList() // 所有品牌的数据
   AllTrademarkOptions.value = res.data
   // const tempTrademark = res.data.map((item) => {
@@ -130,6 +131,22 @@ function toEdit(row: saleAttrType, index: number) { // 点击添加时，收集�
   row.saleAttrValueName = ''
 }
 
+async function submit() { // 保存按钮，提交
+  spuParams.value.spuImageList = imgList.value.map((item: any) => { // 整理spu商品图片格式，调整为imgName,imgUrl格式
+    return {
+      imgName: item.name,
+      imgUrl: item.response?.data || item.url, // 这里判断是否是新增的图片，如果有就用新增的图片，否则就用原本的图片
+    }
+  })
+  spuParams.value.spuSaleAttrList = saleAttr.value
+  console.log(spuParams.value)
+  const res = await addSpuOrUpdateSpu(spuParams.value)
+  if (res.code === 200)
+    parent.getSpuData() // 调用父组件的方法
+  ElMessage.success(spuParams.value.id ? '修改成功' : '添加成功')
+  cancel()
+}
+
 defineExpose({ getHasSpuData }) // 子组件导出方法，以供父组件使用
 </script>
 
@@ -157,7 +174,6 @@ defineExpose({ getHasSpuData }) // 子组件导出方法，以供父组件使用
           v-model:file-list="imgList"
           class="avatar-uploader"
           action="/api/admin/product/fileUpload" list-type="picture-card"
-          :on-success="onSuccess"
           :before-upload="beforeUpload"
           :on-preview="handlePictureCardPreview"
           :on-remove="handleRemove"
@@ -201,8 +217,8 @@ defineExpose({ getHasSpuData }) // 子组件导出方法，以供父组件使用
         </el-table>
       </el-form-item>
       <el-form-item label="">
-        <el-button type="primary">
-          确定
+        <el-button type="primary" @click="submit">
+          保存
         </el-button>
         <el-button @click="cancel">
           取消
