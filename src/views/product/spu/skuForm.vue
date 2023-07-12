@@ -8,7 +8,7 @@ const formRef = ref()
 const selectVal = ref('')
 const spuImgData = ref<spuImageObj[]>([])
 const hasSaleAttr = ref<saleAttrType[]>([])
-const attrList = ref<attrObj[]>([])
+const attrListArr = ref<attrObj[]>([])
 const categoryStore = useCategoryStore()
 function cancel() {
   emits('changeScene', { flag: 0 })
@@ -17,10 +17,11 @@ function cancel() {
 async function addSkuInit(row: recordsDataObj) {
   console.log(row)
   const imgData = await getSpuImage(row.id!) // spu对应商品图片   as 是类型断言    !是非空断言 意思是不会为空，undefined
-  const hasSaleAttr = await getSpuSaleAttrList(row.id as number) // 类型断言 row.id as number 因为id是可选属性，可能为undefined,所以需要断言为number，此处还可以写为 row.id!, '!'是非空断言，意思就是row.id不为空,undefined
-  const attrList = await getAttrList(categoryStore.category3Id)
-  spuImgData.value = imgData.data
-  hasSaleAttr.value = hasSaleAttr
+  const SaleAttr = await getSpuSaleAttrList(row.id as number) // 类型断言 row.id as number 因为id是可选属性，可能为undefined,所以需要断言为number，此处还可以写为 row.id!, '!'是非空断言，意思就是row.id不为空,undefined
+  const attrList = await getAttrList(categoryStore.category1Id as number, categoryStore.category2Id as number, categoryStore.category3Id as number)
+  spuImgData.value = imgData.data // spu照片
+  hasSaleAttr.value = SaleAttr.data // 已有的销售属性
+  attrListArr.value = attrList.data // 平台属性
 }
 defineExpose({ addSkuInit })
 </script>
@@ -42,34 +43,14 @@ defineExpose({ addSkuInit })
       </el-form-item>
       <el-form-item label="平台属性">
         <el-form label-width="auto" :inline="true">
-          <el-form-item label="手机一级">
+          <el-form-item v-for="item in attrListArr" :key="item.id" :label="item.attrName" class="mt-5">
             <!-- size="small" -->
             <el-select v-model="selectVal" value-key="" placeholder="" clearable filterable>
               <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="电池容量">
-            <el-select v-model="selectVal" value-key="" placeholder="" clearable filterable>
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="运行内存">
-            <el-select v-model="selectVal" value-key="" placeholder="" clearable filterable>
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item2 in item.attrValueList"
+                :key="item2.id"
+                :label="item2.valueName"
+                :value="item2.id!"
               />
             </el-select>
           </el-form-item>
@@ -77,13 +58,13 @@ defineExpose({ addSkuInit })
       </el-form-item>
       <el-form-item label="销售属性">
         <el-form label-width="auto" :inline="true">
-          <el-form-item label="颜色">
+          <el-form-item v-for="item in hasSaleAttr" :key="item.id" :label="item.saleAttrName">
             <el-select v-model="selectVal" value-key="" placeholder="" clearable filterable>
               <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item2 in item.spuSaleAttrValueList"
+                :key="item2.id"
+                :label="item2.saleAttrValueName"
+                :value="item2.id!"
               />
             </el-select>
           </el-form-item>
@@ -95,7 +76,7 @@ defineExpose({ addSkuInit })
           <!-- <el-table-column label="序号" type="index" width="100" /> -->
           <el-table-column label="图片" prop="imgUrl" align="center">
             <template #default="{ row, $index }">
-              <img :src="row.imgUrl" class="w-10 h-10">
+              <img :src="row.imgUrl" class="w-20 h-20">
             </template>
           </el-table-column>
           <el-table-column label="名称" prop="imgName" align="center" />
