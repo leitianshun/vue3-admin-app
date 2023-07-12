@@ -4,13 +4,15 @@ import sKuForm from './skuForm.vue'
 import { deleteSpu, getSpuList } from '@/api/product/spu/spu'
 import type { recordsDataArr, recordsDataObj } from '@/api/product/spu/type'
 
-const scene = ref<number>(0)
+const scene = ref<number>(0) // 场景切换控制
 const currentPage = ref<number>(1)
 const total = ref<number>(0)
 const spuData = ref<recordsDataArr>([])
 const pageSize = ref<number>(10)
 const categoryStore = useCategoryStore()
 const spu = ref()
+const sku = ref()
+
 provide('getData', { getSpuData }) // 父组件提供方法，给子组件使用
 async function handleEdit(row: recordsDataObj) {
   scene.value = 1
@@ -53,16 +55,18 @@ watch(() => categoryStore.category3Id, () => {
     return
   getSpuData()
 })
-function addSpu() {
+function addSpu() { // 添加spu
   scene.value = 1
-  spu.value.addSpuInit()
+  spu.value.addSpuInit(categoryStore.category3Id) // 调用子组件方法，传递3级分类id
 }
-function handleChange(e: number) {
-  scene.value = e
-  getSpuData()
+function handleChange({ flag, params }) { // 处理切换场景事件，解构出子组件出发事件的参数
+  scene.value = flag
+  if (params)
+    getSpuData(params === 'add' ? 1 : currentPage.value) // 如果是添加类型，那就获取第一页内容，否则如果是更新，那就留在当前页
 }
-function handleAdd() {
+function addSku(row: recordsDataObj) { // 添加sku
   scene.value = 2
+  sku.value.addSkuInit(row)
 }
 function handleView() {}
 </script>
@@ -82,7 +86,7 @@ function handleView() {}
           <!-- show-overflow-tooltip 表格内容溢出隐藏 -->
           <el-table-column label="操作" align="center">
             <template #default="{ row }">
-              <el-button type="primary" icon="Plus" title="添加SKU" @click="handleAdd(row)" />
+              <el-button type="primary" icon="Plus" title="添加SKU" @click="addSku(row)" />
               <el-button type="warning" icon="Edit" title="修改SPU" @click="handleEdit(row)" />
               <el-button type="info" icon="View" title="查看SKU列表" @click="handleView(row)" />
               <el-popconfirm :title="`是否确认删除${row.spuName}?`" @confirm="handleDelete(row.id)">
@@ -110,7 +114,7 @@ function handleView() {}
         <spuForm ref="spu" @change-scene="handleChange" />
       </div>
       <div v-show="scene === 2">
-        <sKuForm />
+        <sKuForm ref="sku" @change-scene="handleChange" />
       </div>
     </el-card>
   </div>

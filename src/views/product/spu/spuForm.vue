@@ -5,7 +5,6 @@ import type { baseAttrArr, recordsDataObj, saleAttrType, spuImageObj, trademarkO
 
 const emits = defineEmits(['changeScene'])
 const spuParams = ref<recordsDataObj>({ // 储存已有spu对象
-  id: 0,
   category3Id: '',
   spuName: '',
   description: '',
@@ -37,8 +36,18 @@ const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
   }
   return true
 }
-function cancel() {
-  emits('changeScene', 0)
+
+// const onSuccess: UploadProps['onSuccess'] = (
+//   response, uploadFile,
+// ) => {
+//   if (response.code === 200) {
+//     spuParams.value.spuImageList?.push({ imgUrl: response.data, imgName: uploadFile.name })
+//     console.log(response.data, uploadFile)
+//   }
+// }
+
+function cancel() { // 取消，通知父组件切换场景,并且不重新获取数据
+  emits('changeScene', { flag: 0 })
 }
 
 const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
@@ -77,7 +86,7 @@ async function getHasSpuData(row: recordsDataObj) { // 这里的row是父组件�
 //   saleAttr.value[rowIndex].spuSaleAttrValueList.splice(index, 1)
 // }
 
-// 计算出当前spu还未拥有的销售属性,从全部属性中过滤出还未选择的销售属性
+// 计算出当前spu还未拥有的销售属性,从全部属性中和获取的已有属性中过滤出还未选择的销售属性
 const unSelectSaleAttr = computed(() => {
   const unSelectArr = baseAttr.value.filter((item) => {
     return saleAttr.value.every((item2) => {
@@ -99,7 +108,7 @@ function addSaleAttr() {
   saleAttrAndValueName.value = '' // 添加完成后置为空，防止在再次添加
 }
 
-function addSaleVal(row: saleAttrType, index: number) { // blur 时 添加销售属性值
+function addSaleVal(row: saleAttrType, index: number) { // 输入框blur失去焦点时 添加销售属性值
   // saleAttr.value[index].spuSaleAttrValueList.push({
   const { baseSaleAttrId, saleAttrValueName, saleAttrName } = row
   if (saleAttrValueName?.trim() === '') {
@@ -144,20 +153,41 @@ async function submit() { // 保存按钮，提交
     return
   }
   const res = await addSpuOrUpdateSpu(spuParams.value)
-  if (res.code === 200)
+  if (res.code === 200) {
+    ElMessage.success(spuParams.value.id ? '修改成功' : '添加成功')
+    emits('changeScene', { flag: 0, params: spuParams.value.id ? 'update' : 'add' }) // 添加或者修改成功后触发事件告诉父组件，从新获取数据,并告诉组件是更新还是新增
+    spuParams.value = { // 保存或者更新成功后清空数据
+      category3Id: '',
+      spuName: '',
+      description: '',
+      spuImageList: [],
+      spuSaleAttrList: [],
+      tmId: '',
+    }
     // parent.getSpuData() // 调用父组件的方法,重新获取数据
-    emits('changeScene', 0) // 添加或者修改成功后触发事件告诉父组件，从新获取数据
-  ElMessage.success(spuParams.value.id ? '修改成功' : '添加成功')
-  cancel()
+  }
 }
-async function addSpuInit() { // 添加销售属性时，初始化数据
+async function addSpuInit(category3Id: number) { // 添加销售属性时，初始化数据  ，category3Id是父组件传递过来的
+  spuParams.value = { // 每次添加前清空数据
+    id: 0,
+    category3Id: '',
+    spuName: '',
+    description: '',
+    spuImageList: [],
+    spuSaleAttrList: [],
+    tmId: '',
+  }
+  imgList.value = [] // 清空spu图片列表
+  saleAttr.value = [] // 清空已有销售属性列表
+  saleAttrAndValueName.value = '' // 清空已选择的销售属性
+  spuParams.value.category3Id = category3Id // 接受父组件传递的3级分类id
   const res = await getTrademarkList() // 所有品牌的数据
   AllTrademarkOptions.value = res.data
   const allSaleAttr = await getBaseSaleAttrList() // 全部的销售属性
   baseAttr.value = allSaleAttr.data
 }
 
-defineExpose({ getHasSpuData, addSpuInit }) // 子组件导出方法，以供父组件使用
+defineExpose({ getHasSpuData, addSpuInit }) // 子组件导出方法，以供父组件使用,父组件通过ref.value.addSpuInit()来调用子组件方法
 </script>
 
 <template>
