@@ -23,6 +23,7 @@ export function getCategory3(category2Id: number) {
   return request.get<any, categoryData>(API.getCategory3 + category2Id)
 }
 
+// 获取平台属性
 export const getAttrList = (c1Id: number, c2Id: number, c3Id: number) => request.get<any, attrListData>(`${API.getAttrList}${c1Id}/${c2Id}/${c3Id}`)
 
 export const addAttr = (data: attrObj) => request.post<any, addAttrResponseType>(API.addAttr, data)

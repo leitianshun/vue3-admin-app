@@ -1,21 +1,50 @@
 <script setup lang='ts'>
-import type { recordsDataObj, saleAttrType, spuImageObj } from '@/api/product/spu/type'
+import type { addSkuParamType, recordsDataObj, saleAttrType, spuImageObj } from '@/api/product/spu/type'
 import type { attrObj } from '@/api/product/attr/type'
 
 const emits = defineEmits(['changeScene'])
-const skuParams = ref({})
+
+const skuParams = ref<addSkuParamType>( // 添加sku参数类型
+  { // 添加sku参数类型
+    category3Id: '', // 三级分类id
+    spuId: '', // 已有spu id
+    tmId: '', // 品牌id
+    skuName: '', // sku名称
+    price: '', // sku价格
+    weight: '', // 重量
+    skuDesc: '', // 描述
+    skuDefaultImg: '', // sku默认图片
+    skuAttrValueList: [ // 平台属性的收集
+      // {
+      //   attrId: '', // 平台属性id
+      //   valueId: '', // 属性值
+      // },
+    ],
+    skuSaleAttrValueList: [ // 销售属性
+      // {
+      //   saleAttrId: '', // 销售属性id
+      //   saleAttrValueId: '', // 属性值
+      // },
+    ],
+  },
+
+)
 const formRef = ref()
 const selectVal = ref('')
-const spuImgData = ref<spuImageObj[]>([])
-const hasSaleAttr = ref<saleAttrType[]>([])
-const attrListArr = ref<attrObj[]>([])
+const spuImgData = ref<spuImageObj[]>([]) // 商品图片
+const hasSaleAttr = ref<saleAttrType[]>([]) // 已有的销售属性
+const attrListArr = ref<attrObj[]>([]) // 平台属性
 const categoryStore = useCategoryStore()
+
 function cancel() {
   emits('changeScene', { flag: 0 })
 }
 
 async function addSkuInit(row: recordsDataObj) {
   console.log(row)
+  skuParams.value.category3Id = row.category3Id
+  skuParams.value.tmId = row.tmId
+  skuParams.value.spuId = row.id! // id 是可选属性，可能为undefined，需要非空断言
   const imgData = await getSpuImage(row.id!) // spu对应商品图片   as 是类型断言    !是非空断言 意思是不会为空，undefined
   const SaleAttr = await getSpuSaleAttrList(row.id as number) // 类型断言 row.id as number 因为id是可选属性，可能为undefined,所以需要断言为number，此处还可以写为 row.id!, '!'是非空断言，意思就是row.id不为空,undefined
   const attrList = await getAttrList(categoryStore.category1Id as number, categoryStore.category2Id as number, categoryStore.category3Id as number)
@@ -23,6 +52,10 @@ async function addSkuInit(row: recordsDataObj) {
   hasSaleAttr.value = SaleAttr.data // 已有的销售属性
   attrListArr.value = attrList.data // 平台属性
 }
+function setDefault(row: any) { // 设置sku默认图片
+  skuParams.value.skuDefaultImg = row.imgUrl
+}
+
 defineExpose({ addSkuInit })
 </script>
 
@@ -30,16 +63,16 @@ defineExpose({ addSkuInit })
   <div>
     <el-form ref="formRef" label-width="120px">
       <el-form-item label="sku名称">
-        <el-input v-model="skuParams" placeholder="SKU名称" />
+        <el-input v-model="skuParams.skuName" placeholder="SKU名称" />
       </el-form-item>
       <el-form-item label="价格(元)">
-        <el-input v-model="skuParams" type="number" placeholder="价格(元)" />
+        <el-input v-model="skuParams.price" type="number" placeholder="价格(元)" />
       </el-form-item>
       <el-form-item label="重量(克)">
-        <el-input v-model="skuParams" placeholder="重量(克)" type="number" />
+        <el-input v-model="skuParams.weight" placeholder="重量(克)" type="number" />
       </el-form-item>
       <el-form-item label="sku描述">
-        <el-input v-model="skuParams" placeholder="sku描述" type="textarea" />
+        <el-input v-model="skuParams.skuDesc" placeholder="sku描述" type="textarea" />
       </el-form-item>
       <el-form-item label="平台属性">
         <el-form label-width="auto" :inline="true">
@@ -82,7 +115,7 @@ defineExpose({ addSkuInit })
           <el-table-column label="名称" prop="imgName" align="center" />
           <el-table-column label="操作" align="center">
             <template #default="{ row, $index }">
-              <el-button type="success" size="default" @click="">
+              <el-button type="success" size="default" @click="setDefault(row)">
                 设为默认
               </el-button>
             </template>

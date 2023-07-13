@@ -110,3 +110,30 @@ export interface baseAttrListType extends responseData { // 销售属性类型 [
 export interface addOrUpdateSpuResponseType extends responseData { // 添加spu或者修改，返回类型
   data: null
 }
+
+export interface attr {
+  attrId: number | string // 平台属性id
+  valueId: number | string // 属性值
+}
+
+export interface saleAttr {
+  saleAttrId: number | string // 销售属性id
+  saleAttrValueId: number | string // 属性值
+}
+
+export interface addSkuParamType { // 添加sku参数类型
+  category3Id: number | string // 三级分类id
+  spuId: number | string // 已有spu id
+  tmId: number | string // 品牌id
+  skuName: string // sku名称
+  price: number | string // sku价格
+  weight: string | string // 重量
+  skuDesc: string // 描述
+  skuDefaultImg: string // sku默认图片
+  skuAttrValueList?: attr[] // 平台属性的收集
+  skuSaleAttrValueList?: saleAttr[] // 销售属性
+}
+
+export interface addSkuType extends responseData { // 添加sku，返回类型
+  data: null
+}
