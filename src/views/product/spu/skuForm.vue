@@ -30,7 +30,6 @@ const skuParams = ref<addSkuParamType>( // 添加sku参数类型
 
 )
 const formRef = ref()
-const selectVal = ref('')
 const spuImgData = ref<spuImageObj[]>([]) // 商品图片
 const hasSaleAttr = ref<saleAttrType[]>([]) // 已有的销售属性
 const attrListArr = ref<attrObj[]>([]) // 平台属性
@@ -56,6 +55,7 @@ function setDefault(row: any) { // 设置sku默认图片
   skuParams.value.skuDefaultImg = row.imgUrl
 }
 
+function onSubmit() {}
 defineExpose({ addSkuInit })
 </script>
 
@@ -78,12 +78,12 @@ defineExpose({ addSkuInit })
         <el-form label-width="auto" :inline="true">
           <el-form-item v-for="item in attrListArr" :key="item.id" :label="item.attrName" class="mt-5">
             <!-- size="small" -->
-            <el-select v-model="selectVal" value-key="" placeholder="" clearable filterable>
+            <el-select v-model="item.attrIdAndValId" value-key="" placeholder="" clearable filterable>
               <el-option
                 v-for="item2 in item.attrValueList"
                 :key="item2.id"
                 :label="item2.valueName"
-                :value="item2.id!"
+                :value="`${item.id}:${item2.id!}`"
               />
             </el-select>
           </el-form-item>
@@ -92,12 +92,12 @@ defineExpose({ addSkuInit })
       <el-form-item label="销售属性">
         <el-form label-width="auto" :inline="true">
           <el-form-item v-for="item in hasSaleAttr" :key="item.id" :label="item.saleAttrName">
-            <el-select v-model="selectVal" value-key="" placeholder="" clearable filterable>
+            <el-select v-model="item.saleIdAndValId" value-key="" placeholder="" clearable filterable>
               <el-option
                 v-for="item2 in item.spuSaleAttrValueList"
                 :key="item2.id"
                 :label="item2.saleAttrValueName"
-                :value="item2.id!"
+                :value="`${item.id}:${item2.id!}`"
               />
             </el-select>
           </el-form-item>
