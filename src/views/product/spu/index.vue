@@ -72,12 +72,15 @@ function addSku(row: recordsDataObj) { // 添加sku
   scene.value = 2
   sku.value.addSkuInit(row)
 }
-async function handleView(row: recordsDataObj) {
+async function handleView(row: recordsDataObj) { // 查看sku
   skuDialogVisible.value = true
   const res = await getSkuInfo(row.id!)
   if (res.code === 200)
     skuInfo.value = res.data
 }
+onBeforeUnmount(() => { // 组件销毁前，清空仓库数据
+  categoryStore.$reset()
+})
 </script>
 
 <template>
