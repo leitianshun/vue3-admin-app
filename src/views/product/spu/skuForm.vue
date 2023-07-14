@@ -30,6 +30,7 @@ const skuParams = ref<addSkuParamType>( // 添加sku参数类型
 
 )
 const formRef = ref()
+const tableRef = ref()
 const spuImgData = ref<spuImageObj[]>([]) // 商品图片
 const hasSaleAttr = ref<saleAttrType[]>([]) // 已有的销售属性
 const attrListArr = ref<attrObj[]>([]) // 平台属性
@@ -51,11 +52,53 @@ async function addSkuInit(row: recordsDataObj) {
   hasSaleAttr.value = SaleAttr.data // 已有的销售属性
   attrListArr.value = attrList.data // 平台属性
 }
-function setDefault(row: any) { // 设置sku默认图片
+function setDefault(row: any, index: number) { // 设置sku默认图片
   skuParams.value.skuDefaultImg = row.imgUrl
+  tableRef.value.clearSelection() // 清空所有选中状态
+
+  // spuImgData.value.forEach((item: any) => {  //遍历，将所有的选中状态清空
+  //   tableRef.value.toggleRowSelection(item, false)
+  // })
+  tableRef.value.toggleRowSelection(row, true) // 第二个参数也可以传index
 }
 
-function onSubmit() {}
+async function onSubmit() {
+  skuParams.value.skuAttrValueList = attrListArr.value.reduce((prev: any, item: any) => { // 对已选择的平台属性进行遍历，返回出属性值和属性id
+    if (item.attrIdAndValId) { // 这里要先判断是否存在这个属性
+      const [attrId, valueId] = item.attrIdAndValId.split(':')
+      prev.push({ attrId, valueId })
+    }
+    return prev
+  }, []) // 表示的是prev,初始值为空数组
+
+  // 对选中的销售属性数据进行格式化，取出销售属性id，以及属性值
+  skuParams.value.skuSaleAttrValueList = hasSaleAttr.value.reduce((prev: any, item: any) => { // 对已选择的平台属性进行遍历，返回出属性值和属性id
+    if (item.saleIdAndValId) { // 这里要先判断是否存在这个属性
+      const [saleAttrId, saleAttrValueId] = item.saleIdAndValId.split(':')
+      prev.push({
+        saleAttrId,
+        saleAttrValueId,
+      })
+    }
+    return prev
+  }, [])
+  if (attrListArr.value.length !== skuParams.value.skuAttrValueList?.length) { // 判断平台属性是否全部选择
+    ElMessage.error('请选择平台属性')
+    return
+  }
+  if (hasSaleAttr.value.length !== skuParams.value.skuSaleAttrValueList?.length) { // 判断销售属性是否全部选择
+    ElMessage.error('请选择销售属性')
+    return
+  }
+  const res = await addSku(skuParams.value)
+  if (res.code === 200) {
+    ElMessage.success('添加成功！')
+    emits('changeScene', { flag: 0 })
+  }
+  else {
+    ElMessage.error('添加失败！')
+  }
+}
 defineExpose({ addSkuInit })
 </script>
 
@@ -104,7 +147,7 @@ defineExpose({ addSkuInit })
         </el-form>
       </el-form-item>
       <el-form-item label="图片名称">
-        <el-table :data="spuImgData" border stripe>
+        <el-table ref="tableRef" :data="spuImgData" border stripe>
           <el-table-column type="selection" width="100" align="center" />
           <!-- <el-table-column label="序号" type="index" width="100" /> -->
           <el-table-column label="图片" prop="imgUrl" align="center">
@@ -115,7 +158,7 @@ defineExpose({ addSkuInit })
           <el-table-column label="名称" prop="imgName" align="center" />
           <el-table-column label="操作" align="center">
             <template #default="{ row, $index }">
-              <el-button type="success" size="default" @click="setDefault(row)">
+              <el-button type="success" size="default" @click="setDefault(row, $index)">
                 设为默认
               </el-button>
             </template>

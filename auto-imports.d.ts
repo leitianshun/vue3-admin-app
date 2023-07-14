@@ -33,6 +33,7 @@ declare global {
   const getCategory3: typeof import('./src/api/product/attr/attr')['getCategory3']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
+  const getSkuInfo: typeof import('./src/api/product/spu/spu')['getSkuInfo']
   const getSpuImage: typeof import('./src/api/product/spu/spu')['getSpuImage']
   const getSpuInfo: typeof import('./src/api/product/spu/spu')['getSpuInfo']
   const getSpuList: typeof import('./src/api/product/spu/spu')['getSpuList']

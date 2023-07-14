@@ -138,3 +138,18 @@ export interface addSkuParamType { // 添加sku参数类型
 export interface addSkuType extends responseData { // 添加sku，返回类型
   data: null
 }
+
+export interface skuInfoObjType {
+  category3Id: number
+  price: number
+  skuDefaultImg: string
+  skuDesc: string
+  skuName: string
+  spuId: number
+  tmId: number
+  weight: number
+}
+
+export interface skuInfoResType extends responseData {
+  data: skuInfoObjType[]
+}

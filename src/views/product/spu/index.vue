@@ -2,7 +2,7 @@
 import spuForm from './spuForm.vue'
 import sKuForm from './skuForm.vue'
 import { deleteSpu, getSpuList } from '@/api/product/spu/spu'
-import type { recordsDataArr, recordsDataObj } from '@/api/product/spu/type'
+import type { recordsDataArr, recordsDataObj, skuInfoObjType } from '@/api/product/spu/type'
 
 const scene = ref<number>(0) // 场景切换控制
 const currentPage = ref<number>(1)
@@ -12,6 +12,8 @@ const pageSize = ref<number>(10)
 const categoryStore = useCategoryStore()
 const spu = ref()
 const sku = ref()
+const skuDialogVisible = ref<boolean>(false)
+const skuInfo = ref<skuInfoObjType[]>([])
 
 provide('getData', { getSpuData }) // 父组件提供方法，给子组件使用
 async function handleEdit(row: recordsDataObj) {
@@ -59,16 +61,23 @@ function addSpu() { // 添加spu
   scene.value = 1
   spu.value.addSpuInit(categoryStore.category3Id) // 调用子组件方法，传递3级分类id
 }
-function handleChange({ flag, params }) { // 处理切换场景事件，解构出子组件出发事件的参数
-  scene.value = flag
-  if (params)
-    getSpuData(params === 'add' ? 1 : currentPage.value) // 如果是添加类型，那就获取第一页内容，否则如果是更新，那就留在当前页
+
+interface eventType { flag: number; params?: string }
+function handleChange(obj: eventType) { // 处理切换场景事件，解构出子组件出发事件的参数
+  scene.value = obj.flag
+  if (obj.params)
+    getSpuData(obj.params === 'add' ? 1 : currentPage.value) // 如果是添加类型，那就获取第一页内容，否则如果是更新，那就留在当前页
 }
 function addSku(row: recordsDataObj) { // 添加sku
   scene.value = 2
   sku.value.addSkuInit(row)
 }
-function handleView() {}
+async function handleView(row: recordsDataObj) {
+  skuDialogVisible.value = true
+  const res = await getSkuInfo(row.id!)
+  if (res.code === 200)
+    skuInfo.value = res.data
+}
 </script>
 
 <template>
@@ -97,6 +106,23 @@ function handleView() {}
             </template>
           </el-table-column>
         </el-table>
+        <el-dialog
+          v-model="skuDialogVisible"
+          title="SKU列表"
+          width="50%"
+        >
+          <el-table :data="skuInfo" border stripe height="calc(100vh - 200px)">
+            <el-table-column type="index" label="序号" width="80" align="center" />
+            <el-table-column label="sku名字" prop="skuName" align="center" />
+            <el-table-column label="sku价格" prop="price" align="center" />
+            <el-table-column label="sku重量" prop="weight" align="center" />
+            <el-table-column label="sku图片" prop="skuDefaultImg" align="center">
+              <template #default="{ row }">
+                <img :src="row.skuDefaultImg" class="w-24 h-25" alt="">
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-dialog>
         <el-pagination
           v-model:current-page="currentPage"
           v-model:page-size="pageSize"
