@@ -1,4 +1,4 @@
-import type { SpuImageType, TrademarkType, addOrUpdateSpuResponseType, addSkuParamType, addSkuType, baseAttrListType, deleteSpuResponseType, recordsDataObj, saleAttrResponseType, skuInfoResType, spuResponseDataType } from './type'
+import type { SpuImageType, TrademarkType, addOrUpdateSpuResponseType, addSkuParamType, addSkuType, baseAttrListType, delSkuType, deleteSpuResponseType, recordsDataObj, saleAttrResponseType, skuInfoResType, skuListResType, spuResponseDataType } from './type'
 
 enum API {
   getSpuList_URL = '/admin/product/', // 获取已有的spu数据
@@ -11,7 +11,9 @@ enum API {
   addSpu_URL = '/admin/product/saveSpuInfo', // 添加spu
   updateSpu_URL = '/admin/product/updateSpuInfo', // 更新
   addSku_URL = '/admin/product/saveSkuInfo', // 添加SKU
-  getSkuInfo_URL = '/admin/product/findBySpuId/',
+  getSkuInfo_URL = '/admin/product/findBySpuId/', // 查看sku详情
+  getSkuList = '/admin/product/list/', // 分页查看sku列表
+  delSku_URL = '/admin/product/deleteSku/',
 }
 
 export const getSpuList = (page: number, limit: number, category3Id: number | string) => request.get<any, spuResponseDataType>(`${API.getSpuList_URL}${page}/${limit}?category3Id=${category3Id}`)
@@ -30,3 +32,7 @@ export function addSpuOrUpdateSpu(data: recordsDataObj) { // 添加或更新spu
 export const addSku = (data: addSkuParamType) => request.post<any, addSkuType>(API.addSku_URL, data) // 添加sku
 
 export const getSkuInfo = (spuId: number) => request.get<any, skuInfoResType>(API.getSkuInfo_URL + spuId)
+
+export const getSkuList = (page: number, limit: number) => request.get<any, skuListResType>(`${API.getSkuList}${page}/${limit}`)
+
+export const delSku = (skuId: number) => request.delete<any, delSkuType>(API.delSku_URL + skuId)

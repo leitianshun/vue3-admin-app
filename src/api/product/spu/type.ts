@@ -148,8 +148,23 @@ export interface skuInfoObjType {
   spuId: number
   tmId: number
   weight: number
+  isSale?: number
 }
 
 export interface skuInfoResType extends responseData {
   data: skuInfoObjType[]
+}
+
+export interface skuListResType extends responseData {
+  data: {
+    current: number
+    records: skuInfoObjType[]
+    searchCount: boolean
+    size: number
+    total: number
+  }
+}
+
+export interface delSkuType extends responseData { // 删除sku，返回类型
+  data: null | string
 }
