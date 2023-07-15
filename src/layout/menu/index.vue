@@ -46,7 +46,7 @@ export default {
           {{ item.meta.title }}
         </span>
       </template>
-      <!-- 递归组件，如果有子路由再次调用这个组件，会走只有一个子路由的逻辑判断，渲染el-menu-item 标签 -->
+      <!-- 递归组件，如果有子路由再次调用这个组件，会走没有子路由的逻辑判断，渲染el-menu-item 标签 -->
       <Menu :menu-list="item.children" />
 
       <!-- <el-menu-item v-for="item2 in item.children" :key="item2.path" :index="item2.path">
