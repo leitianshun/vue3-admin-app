@@ -167,7 +167,7 @@ watch(() => categoryStore.category3Id, () => {
             </template>
           </el-table-column>
           <el-table-column label="属性值操作" align="center">
-            <template #default="{ row, $index }">
+            <template #default="{ $index }">
               <el-button type="danger" icon="Delete" @click="deleteAttrVal($index)" />
             </template>
           </el-table-column>

@@ -6,12 +6,12 @@ export interface responseData {
 
 export interface recordsType { // 用户对象类型
   createTime: string
-  id: number
+  id?: number
   name: string
   password: number
-  phone: null
-  roleName: string
-  updateTime: string
+  phone?: null
+  roleName?: string
+  updateTime?: string
   username: string
 }
 
