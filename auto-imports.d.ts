@@ -10,6 +10,7 @@ declare global {
   const ElNotification: typeof import('element-plus/es')['ElNotification']
   const acceptHMRUpdate: typeof import('pinia')['acceptHMRUpdate']
   const addAttr: typeof import('./src/api/product/attr/attr')['addAttr']
+  const addOrUpdateUser: typeof import('./src/api/acl/user/index')['addOrUpdateUser']
   const addSku: typeof import('./src/api/product/spu/spu')['addSku']
   const addSpuOrUpdateSpu: typeof import('./src/api/product/spu/spu')['addSpuOrUpdateSpu']
   const addTradmark: typeof import('./src/api/product/trademark/trademark')['addTradmark']

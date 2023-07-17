@@ -5,14 +5,14 @@ export interface responseData {
 }
 
 export interface recordsType { // 用户对象类型
-  createTime: string
+  createTime?: string
   id?: number
-  name: string
-  password: number
+  name?: string
+  password?: number | string
   phone?: null
   roleName?: string
   updateTime?: string
-  username: string
+  username?: string
 }
 
 export interface userListResType extends responseData { // 用户列表返回类型
@@ -29,4 +29,8 @@ export interface userListResType extends responseData { // 用户列表返回类
 
 export interface delResType extends responseData {
   data: null | string
+}
+
+export interface addOrUpdateResType extends responseData {
+  data: null
 }

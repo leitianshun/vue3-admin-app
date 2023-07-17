@@ -5,10 +5,24 @@ const table = ref()
 const currentPage = ref<number>(1)
 const pageSize = ref<number>(10)
 const total = ref<number>(0)
-const userListData = ref<any>([])
+const userListData = ref<recordsType[]>([])
 const selectionList = ref([]) // 选中的列表
 const userName = ref('') // 搜索参数，根据用户名
 const drawerVisible = ref<boolean>(false) // 控制抽屉开关
+const userParams = ref<recordsType>({
+  username: '',
+  name: '',
+  password: '',
+})
+const userRef = ref()
+
+const rules = ref({
+  username: [{ required: true, message: '请填写用户名字', trigger: 'blur' }],
+  name: [{ required: true, message: '请填写用户昵称', trigger: 'blur' }],
+  password: [{ required: true, message: '请填写用户密码', trigger: 'blur' },
+    { min: 6, max: 15, message: '密码长度最小6位', trigger: 'blur' },
+  ],
+})
 
 async function getUsers(page = 1) { // 获取用户列表
   currentPage.value = page
@@ -32,8 +46,11 @@ function handleSelectionChange(item: any) { // 列表被选择回调,多选
 function handleRole() { // 分配角色
   drawerVisible.value = true
 }
-function handleUpdate() { // 编辑
+function handleUpdate(row: recordsType) { // 编辑
   drawerVisible.value = true
+  userParams.value.id = row.id
+  userParams.value.name = row.name
+  userParams.value.username = row.username
 }
 async function handleDelete(row: recordsType) { // 删除
   ElMessageBox.confirm(
@@ -64,8 +81,45 @@ function batchDelete() { // 批量删除
 
 }
 
-function addUser() { // 添加用户
+function addUsers() { // 添加用户
   drawerVisible.value = true
+  userParams.value = {
+    username: '',
+    name: '',
+    password: '',
+  }
+}
+
+function cancel() { // 取消
+  drawerVisible.value = false
+  userParams.value = {}
+  userRef.value.clearValidate()
+}
+
+async function submit() {
+  let isSuccess = false
+  if (userParams.value.id) {
+    await userRef.value.validate()
+    delete userParams.value.password
+    const res = await addOrUpdateUser(userParams.value)
+    if (res.code === 200)
+      isSuccess = true
+    userRef.value.clearValidate()
+  }
+  else {
+    await userRef.value.validate()
+    const res = await addOrUpdateUser(userParams.value)
+    if (res.code === 200)
+      isSuccess = true
+    userRef.value.clearValidate()
+  }
+  if (isSuccess) {
+    getUsers()
+    ElMessage.success(userParams.value.id ? '修改成功' : '添加成功')
+  }
+  else {
+    ElMessage.error(userParams.value.id ? '修改失败' : '添加失败')
+  }
 }
 </script>
 
@@ -86,19 +140,19 @@ function addUser() { // 添加用户
     </el-card>
 
     <el-card class="mt-5">
-      <el-button type="primary" icon="Plus" @click="addUser">
+      <el-button type="primary" icon="Plus" @click="addUsers">
         添加
       </el-button>
       <el-button type="danger" icon="Delete" :disabled="selectionList.length === 0" @click="batchDelete">
         批量删除
       </el-button>
-      <el-table ref="table" :data="userListData" border stripe height="calc(100vh - 360px)" class="mt-5" @selection-change="handleSelectionChange">
+      <el-table ref="table" :data="userListData" border stripe height="calc(100vh - 430px)" class="mt-5" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="50" align="center" />
         <el-table-column type="index" label="序号" width="100" align="center" />
         <el-table-column label="id" align="center" prop="id" />
-        <el-table-column label="用户名字" align="center" prop="username" />
-        <el-table-column label="用户名称" align="center" prop="name" />
-        <el-table-column label="用户角色" align="center" prop="roleName" />
+        <el-table-column label="用户名字" align="center" prop="username" show-overflow-tooltip />
+        <el-table-column label="用户名称" align="center" prop="name" show-overflow-tooltip />
+        <el-table-column label="用户角色" align="center" prop="roleName" show-overflow-tooltip />
         <el-table-column label="创建时间" align="center" prop="createTime" show-overflow-tooltip />
         <el-table-column label="更新时间" align="center" prop="updateTime" show-overflow-tooltip />
         <el-table-column label="操作" align="center" width="300px">
@@ -106,7 +160,7 @@ function addUser() { // 添加用户
             <el-button type="primary" size="small" icon="User" @click="handleRole()">
               分配角色
             </el-button>
-            <el-button type="primary" size="small" icon="Edit" @click="handleUpdate()">
+            <el-button type="primary" size="small" icon="Edit" @click="handleUpdate(row)">
               编辑
             </el-button>
             <el-button type="primary" size="small" icon="Delete" @click="handleDelete(row)">
@@ -117,11 +171,29 @@ function addUser() { // 添加用户
       </el-table>
       <el-drawer
         v-model="drawerVisible"
-        size="35%"
+        size="30%"
         title="编辑用户"
         direction="rtl"
       >
-        123
+        <el-form ref="userRef" :model="userParams" :rules="rules" label-width="80px" :inline="false">
+          <el-form-item label="用户姓名" prop="username">
+            <el-input v-model="userParams.username" placeholder="请填写用户姓名" />
+          </el-form-item>
+          <el-form-item label="用户昵称" prop="name">
+            <el-input v-model="userParams.name" placeholder="请填写用户昵称" />
+          </el-form-item>
+          <el-form-item v-if="!userParams.id" label="用户密码" prop="password">
+            <el-input v-model="userParams.password" type="password" placeholder="请填写用户密码" />
+          </el-form-item>
+        </el-form>
+        <template #footer>
+          <el-button type="primary" size="default" @click="submit">
+            确定
+          </el-button>
+          <el-button size="default" @click=" cancel">
+            取消
+          </el-button>
+        </template>
       </el-drawer>
       <el-pagination
         v-model:current-page="currentPage"
