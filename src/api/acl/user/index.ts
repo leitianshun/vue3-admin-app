@@ -6,11 +6,11 @@ enum API {
   updateUser = '/admin/acl/user/update', // 更新
   delUser = '/admin/acl/user/remove/', // 删除管理用户
   batchDel = '/admin/acl/user/batchRemove', // 批量删除
-  getRoleList = '/admin/acl/role/', // 获取角色列表
+  getRoleList = '/admin/acl/user/toAssign/', // 根据用户id获取已分配角色列表，以及所有角色列表
   doAssignRole = '/admin/acl/user/doAssignRole', // 根据用户分配角色
 }
 
-export const getUserList = (page: number, limit: number) => request.get<any, userListResType>(`${API.getUserList}${page}/${limit}`) // 获取用户列表
+export const getUserList = (page: number, limit: number, username?: string) => request.get<any, userListResType>(`${API.getUserList}${page}/${limit}?username=${username}`) // 获取用户列表
 export function addOrUpdateUser(data: recordsType) { // 添加和更新用户
   if (data.id)
     return request.post<any, addOrUpdateResType>(API.updateUser, data)
@@ -37,5 +37,5 @@ export const batchDel = (idList: Array<string>) => request.delete<any, delResTyp
 //   })
 // }
 
-export const getRoleList = (page: number, limit: number) => request.get<any, roleListResType>(`${API.getRoleList}${page}/${limit}`) // 获取角色列表
+export const getRoleList = (adminId: number) => request.get<any, roleListResType>(`${API.getRoleList}${adminId}`) // 根据用户id获取已分配和全部角色列表
 export const doAssignRole = (data: doAssignRoleParams) => request.post<any, responseData>(API.doAssignRole, data) // 根据用户分配角色

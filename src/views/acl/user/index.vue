@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import type { recordsType, roleObj } from '@/api/acl/user/type'
+import type { recordsType, rolesObj } from '@/api/acl/user/type'
 
 const table = ref()
 const currentPage = ref<number>(1)
@@ -7,7 +7,7 @@ const pageSize = ref<number>(10)
 const total = ref<number>(0)
 const userListData = ref<recordsType[]>([])
 const selectionList = ref<recordsType[]>([]) // 选中的列表
-const userName = ref('') // 搜索参数，根据用户名
+const keyword = ref('') // 搜索参数，根据用户名
 const drawerVisible = ref<boolean>(false) // 控制添加或更新用户，抽屉开关
 const roleDrawerVisible = ref<boolean>(false) // 控制分配用户角色，抽屉开关
 const userParams = ref<recordsType>({
@@ -17,8 +17,8 @@ const userParams = ref<recordsType>({
 })
 const userRef = ref() // 添加或更新用户的表单ref
 const checkAll = ref<boolean>(false)
-const roleList = ref<roleObj[]>([]) // 角色列表返回类型
-const checked = ref<any>([])
+const allRoleList = ref<rolesObj[]>([]) // 存储全部角色
+const checked = ref<any>([]) // 存储已选中过的角色
 const isIndeterminate = ref(true)
 
 function validatorUserName(val: any, callback: any) { // 自定义校验规则 validator
@@ -39,9 +39,9 @@ const rules = ref({
   ],
 })
 
-async function getUsers(page = 1) { // 获取用户列表
+async function getUsers(page = 1, username = '') { // 获取用户列表
   currentPage.value = page
-  const res = await getUserList(currentPage.value, pageSize.value)
+  const res = await getUserList(currentPage.value, pageSize.value, username)
   if (res.code === 200)
     userListData.value = res.data.records
   total.value = res.data.total
@@ -49,7 +49,6 @@ async function getUsers(page = 1) { // 获取用户列表
 }
 onMounted(() => {
   getUsers()
-  getRoleData()
 })
 
 const idList = computed(() => { // 批量删除，获取id数组
@@ -161,32 +160,34 @@ async function submit() { // 添加或更新
   }
 }
 
-async function getRoleData() { // 获取角色列表
-  const res = await getRoleList(1, 20)
+async function getRoleData(adminId: number) { // 获取角色列表
+  const res = await getRoleList(adminId)
   if (res.code === 200)
-    roleList.value = res.data.records
+    allRoleList.value = res.data.allRolesList // 全部角色列表
+  checked.value = res.data.assignRoles.map(item => item.id) // 已分配的角色列表,取出id赋值到已选中的数组中，展示在页面上
 }
 
-function handleRole(row: recordsType) { // 分配角色,打开抽屉
+function handleRole(row: recordsType) { // 分配角色,打开抽屉，获取全部的角色列表
+  getRoleData(row.id!) // 获取全部的角色列表
   roleDrawerVisible.value = true
   userParams.value = row // 将当前选中的角色数据存储起来
 }
 
 function handleCheckAllChange(val: boolean) { // 是否全选
   // val:true(全选)|false(没有全选)
-  checked.value = val ? roleList.value.map(item => item.id) : [] // 还可写为 checked.value = val ? roleList.value : []，这里分配时要取出id
+  checked.value = val ? allRoleList.value.map(item => item.id) : [] // 还可写为 checked.value = val ? allRoleList.value : []，这里分配时要取出id
   isIndeterminate.value = false
 }
 function handleCheckedCitiesChange(value: string[]) { // 单选
   checked.value = value // 将选中的单条数据存储到变量中
   const checkedCount = value.length // 已经选中数量
-  checkAll.value = checkedCount === roleList.value.length // 判断是否全选，就是拿已经选中的数量和总数据列表的长度对比是否相等
-  isIndeterminate.value = checkedCount > 0 && checkedCount < roleList.value.length // 设置不确定状态，当没有全选时就是不确定状态
-  // isIndeterminate.value = value.length !== roleList.value.length  // 设置不确定状态，第二种写法，当选中的长度不等于全部数据的长度时
+  checkAll.value = checkedCount === allRoleList.value.length // 判断是否全选，就是拿已经选中的数量和总数据列表的长度对比是否相等
+  isIndeterminate.value = checkedCount > 0 && checkedCount < allRoleList.value.length // 设置不确定状态，当没有全选时就是不确定状态
+  // isIndeterminate.value = value.length !== allRoleList.value.length  // 设置不确定状态，第二种写法，当选中的长度不等于全部数据的长度时
 }
 async function assignRole() { // 分配角色确定按钮
   const res = await doAssignRole({ roleIdList: checked.value, userId: userParams.value.id as number })
-  // const res = await doAssignRole({ roleIdList:roleList.value.map(item=>item.id) , userId: curUserData.value.id })  还可写为此种方法,取出id
+  // const res = await doAssignRole({ roleIdList:allRoleList.value.map(item=>item.id) , userId: curUserData.value.id })  还可写为此种方法,取出id
   if (res.code === 200) {
     roleDrawerVisible.value = false
     getUsers(currentPage.value)
@@ -200,6 +201,15 @@ function beforeClose() { // 抽屉关闭前的回调，用于清空选中过的�
   checked.value = []
   roleDrawerVisible.value = false
 }
+function search() { // 根据用户名进行搜索
+  if (keyword.value)
+    getUsers(1, keyword.value)
+  keyword.value = ''
+}
+function reset() { // 重置按钮
+  getUsers()
+  keyword.value = ''
+}
 </script>
 
 <template>
@@ -207,13 +217,15 @@ function beforeClose() { // 抽屉关闭前的回调，用于清空选中过的�
     <el-card class="h-18">
       <el-form :inline="true" class="flex justify-between items-center ">
         <el-form-item label="用户名:">
-          <el-input v-model="userName" placeholder="请输入用户名" clearable />
+          <el-input v-model="keyword" placeholder="请输入用户名" clearable />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">
+          <el-button type="primary" @click="search">
             搜索
           </el-button>
-          <el-button>重置</el-button>
+          <el-button @click="reset">
+            重置
+          </el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -305,11 +317,12 @@ function beforeClose() { // 抽屉关闭前的回调，用于清空选中过的�
             >
               全选
             </el-checkbox>
+            <!-- v-model="checked" 绑定已选中的数据   lable表示绑定的值 -->
             <el-checkbox-group
               v-model="checked"
               @change="handleCheckedCitiesChange"
             >
-              <el-checkbox v-for="item in roleList" :key="item.id" :label="item.id">
+              <el-checkbox v-for="item in allRoleList" :key="item.id" :label="item.id">
                 {{
                   item.roleName
                 }}

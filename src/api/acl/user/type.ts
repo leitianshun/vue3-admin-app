@@ -35,7 +35,7 @@ export interface addOrUpdateResType extends responseData { // 添加或更新用
   data: null
 }
 
-export interface roleObj { // 每个角色的对象类型
+export interface rolesObj { // 已分配角色和全部角色的对象类型
   createTime: string
   id: number
   remark: null
@@ -49,7 +49,8 @@ export interface roleListResType extends responseData { // 角色列表返回类
     hitCount: boolean
     optimizeCountSql: boolean
     pages: number
-    records: roleObj[]
+    assignRoles: rolesObj[]
+    allRolesList: rolesObj[]
     searchCount: boolean
     size: number
     total: number
