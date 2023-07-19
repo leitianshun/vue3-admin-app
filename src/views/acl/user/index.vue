@@ -160,11 +160,12 @@ async function submit() { // 添加或更新
   }
 }
 
-async function getRoleData(adminId: number) { // 获取角色列表
+async function getRoleData(adminId: number) { // 根据用户获取角色列表
   const res = await getRoleList(adminId)
   if (res.code === 200)
     allRoleList.value = res.data.allRolesList // 全部角色列表
-  checked.value = res.data.assignRoles.map(item => item.id) // 已分配的角色列表,取出id赋值到已选中的数组中，展示在页面上
+  checked.value = res.data.assignRoles.map(item => item.id) // 已分配的角色列表,取出id赋值到已选中的数组中，因为el-checkbox的label的值绑定的是id，所以这里要取出id，然后就会显示已选中的状态
+  // checked.value = res.data.assignRoles // 如果el-checkbox的lable绑定的是item，那么这里可以直接赋值到已选中的数组中，不用取出id，这样就会展示已选种的状态
 }
 
 function handleRole(row: recordsType) { // 分配角色,打开抽屉，获取全部的角色列表
@@ -317,7 +318,7 @@ function reset() { // 重置按钮
             >
               全选
             </el-checkbox>
-            <!-- v-model="checked" 绑定已选中的数据   lable表示绑定的值 -->
+            <!-- v-model="checked" 绑定已选中的数据   lable表示绑定的值   这里的label 可以是item，也就是:label="item"这样的话获取数据的时候就可以将已分配的角色赋值到checked上，这样已分配的就会显示被选中 -->
             <el-checkbox-group
               v-model="checked"
               @change="handleCheckedCitiesChange"

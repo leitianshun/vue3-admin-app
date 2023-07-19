@@ -32,3 +32,21 @@ export interface roleListResType extends responseData { // 角色列表返回类
 export interface publicType extends responseData { // 删除修改新增返回公共类型类型
   data: null | string
 }
+
+export interface permisstionObj { // 权限菜单返回数据
+  id: number
+  createTime: string
+  updateTime: string
+  pid: number
+  name: string
+  code: null
+  toCode: null
+  type: number
+  status: null
+  level: number
+  children: permisstionObj[]
+}
+
+export interface permissionResType extends responseData {
+  data: permisstionObj[]
+}

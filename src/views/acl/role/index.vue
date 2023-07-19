@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import type { rolesObj } from '@/api/acl/role/type'
+import type { permisstionObj, rolesObj } from '@/api/acl/role/type'
 
 const table = ref()
 const currentPage = ref<number>(1)
@@ -8,14 +8,18 @@ const total = ref<number>(0)
 const userListData = ref<rolesObj[]>([])
 const selectionList = ref<rolesObj[]>([]) // 选中的列表
 const keyword = ref('') // 搜索参数，根据用户名
-const drawerVisible = ref<boolean>(false) // 控制添加或更新用户，抽屉开关
+const dialogVisible = ref<boolean>(false) // 控制添加或更新用户，弹窗开关
 const roleDrawerVisible = ref<boolean>(false) // 控制分配用户角色，抽屉开关
-const userParams = ref<rolesObj>({})
+const roleParams = ref<rolesObj>({})
 const userRef = ref() // 添加或更新用户的表单ref
-const checkAll = ref<boolean>(false)
-const allRoleList = ref<rolesObj[]>([]) // 存储全部角色
+// const checkAll = ref<boolean>(false)
+const allMenuList = ref<permisstionObj[]>([]) // 存储全部角色
 const checked = ref<any>([]) // 存储已选中过的角色
-const isIndeterminate = ref(true)
+// const isIndeterminate = ref(true)
+const rules = ref({
+  roleName: [{ required: true, message: '请填写角色名称', trigger: 'blur' }],
+})
+const tree = ref() // 树形控件的ref
 
 async function getRoleList(page = 1, rolename = '') { // 获取角色列表
   currentPage.value = page
@@ -42,19 +46,19 @@ function handleSelectionChange(item: any) { // 列表被选择回调,多选
   selectionList.value = item
 }
 
-function handleUpdate(row: rolesObj) { // 编辑,当前后台做了处理，无法修改
-  drawerVisible.value = true
-  Object.assign(userParams.value, row)
+function handleUpdate(row: rolesObj) { // 编辑角色
+  dialogVisible.value = true
+  Object.assign(roleParams.value, row)
   nextTick(() => {
     userRef.value.clearValidate()
   })
 
-  // userParams.value.id = row.id
-  // userParams.value.name = row.name
-  // userParams.value.username = row.username
-  // userParams.value.password = row.password
+  // roleParams.value.id = row.id
+  // roleParams.value.name = row.name
+  // roleParams.value.username = row.username
+  // roleParams.value.password = row.password
 }
-async function handleDelete(row: rolesObj) { // 删除某个用户
+async function handleDelete(row: rolesObj) { // 删除某个角色
   ElMessageBox.confirm(
     `是否确认删除${row.roleName}?`,
     '提示',
@@ -79,7 +83,7 @@ async function handleDelete(row: rolesObj) { // 删除某个用户
     })
 }
 
-async function batchDelete() { // 批量删除用户
+async function batchDelete() { // 批量删除角色
   // if (selectionList.value.length === 0) {  //这里不需要判断，因为按钮已经做了禁用处理
   //   ElMessage.error('最少选择一项')
   //   return
@@ -93,7 +97,7 @@ async function batchDelete() { // 批量删除用户
       type: 'warning',
     },
   )
-  const res = await batchDel(idList.value)
+  const res = await batchDelRole(idList.value)
   if (res.code === 200) {
     getRoleList(userListData.value.length > 1 ? currentPage.value : currentPage.value - 1) // 如果删除后当前页还有数据，就留在当前，否则获取上一页的数据
     table.value.clearSelection()
@@ -105,63 +109,63 @@ async function batchDelete() { // 批量删除用户
   }
 }
 
-function addUsers() { // 添加用户
-  drawerVisible.value = true
-  userParams.value = { }
+function addUsers() { // 添加角色
+  dialogVisible.value = true
+  roleParams.value = { }
   nextTick(() => {
     userRef.value.clearValidate()
   })
 }
 
 function cancel() { // 取消
-  drawerVisible.value = false
+  dialogVisible.value = false
   userRef.value.clearValidate()
 }
 
 async function submit() { // 添加或更新
   await userRef.value.validate()
-  const res = await addOrUpdateUser(userParams.value)
+  const res = await addOrUpdateRole(roleParams.value)
   if (res.code === 200) {
-    getRoleList(userParams.value.id ? currentPage.value : 1)
-    ElMessage.success(userParams.value.id ? '修改成功' : '添加成功')
-    drawerVisible.value = false
-    if (userParams.value.id)
+    getRoleList(roleParams.value.id ? currentPage.value : 1)
+    ElMessage.success(roleParams.value.id ? '修改成功' : '添加成功')
+    dialogVisible.value = false
+    if (roleParams.value.id)
       window.location.reload() // 如果修改的是当前登录的用户，则需要刷新页面，返回到登录页
   }
   else {
-    ElMessage.error(userParams.value.id ? '修改失败' : '添加失败,用户名已存在')
-    drawerVisible.value = false
+    ElMessage.error(roleParams.value.id ? '修改失败' : '添加失败,用户名已存在')
+    dialogVisible.value = false
   }
 }
 
-async function getRoleData(adminId: number) { // 获取角色列表
-  const res = await getRoleList(adminId)
+async function getMenuData(roleId: number) { // 根据角色获取菜单
+  const res = await getMenuByRoleId(roleId)
   if (res.code === 200)
-    allRoleList.value = res.data.allRolesList // 全部角色列表
-  checked.value = res.data.assignRoles.map(item => item.id) // 已分配的角色列表,取出id赋值到已选中的数组中，展示在页面上
+    allMenuList.value = res.data // 全部角色列表
+  // checked.value = res.data.map(item => item.id) // 已分配的角色列表,取出id赋值到已选中的数组中，展示在页面上
 }
 
 function handleRole(row: rolesObj) { // 分配角色,打开抽屉，获取全部的角色列表
-  getRoleData(row.id!) // 获取全部的角色列表
+  getMenuData(row.id!) // 根据角色获取菜单
   roleDrawerVisible.value = true
-  userParams.value = row // 将当前选中的角色数据存储起来
+  roleParams.value = row // 将当前选中的角色数据存储起来
 }
 
-function handleCheckAllChange(val: boolean) { // 是否全选
-  // val:true(全选)|false(没有全选)
-  checked.value = val ? allRoleList.value.map(item => item.id) : [] // 还可写为 checked.value = val ? allRoleList.value : []，这里分配时要取出id
-  isIndeterminate.value = false
-}
-function handleCheckedCitiesChange(value: string[]) { // 单选
-  checked.value = value // 将选中的单条数据存储到变量中
-  const checkedCount = value.length // 已经选中数量
-  checkAll.value = checkedCount === allRoleList.value.length // 判断是否全选，就是拿已经选中的数量和总数据列表的长度对比是否相等
-  isIndeterminate.value = checkedCount > 0 && checkedCount < allRoleList.value.length // 设置不确定状态，当没有全选时就是不确定状态
-  // isIndeterminate.value = value.length !== allRoleList.value.length  // 设置不确定状态，第二种写法，当选中的长度不等于全部数据的长度时
-}
+// function handleCheckAllChange(val: boolean) { // 是否全选
+//   // val:true(全选)|false(没有全选)
+//   checked.value = val ? allMenuList.value.map(item => item.id) : [] // 还可写为 checked.value = val ? allMenuList.value : []，这里分配时要取出id
+//   isIndeterminate.value = false
+// }
+// function handleCheckedCitiesChange(value: string[]) { // 单选
+//   checked.value = value // 将选中的单条数据存储到变量中
+//   const checkedCount = value.length // 已经选中数量
+//   checkAll.value = checkedCount === allMenuList.value.length // 判断是否全选，就是拿已经选中的数量和总数据列表的长度对比是否相等
+//   isIndeterminate.value = checkedCount > 0 && checkedCount < allMenuList.value.length // 设置不确定状态，当没有全选时就是不确定状态
+//   // isIndeterminate.value = value.length !== allMenuList.value.length  // 设置不确定状态，第二种写法，当选中的长度不等于全部数据的长度时
+// }
 async function assignRole() { // 分配角色确定按钮
-  const res = await doAssignRole({ roleIdList: checked.value, userId: userParams.value.id as number })
-  // const res = await doAssignRole({ roleIdList:allRoleList.value.map(item=>item.id) , userId: curUserData.value.id })  还可写为此种方法,取出id
+  const res = await doAssignRole({ roleIdList: checked.value, userId: roleParams.value.id as number })
+  // const res = await doAssignRole({ roleIdList:allMenuList.value.map(item=>item.id) , userId: curUserData.value.id })  还可写为此种方法,取出id
   if (res.code === 200) {
     roleDrawerVisible.value = false
     getRoleList(currentPage.value)
@@ -183,6 +187,11 @@ function search() { // 根据用户名进行搜索
 function reset() { // 重置按钮
   getRoleList()
   keyword.value = ''
+}
+
+function currentChange(data: any, node: any) {
+  console.log(data, node)
+  // tree.value.setCurrentNode()
 }
 </script>
 
@@ -221,7 +230,7 @@ function reset() { // 重置按钮
         <el-table-column label="操作" align="center" width="300px">
           <template #default="{ row }">
             <el-button type="primary" size="small" icon="User" @click="handleRole(row)">
-              分配角色
+              分配权限
             </el-button>
             <el-button type="primary" size="small" icon="Edit" @click="handleUpdate(row)">
               编辑
@@ -233,22 +242,15 @@ function reset() { // 重置按钮
         </el-table-column>
       </el-table>
 
-      <!-- 添加或更新用户抽屉 -->
-      <el-drawer
-        v-model="drawerVisible"
+      <!-- 添加或更新用户弹窗 -->
+      <el-dialog
+        v-model="dialogVisible"
         size="30%"
-        :title="userParams.id ? '编辑用户' : '添加用户' "
-        direction="rtl"
+        :title="roleParams.id ? '编辑角色' : '添加角色' "
       >
-        <el-form ref="userRef" :model="userParams" :rules="rules" label-width="80px" :inline="false">
-          <el-form-item label="用户姓名" prop="username">
-            <el-input v-model="userParams.username" placeholder="请填写用户姓名" />
-          </el-form-item>
-          <el-form-item label="用户昵称" prop="name">
-            <el-input v-model="userParams.name" placeholder="请填写用户昵称" />
-          </el-form-item>
-          <el-form-item v-if="!userParams.id" label="用户密码" prop="password">
-            <el-input v-model="userParams.password" type="password" placeholder="请填写用户密码" />
+        <el-form ref="userRef" :model="roleParams" :rules="rules" label-width="80px" :inline="false">
+          <el-form-item label="角色名称" prop="roleName">
+            <el-input v-model="roleParams.roleName" placeholder="请填写角色名称" />
           </el-form-item>
         </el-form>
         <template #footer>
@@ -259,13 +261,13 @@ function reset() { // 重置按钮
             取消
           </el-button>
         </template>
-      </el-drawer>
+      </el-dialog>
 
       <!-- 角色分配抽屉 -->
       <el-drawer
         v-model="roleDrawerVisible"
         size="35%"
-        title="分配用户角色 "
+        title="分配角色权限 "
         :before-close="beforeClose"
         direction="rtl"
       >
@@ -274,32 +276,46 @@ function reset() { // 重置按钮
             用户姓名
           </el-col>
           <el-col :span="18" :offset="0">
-            <el-input v-model="userParams.username" placeholder="用户姓名" disabled />
+            <el-input v-model="roleParams.roleName" placeholder="用户姓名" disabled />
           </el-col>
         </el-row>
         <el-row :gutter="10" class="mt-5 ">
           <el-col :span="6" :offset="0">
-            角色列表
+            菜单列表
           </el-col>
           <el-col :span="18" :offset="0">
-            <el-checkbox
+            <!-- <el-checkbox
               v-model="checkAll"
               :indeterminate="isIndeterminate"
               @change="handleCheckAllChange"
             >
               全选
-            </el-checkbox>
+            </el-checkbox> -->
             <!-- v-model="checked" 绑定已选中的数据   lable表示绑定的值 -->
-            <el-checkbox-group
+            <!-- <el-checkbox-group
               v-model="checked"
               @change="handleCheckedCitiesChange"
             >
-              <el-checkbox v-for="item in allRoleList" :key="item.id" :label="item.id">
+              <el-checkbox v-for="item in allMenuList" :key="item.id" :label="item">
                 {{
-                  item.roleName
+                  item.name
                 }}
               </el-checkbox>
-            </el-checkbox-group>
+            </el-checkbox-group> -->
+            <el-tree
+              ref="tree"
+              :data="allMenuList"
+              show-checkbox
+              node-key="select"
+              highlight-current
+              :default-expanded-keys="['true']"
+              :default-checked-keys="['true']"
+              :props="{
+                children: 'children',
+                label: 'name',
+              }"
+              @current-change="currentChange"
+            />
           </el-col>
         </el-row>
         <template #footer>
