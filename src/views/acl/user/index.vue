@@ -21,8 +21,8 @@ const allRoleList = ref<rolesObj[]>([]) // 存储全部角色
 const checked = ref<any>([]) // 存储已选中过的角色
 const isIndeterminate = ref(true)
 
-function validatorUserName(val: any, callback: any) { // 自定义校验规则 validator
-  if (val.trim().length >= 5)
+function validatorUserName(rule: any, value: any, callback: any) { // 自定义校验规则 validator
+  if (value.trim().length >= 5)
     callback()
   else
     callback(new Error('用户姓名长度最小5位'))
