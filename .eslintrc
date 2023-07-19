@@ -33,6 +33,8 @@
         "@antfu"
     ],
     "rules": {
-        "no-console": "off"
+        "no-console": "off",
+        "vue/no-unused-vars": "off", //关闭未使用的变量警告
+        "unused-imports/no-unused-vars": "off" //关闭未使用的Import警告,未使用的参数警告
     }
 }
