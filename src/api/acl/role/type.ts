@@ -50,3 +50,8 @@ export interface permisstionObj { // 权限菜单返回数据
 export interface permissionResType extends responseData {
   data: permisstionObj[]
 }
+
+export interface doAssignPermissionParams { // 根据角色分配菜单权限
+  permissionIdList: Array<number>
+  roleId: number | string
+}

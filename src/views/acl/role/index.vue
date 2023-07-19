@@ -5,7 +5,7 @@ const table = ref()
 const currentPage = ref<number>(1)
 const pageSize = ref<number>(10)
 const total = ref<number>(0)
-const userListData = ref<rolesObj[]>([])
+const roleListData = ref<rolesObj[]>([])
 const selectionList = ref<rolesObj[]>([]) // 选中的列表
 const keyword = ref('') // 搜索参数，根据用户名
 const dialogVisible = ref<boolean>(false) // 控制添加或更新用户，弹窗开关
@@ -21,11 +21,13 @@ const rules = ref({
 })
 const tree = ref() // 树形控件的ref
 
+const selectArr = ref<Array<string>>([]) // 储存被选中id数组，用于展示，被选中效果
+
 async function getRoleList(page = 1, rolename = '') { // 获取角色列表
   currentPage.value = page
   const res = await getAllRoleList(currentPage.value, pageSize.value, rolename)
   if (res.code === 200)
-    userListData.value = res.data.records
+    roleListData.value = res.data.records
   total.value = res.data.total
   console.log(res)
 }
@@ -71,7 +73,7 @@ async function handleDelete(row: rolesObj) { // 删除某个角色
     .then(() => {
       delRole(row.id!).then((res) => {
         if (res.code === 200) {
-          getRoleList(userListData.value.length > 1 ? currentPage.value : currentPage.value - 1) // 如果删除后当前页还有数据，就留在当前，否则获取上一页的数据
+          getRoleList(roleListData.value.length > 1 ? currentPage.value : currentPage.value - 1) // 如果删除后当前页还有数据，就留在当前，否则获取上一页的数据
           ElMessage.success('删除成功！')
         }
         else {
@@ -99,7 +101,7 @@ async function batchDelete() { // 批量删除角色
   )
   const res = await batchDelRole(idList.value)
   if (res.code === 200) {
-    getRoleList(userListData.value.length > 1 ? currentPage.value : currentPage.value - 1) // 如果删除后当前页还有数据，就留在当前，否则获取上一页的数据
+    getRoleList(roleListData.value.length > 1 ? currentPage.value : currentPage.value - 1) // 如果删除后当前页还有数据，就留在当前，否则获取上一页的数据
     table.value.clearSelection()
     ElMessage.success('删除成功')
   }
@@ -138,11 +140,12 @@ async function submit() { // 添加或更新
   }
 }
 
-async function getMenuData(roleId: number) { // 根据角色获取菜单
+async function getMenuData(roleId: number) { // 分配权限按钮，根据角色获取菜单
+  selectArr.value = [] // 每次打开时，清空数据
   const res = await getMenuByRoleId(roleId)
   if (res.code === 200)
     allMenuList.value = res.data // 全部角色列表
-  // checked.value = res.data.map(item => item.id) // 已分配的角色列表,取出id赋值到已选中的数组中，展示在页面上
+  selectArr.value = filterSelectRoleId(allMenuList.value)
 }
 
 function handleRole(row: rolesObj) { // 分配角色,打开抽屉，获取全部的角色列表
@@ -151,25 +154,50 @@ function handleRole(row: rolesObj) { // 分配角色,打开抽屉，获取全部
   roleParams.value = row // 将当前选中的角色数据存储起来
 }
 
-// function handleCheckAllChange(val: boolean) { // 是否全选
-//   // val:true(全选)|false(没有全选)
-//   checked.value = val ? allMenuList.value.map(item => item.id) : [] // 还可写为 checked.value = val ? allMenuList.value : []，这里分配时要取出id
-//   isIndeterminate.value = false
+// 第一种写法
+function filterSelectRoleId(arr: any) { // 过滤出角色列表中以选中的权限id,注意这里要拿旧数组拼接，否则数据丢失
+  let res: string[] = []
+  arr.forEach((item: any) => {
+    if (item.select && item.level === 4) // 这里写第4级，是因为这一级才有子数据，可以被选择
+      res.push(item.id)
+    if (item.children && item.children.length > 0)
+      // res = res.concat(filterSelectRoleId(item.children)) // 注意这里要用数组拼接进去，否则之前数组里push的数据就丢失
+      res = [...res, ...filterSelectRoleId(item.children)] // 这里还可以用 [...res,...filterSelectRoleId(item.children)]
+  })
+  return res
+}
+
+// 第二种写法，不需要拼接数组，将数组作为参数传进去，这样递归时就不会被销毁，数据也就不会丢失
+// function filterSelectRoleId(arr: any, initArr: any) { // 过滤出角色列表中以选中的权限id,这里的第二个参数的目的是为了在递归时保证以有数据不被丢失，进行数据存储
+//   arr.forEach((item: any) => {
+//     if (item.select && item.level === 4) // 这里写第4级，是因为这一级才有子数据，可以被选择
+//       initArr.push(item.id)
+//     if (item.children && item.children.length > 0)
+//       filterSelectRoleId(item.children, initArr) // 注意这里递归用的是已经有数据的数组，不会被销毁，并不是新的空数组。
+//   })
+//   return initArr
 // }
-// function handleCheckedCitiesChange(value: string[]) { // 单选
-//   checked.value = value // 将选中的单条数据存储到变量中
-//   const checkedCount = value.length // 已经选中数量
-//   checkAll.value = checkedCount === allMenuList.value.length // 判断是否全选，就是拿已经选中的数量和总数据列表的长度对比是否相等
-//   isIndeterminate.value = checkedCount > 0 && checkedCount < allMenuList.value.length // 设置不确定状态，当没有全选时就是不确定状态
-//   // isIndeterminate.value = value.length !== allMenuList.value.length  // 设置不确定状态，第二种写法，当选中的长度不等于全部数据的长度时
+
+// 第三种写法
+// function filterSelectRoleId(arr: any) { // 过滤出角色列表中以选中的权限id,注意这里要拿旧数组拼接，否则数据丢失
+//   const res = arr.reduce((prev: any, item: any) => {
+//     if (item.select && item.level === 4) // 这里写第4级，是因为这一级才有子数据，可以被选择
+//       prev.push(item.id)
+//     if (item.children && item.children.length > 0)
+//       // prev = prev.concat(filterSelectRoleId(item.children)) // 注意这里要用数组拼接进去，否则之前数组里push的数据就丢失
+//       prev = [...prev, ...filterSelectRoleId(item.children)] // 这里还可以用 [...prev,...filterSelectRoleId(item.children)]
+//     return prev
+//   }, [])
+//   return res
 // }
+
 async function assignRole() { // 分配角色确定按钮
-  const res = await doAssignRole({ roleIdList: checked.value, userId: roleParams.value.id as number })
-  // const res = await doAssignRole({ roleIdList:allMenuList.value.map(item=>item.id) , userId: curUserData.value.id })  还可写为此种方法,取出id
+  // tree.value.getCheckedKeys() //getCheckedKeys() 可以取出选中节点，key的数组，也就是node-key对应的id值组成的数组
+  const res = await doAssignPermission({ permissionIdList: tree.value.getCheckedKeys(), roleId: roleParams.value.id as number })
   if (res.code === 200) {
     roleDrawerVisible.value = false
     getRoleList(currentPage.value)
-    ElMessage.success('角色分配成功')
+    ElMessage.success('权限分配成功')
   }
 }
 function cancelAssignRole() { // 取消分配角色
@@ -187,11 +215,6 @@ function search() { // 根据用户名进行搜索
 function reset() { // 重置按钮
   getRoleList()
   keyword.value = ''
-}
-
-function currentChange(data: any, node: any) {
-  console.log(data, node)
-  // tree.value.setCurrentNode()
 }
 </script>
 
@@ -220,7 +243,7 @@ function currentChange(data: any, node: any) {
       <el-button type="danger" icon="Delete" :disabled="selectionList.length === 0" @click="batchDelete">
         批量删除
       </el-button>
-      <el-table ref="table" :data="userListData" border stripe height="calc(100vh - 430px)" class="mt-5" @selection-change="handleSelectionChange">
+      <el-table ref="table" :data="roleListData" border stripe height="calc(100vh - 430px)" class="mt-5" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="50" align="center" />
         <el-table-column type="index" label="序号" width="100" align="center" />
         <el-table-column label="id" align="center" prop="id" />
@@ -273,7 +296,7 @@ function currentChange(data: any, node: any) {
       >
         <el-row :gutter="10">
           <el-col :span="6" :offset="0">
-            用户姓名
+            角色名称
           </el-col>
           <el-col :span="18" :offset="0">
             <el-input v-model="roleParams.roleName" placeholder="用户姓名" disabled />
@@ -284,42 +307,23 @@ function currentChange(data: any, node: any) {
             菜单列表
           </el-col>
           <el-col :span="18" :offset="0">
-            <!-- <el-checkbox
-              v-model="checkAll"
-              :indeterminate="isIndeterminate"
-              @change="handleCheckAllChange"
-            >
-              全选
-            </el-checkbox> -->
-            <!-- v-model="checked" 绑定已选中的数据   lable表示绑定的值 -->
-            <!-- <el-checkbox-group
-              v-model="checked"
-              @change="handleCheckedCitiesChange"
-            >
-              <el-checkbox v-for="item in allMenuList" :key="item.id" :label="item">
-                {{
-                  item.name
-                }}
-              </el-checkbox>
-            </el-checkbox-group> -->
             <el-tree
               ref="tree"
               :data="allMenuList"
               show-checkbox
-              node-key="select"
+              node-key="id"
+              default-expand-all
               highlight-current
-              :default-expanded-keys="['true']"
-              :default-checked-keys="['true']"
+              :default-checked-keys="selectArr"
               :props="{
                 children: 'children',
                 label: 'name',
               }"
-              @current-change="currentChange"
             />
           </el-col>
         </el-row>
         <template #footer>
-          <el-button type="primary" size="default" :disabled="checked.length === 0" @click="assignRole">
+          <el-button type="primary" size="default" @click="assignRole">
             确定
           </el-button>
           <el-button size="default" @click="cancelAssignRole">

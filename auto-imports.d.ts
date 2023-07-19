@@ -35,6 +35,7 @@ declare global {
   const delTradmark: typeof import('./src/api/product/trademark/trademark')['delTradmark']
   const delUser: typeof import('./src/api/acl/user/index')['delUser']
   const deleteSpu: typeof import('./src/api/product/spu/spu')['deleteSpu']
+  const doAssignPermission: typeof import('./src/api/acl/role/index')['doAssignPermission']
   const doAssignRole: typeof import('./src/api/acl/user/index')['doAssignRole']
   const effectScope: typeof import('vue')['effectScope']
   const getActivePinia: typeof import('pinia')['getActivePinia']

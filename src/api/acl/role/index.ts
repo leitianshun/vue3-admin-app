@@ -1,4 +1,4 @@
-import type { permissionResType, publicType, roleListResType, rolesObj } from './type'
+import type { doAssignPermissionParams, permissionResType, publicType, roleListResType, rolesObj } from './type'
 
 enum API {
   getRoleList = '/admin/acl/role/', // 获取角色列表
@@ -22,3 +22,4 @@ export function addOrUpdateRole(data: rolesObj) { // 添加或修改角色
 }
 export const getRoleInfo = (id: number) => request.get<any, any>(`${API.getRoleInfo}${id}`) // 获取角色信息
 export const getMenuByRoleId = (roleId: number) => request.get<any, permissionResType>(API.getMenuByRoleId + roleId) // 根据角色获取菜单
+export const doAssignPermission = (data: doAssignPermissionParams) => request.post<any, publicType>(API.doAssignAcl, data) // 根据角色分配菜单权限
