@@ -140,18 +140,23 @@ async function submit() { // 添加或更新
   }
 }
 
-async function getMenuData(roleId: number) { // 分配权限按钮，根据角色获取菜单
+// async function getMenuData(roleId: number) { // 分配权限按钮，根据角色获取菜单
+//   selectArr.value = [] // 每次打开时，清空数据
+//   const res = await getMenuByRoleId(roleId)
+//   if (res.code === 200)
+//     allMenuList.value = res.data // 全部角色列表
+//   selectArr.value = filterSelectRoleId(allMenuList.value)
+// }
+
+async function handleRole(row: rolesObj) { // 分配角色,打开抽屉，获取全部的角色列表
+  // getMenuData(row.id!) // 根据角色获取菜单
+  roleParams.value = row // 将当前选中的角色数据存储起来
   selectArr.value = [] // 每次打开时，清空数据
-  const res = await getMenuByRoleId(roleId)
+  const res = await getMenuByRoleId(row.id!)
   if (res.code === 200)
     allMenuList.value = res.data // 全部角色列表
-  selectArr.value = filterSelectRoleId(allMenuList.value)
-}
-
-function handleRole(row: rolesObj) { // 分配角色,打开抽屉，获取全部的角色列表
-  getMenuData(row.id!) // 根据角色获取菜单
+  selectArr.value = filterSelectRoleId(allMenuList.value) // 过滤出已经被选中的id
   roleDrawerVisible.value = true
-  roleParams.value = row // 将当前选中的角色数据存储起来
 }
 
 // 第一种写法
