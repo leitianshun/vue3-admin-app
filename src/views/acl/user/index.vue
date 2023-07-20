@@ -176,7 +176,7 @@ async function handleRole(row: recordsType) { // 分配角色,打开抽屉，获
     allRoleList.value = res.data.allRolesList // 全部角色列表
   checked.value = res.data.assignRoles.map(item => item.id) // 已分配的角色列表,取出id赋值到已选中的数组中，因为el-checkbox的label的值绑定的是id，所以这里要取出id，然后就会显示已选中的状态
   // checked.value = res.data.assignRoles // 如果el-checkbox的lable绑定的是item，那么这里可以直接赋值到已选中的数组中，不用取出id，这样就会展示已选种的状态
-  roleDrawerVisible.value = true
+  roleDrawerVisible.value = true // 等待页面数据加载完成后再打开弹窗
 }
 
 function handleCheckAllChange(val: boolean) { // 是否全选
@@ -226,7 +226,7 @@ function reset() { // 重置按钮
           <el-input v-model="keyword" placeholder="请输入用户名" clearable />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="search">
+          <el-button type="primary" :disabled="keyword ? false : true" @click="search">
             搜索
           </el-button>
           <el-button @click="reset">

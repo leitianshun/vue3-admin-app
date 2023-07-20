@@ -153,10 +153,10 @@ async function handleRole(row: rolesObj) { // 分配角色,打开抽屉，获取
   roleParams.value = row // 将当前选中的角色数据存储起来
   selectArr.value = [] // 每次打开时，清空数据
   const res = await getMenuByRoleId(row.id!)
-  if (res.code === 200)
+  if (res.code === 200) // 这里要等到数据获取成功后再打开弹窗，渲染数据
     allMenuList.value = res.data // 全部角色列表
   selectArr.value = filterSelectRoleId(allMenuList.value) // 过滤出已经被选中的id
-  roleDrawerVisible.value = true
+  roleDrawerVisible.value = true // 等待页面数据加载完成后再打开弹窗
 }
 
 // 第一种写法
@@ -231,7 +231,7 @@ function reset() { // 重置按钮
           <el-input v-model="keyword" placeholder="请输入角色名" clearable />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="search">
+          <el-button type="primary" :disabled="keyword ? false : true" @click="search">
             搜索
           </el-button>
           <el-button @click="reset">
