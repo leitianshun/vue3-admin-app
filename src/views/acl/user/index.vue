@@ -19,7 +19,7 @@ const userRef = ref() // 添加或更新用户的表单ref
 const checkAll = ref<boolean>(false)
 const allRoleList = ref<rolesObj[]>([]) // 存储全部角色
 const checked = ref<any>([]) // 存储已选中过的角色
-const isIndeterminate = ref(true)
+const isIndeterminate = ref(true) // 用于设置不确定样式，为true就是未勾选
 
 function validatorUserName(rule: any, value: any, callback: any) { // 自定义校验规则 validator
   if (value.trim().length >= 5)
@@ -303,6 +303,7 @@ function reset() { // 重置按钮
         :before-close="beforeClose"
         direction="rtl"
       >
+        <!-- 这里可以使用el-form -->
         <el-row :gutter="10">
           <el-col :span="6" :offset="0">
             用户姓名
