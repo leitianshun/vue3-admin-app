@@ -1,4 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router'
+
+// import cloneDeep from 'lodash/cloneDeep'
 import { anyRoute, asyncRoutes, constantRoute } from '@/router/routes'
 import type { loginForm } from '@/types/user'
 import { router } from '@/router/index'
@@ -12,13 +14,13 @@ interface userInfo {
   routes: any[]
 }
 
-function filterAsyncRoute(asyncRoutes: any[], routes: any) {
+function filterAsyncRoute(asyncRoutes: any, routes: any) {
   return asyncRoutes.filter((item: any) => {
-    if (routes.includes(item.name)) {
+    if (routes.includes(item.name)) { // 这里要注意，如果符合条件要返回true
       if (item.children && item.children.length > 0)
         item.children = filterAsyncRoute(item.children, routes)
+      return true
     }
-    return true
   })
 }
 
@@ -61,6 +63,8 @@ export const useUserStore = defineStore({
         this.buttons = res.data.buttons
         this.routes = res.data.routes
         const userAsyncRoutes = filterAsyncRoute(asyncRoutes, res.data.routes)
+        // const userAsyncRoutes = filterAsyncRoute(cloneDeep(asyncRoutes), res.data.routes)  //这里可以深拷贝一下
+        console.log(userAsyncRoutes)
         this.menuRoutes = [...constantRoute, ...userAsyncRoutes, anyRoute]
         const asyncRoute = [...userAsyncRoutes, anyRoute]
         asyncRoute.forEach((route: any) => {

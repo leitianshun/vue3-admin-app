@@ -8,7 +8,6 @@ const menuParams = ref<addOrUpdateMenuParam>({ // 收集添加或更新菜单参
   // code: '',
 })
 const form = ref()
-
 const rules = ref({ // 表单校验规则
   name: [{ required: true, message: '请填写名称', trigger: 'blur' }],
   code: [{ required: true, message: '请填写属性值', trigger: 'blur' }],
@@ -60,7 +59,7 @@ async function submit() { // 添加或更新菜单
 
 function cancel() { // 取消
   dialogVisible.value = false
-  form.vlaue.clearValidate('name')
+  form.value.clearValidate()
 }
 </script>
 
@@ -87,7 +86,7 @@ function cancel() { // 取消
           <el-button type="primary" size="default" icon="Edit" :disabled="$index === 0 " @click="update(row)">
             编辑
           </el-button>
-          <el-button type="primary" size="default" icon="Delete" :disabled="$index === 0" @click="onDelMenu(row)">
+          <el-button type="primary" size="default" icon="Delete" :disabled="row.level === 1" @click="onDelMenu(row)">
             删除
           </el-button>
         </template>
@@ -95,7 +94,7 @@ function cancel() { // 取消
     </el-table>
     <el-dialog
       v-model="dialogVisible"
-      title="添加/编辑菜单"
+      :title=" menuParams.id ? '编辑菜单' : '添加菜单'"
       width="30%"
     >
       <el-form ref="form" label-width="80px" :model="menuParams" :rules="rules">
