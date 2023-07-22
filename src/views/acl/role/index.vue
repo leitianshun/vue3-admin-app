@@ -163,7 +163,7 @@ async function handleRole(row: rolesObj) { // 分配角色,打开抽屉，获取
 function filterSelectRoleId(arr: any) { // 过滤出角色列表中以选中的权限id,注意这里要拿旧数组拼接，否则数据丢失
   let res: string[] = []
   arr.forEach((item: any) => {
-    if (item.select && item.level === 4) // 这里写第4级，是因为这一级才有子数据，可以被选择
+    if (item.select) // if (item.select && item.level === 4) 这里原本写第4级，是因为这一级才有子数据，当子集被被选择父级默认选中，但是为了细分化权限菜单，这里将所有以选中id取出来，而不是只取第4级
       res.push(item.id)
     if (item.children && item.children.length > 0)
       // res = res.concat(filterSelectRoleId(item.children)) // 注意这里要用数组拼接进去，否则之前数组里push的数据就丢失
@@ -197,7 +197,8 @@ function filterSelectRoleId(arr: any) { // 过滤出角色列表中以选中的�
 // }
 
 async function assignRole() { // 分配角色确定按钮
-  // tree.value.getCheckedKeys() //getCheckedKeys() 可以取出选中节点，key的数组，也就是node-key对应的id值组成的数组
+  // tree.value.getCheckedKeys() //getCheckedKeys() 可以取出选中节点，key的数组，也就是node-key对应的选中的id值组成的数组
+  // console.log(tree.value.getCheckedKeys())
   const res = await doAssignPermission({ permissionIdList: tree.value.getCheckedKeys(), roleId: roleParams.value.id as number })
   if (res.code === 200) {
     roleDrawerVisible.value = false
@@ -312,11 +313,14 @@ function reset() { // 重置按钮
             菜单列表
           </el-col>
           <el-col :span="18" :offset="0">
+            <!-- check-strictly="true"  这个是严格模式，也就是父子层级选中时没有关联，各选各的，(默认是父级选中子集都会被选中,子集全部选中之后父级才会选中)，但是加上这个属性，这样可以做到权限菜单细分，如果不加，只有当父级下的所有子集都选中才会将父级选中，且设置选中状态 -->
+            <!-- :default-checked-keys="selectArr" 默认选中的id数组，根据node-key的值来决定    default-expand-all 默认全部展开 -->
             <el-tree
               ref="tree"
               :data="allMenuList"
               show-checkbox
               node-key="id"
+              :check-strictly="true"
               default-expand-all
               highlight-current
               :default-checked-keys="selectArr"

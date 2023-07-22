@@ -74,6 +74,7 @@ function cancel() { // 取消
       height="calc(100vh - 160px)"
     >
       <el-table-column prop="name" label="名称" align="center" width="160px" />
+      <el-table-column prop="id" label="id" align="center" />
       <el-table-column prop="code" label="权限" align="center" />
       <el-table-column prop="level" label="层级" align="center" />
       <el-table-column prop="createTime" label="创建时间" align="center" />
