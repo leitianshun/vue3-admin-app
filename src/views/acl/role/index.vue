@@ -163,7 +163,7 @@ async function handleRole(row: rolesObj) { // 分配角色,打开抽屉，获取
 function filterSelectRoleId(arr: any) { // 过滤出角色列表中以选中的权限id,注意这里要拿旧数组拼接，否则数据丢失
   let res: string[] = []
   arr.forEach((item: any) => {
-    if (item.select) // if (item.select && item.level === 4) 这里原本写第4级，是因为这一级才有子数据，当子集被被选择父级默认选中，但是为了细分化权限菜单，这里将所有以选中id取出来，而不是只取第4级
+    if (item.select && item.level === 4) // if (item.select && item.level === 4) 这里选第4级，是因为这一级才有子数据
       res.push(item.id)
     if (item.children && item.children.length > 0)
       // res = res.concat(filterSelectRoleId(item.children)) // 注意这里要用数组拼接进去，否则之前数组里push的数据就丢失
@@ -199,11 +199,19 @@ function filterSelectRoleId(arr: any) { // 过滤出角色列表中以选中的�
 async function assignRole() { // 分配角色确定按钮
   // tree.value.getCheckedKeys() //getCheckedKeys() 可以取出选中节点，key的数组，也就是node-key对应的选中的id值组成的数组
   // console.log(tree.value.getCheckedKeys())
-  const res = await doAssignPermission({ permissionIdList: tree.value.getCheckedKeys(), roleId: roleParams.value.id as number })
+
+  // 这里注意，在收集选中得id时，因为是在半选状态，所以导致父级不是选中状态，因此无法收集到完整的id，所以这里除了使用getCheckedKeys()获取到已经选中过的id时但是无法获取到半选状态的父级id，还要获取到半选状态的id，也就是父级的id，因为子级没有全部选中，所以父级是半选状态
+  // [...tree.value.getCheckedKeys(), ...tree.value.getHalfCheckedNodes()]  //这里获取到已经选中的id和半选中的id，因为子级没有全选所以父级是不确定样式，也就是半选状态，因为要将半选的和已经选择的合并起来
+  console.log([...tree.value.getCheckedKeys(), ...tree.value.getHalfCheckedKeys()])
+  const res = await doAssignPermission({ permissionIdList: [...tree.value.getCheckedKeys(), ...tree.value.getHalfCheckedKeys()], roleId: roleParams.value.id as number })
   if (res.code === 200) {
     roleDrawerVisible.value = false
     getRoleList(currentPage.value)
     ElMessage.success('权限分配成功')
+    window.location.reload()
+  }
+  else {
+    ElMessage.error('权限分配失败')
   }
 }
 function cancelAssignRole() { // 取消分配角色
@@ -313,14 +321,14 @@ function reset() { // 重置按钮
             菜单列表
           </el-col>
           <el-col :span="18" :offset="0">
-            <!-- check-strictly="true"  这个是严格模式，也就是父子层级选中时没有关联，各选各的，(默认是父级选中子集都会被选中,子集全部选中之后父级才会选中)，但是加上这个属性，这样可以做到权限菜单细分，如果不加，只有当父级下的所有子集都选中才会将父级选中，且设置选中状态 -->
+            <!-- check-strictly="true"  这个是严格模式，也就是父子层级选中时没有关联，各选各的，(默认是父级选中子集都会被选中,子集全部选中之后父级才会选中)，但是加上这个属性，这样可以做到权限菜单细分，如果不加，只有当父级下的所有子集都选中才会将父级选中，且设置选中状态 ,-----
+              这个问题已解决，通过获取到已选中的和半选状态的id即可解决 -->
             <!-- :default-checked-keys="selectArr" 默认选中的id数组，根据node-key的值来决定    default-expand-all 默认全部展开 -->
             <el-tree
               ref="tree"
               :data="allMenuList"
               show-checkbox
               node-key="id"
-              :check-strictly="true"
               default-expand-all
               highlight-current
               :default-checked-keys="selectArr"
