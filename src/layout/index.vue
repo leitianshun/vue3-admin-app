@@ -38,11 +38,11 @@ const layoutStore = useLayoutStore()
 </template>
 
 <style scoped lang='scss'>
-.layout-container{
+.layout-container {
 
 .layout-slide {
   width: $base-menu-width;
-  transition: all .5s;
+  transition: all .3s;
 
  .menu{
   height: calc(100vh - $base-top-nav-height );
@@ -56,7 +56,7 @@ const layoutStore = useLayoutStore()
 }
 
 .collapse{
-  transition: all .5s;
+  transition: all .3s;
   width: $base-menu-min-width;
 }
 
