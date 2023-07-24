@@ -3,6 +3,8 @@ import ElementPlus from 'element-plus'
 import 'virtual:svg-icons-register'
 import './styles/index.scss'
 
+import 'element-plus/theme-chalk/dark/css-vars.css' // 设置深色模式
+
 // @ts-expect-error ts忽略下一行代码类型检查
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import './style.css'

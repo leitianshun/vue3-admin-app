@@ -81,13 +81,13 @@ function cancel() { // 取消
       <el-table-column prop="updateTime" label="修改时间" align="center" />
       <el-table-column prop="address" label="操作" align="center" width="370px">
         <template #default="{ row, $index }">
-          <el-button type="primary" size="default" icon="Plus" :disabled="row.level === 4" @click="addMenu(row)">
+          <el-button type="success" size="default" icon="Plus" :disabled="row.level === 4" @click="addMenu(row)">
             {{ row.level === 3 ? '添加功能' : '添加菜单' }}
           </el-button>
           <el-button type="primary" size="default" icon="Edit" :disabled="$index === 0 " @click="update(row)">
             编辑
           </el-button>
-          <el-button type="primary" size="default" icon="Delete" :disabled="row.level === 1" @click="onDelMenu(row)">
+          <el-button type="danger" size="default" icon="Delete" :disabled="row.level === 1" @click="onDelMenu(row)">
             删除
           </el-button>
         </template>

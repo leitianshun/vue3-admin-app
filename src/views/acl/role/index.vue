@@ -266,13 +266,13 @@ function reset() { // 重置按钮
         <el-table-column label="更新时间" align="center" prop="updateTime" show-overflow-tooltip />
         <el-table-column label="操作" align="center" width="300px">
           <template #default="{ row }">
-            <el-button type="primary" size="small" icon="User" @click="handleRole(row)">
+            <el-button type="success" size="small" icon="User" @click="handleRole(row)">
               分配权限
             </el-button>
-            <el-button type="primary" size="small" icon="Edit" @click="handleUpdate(row)">
+            <el-button type="warning" size="small" icon="Edit" @click="handleUpdate(row)">
               编辑
             </el-button>
-            <el-button type="primary" size="small" icon="Delete" @click="handleDelete(row)">
+            <el-button type="danger" size="small" icon="Delete" @click="handleDelete(row)">
               删除
             </el-button>
           </template>

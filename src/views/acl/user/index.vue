@@ -20,6 +20,7 @@ const checkAll = ref<boolean>(false)
 const allRoleList = ref<rolesObj[]>([]) // 存储全部角色
 const checked = ref<any>([]) // 存储已选中过的角色
 const isIndeterminate = ref(true) // 用于设置不确定样式，为true就是未勾选
+const layoutStore = useLayoutStore()
 
 function validatorUserName(rule: any, value: any, callback: any) { // 自定义校验规则 validator
   if (value.trim().length >= 5)
@@ -254,13 +255,13 @@ function reset() { // 重置按钮
         <el-table-column label="更新时间" align="center" prop="updateTime" show-overflow-tooltip />
         <el-table-column label="操作" align="center" width="300px">
           <template #default="{ row }">
-            <el-button type="primary" size="small" icon="User" @click="handleRole(row)">
+            <el-button type="success" size="small" icon="User" @click="handleRole(row)">
               分配角色
             </el-button>
             <el-button type="primary" size="small" icon="Edit" @click="handleUpdate(row)">
               编辑
             </el-button>
-            <el-button type="primary" size="small" icon="Delete" @click="handleDelete(row)">
+            <el-button type="danger" size="small" icon="Delete" @click="handleDelete(row)">
               删除
             </el-button>
           </template>
@@ -349,8 +350,8 @@ function reset() { // 重置按钮
       <el-pagination
         v-model:current-page="currentPage"
         v-model:page-size="pageSize"
-        :background="true"
         class="my-5"
+        :background="true"
         :page-sizes="[10, 20, 50, 100]"
         layout=" prev, pager, next, jumper,->,sizes,total"
         :total="total"
