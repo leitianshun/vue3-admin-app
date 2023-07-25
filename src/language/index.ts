@@ -1,9 +1,12 @@
 import { createI18n } from 'vue-i18n'
+
 import zh from './zh'
 import en from './en'
 
+// import { useLayoutStore } from '@/stores/modules/layout'
+
 const messages = { en, zh }
-const layoutStore = useLayoutStore()
+// const layoutStore = useLayoutStore()
 // const messages = { en: { ...en }, zh: { ...zh } }
 
 // function getLocal() {
@@ -22,9 +25,9 @@ const layoutStore = useLayoutStore()
 const language = (navigator.language || 'en').toLocaleLowerCase() // 获取当前浏览器的语言,转为小写
 const i18n = createI18n({
   legacy: false, // 如果要支持compositionAPI，此项必须设置为false;
-  locale: layoutStore.language || language.split('-')[0] || 'en',
+  locale: (language.split('-')[0] || 'en'),
   // locale: getLocal(),  //获取语言
-  globalInjection: true, // 全局注册$t方法
+  // globalInjection: true, // 全局注册$t方法
   fallbackLocale: 'en', // 设置备用语言,
   messages,
 })

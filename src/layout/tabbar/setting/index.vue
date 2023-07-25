@@ -1,6 +1,12 @@
 <script setup lang='ts'>
 import screenfull from 'screenfull'
 
+// import { useI18n } from 'vue-i18n'
+
+// import i18n from '@/language'
+
+const { locale } = useI18n()
+
 const userStore = useUserStore()
 const layoutStore = useLayoutStore()
 function setFullScreen() {
@@ -37,6 +43,7 @@ onMounted(() => {
   layoutStore.isDark ? html.className = 'dark' : html.className = '' // 设置深色模式，防止刷新后样式失效
   getComputedStyle(html).getPropertyValue('--el-color-primary')
   html.style.setProperty('--el-color-primary', layoutStore.color) // 设置主题
+  locale.value = layoutStore.language
 })
 
 async function logout() {
@@ -64,6 +71,12 @@ async function logout() {
       })
     })
 }
+
+function setLanguage(val: string) {
+  layoutStore.setLanguage(val)
+  // i18n.global.locale = val
+  locale.value = val
+}
 </script>
 
 <template>
@@ -71,7 +84,7 @@ async function logout() {
     <el-button icon="Refresh" circle @click="layoutStore.setRefresh" />
     <el-button icon="FullScreen" circle @click="setFullScreen" />
     <el-popover
-      trigger="hover" placement="bottom" :width="200"
+      trigger="hover" placement="bottom" :width="260"
     >
       <template #reference>
         <el-button icon="Setting" circle />
@@ -87,6 +100,25 @@ async function logout() {
           主题颜色
         </span>
         <el-color-picker v-model="layoutStore.color" :predefine="predefineColors" @change="layoutStore.setColor" />
+      </div>
+      <div class="my-3">
+        <span>
+          语言切换
+        </span>
+        <!-- <el-radio-group  class="ml-4">
+          <el-radio label="1" size="large" @click="setLanguage('zh')">
+            中文
+          </el-radio>
+          <el-radio label="2" size="large" @click="setLanguage('en')">
+            english
+          </el-radio>
+        </el-radio-group> -->
+        <el-button type="primary" size="default" @click="setLanguage('zh')">
+          中文
+        </el-button>
+        <el-button type="primary" size="default" @click="setLanguage('en')">
+          英文
+        </el-button>
       </div>
       <span class="mr-2">
         暗黑模式

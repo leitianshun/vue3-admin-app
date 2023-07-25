@@ -5,5 +5,6 @@ declare module '*.vue' {
 }
 
 declare module 'lodash/cloneDeep'
+declare module 'vue-i18n'
 // declare module 'element-plus/lib/locale/lang/zh-cn'
 // declare module 'element-plus/lib/locale/lang/en'

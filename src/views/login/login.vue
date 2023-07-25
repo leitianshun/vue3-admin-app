@@ -1,8 +1,12 @@
 <script lang="ts" setup>
 import { Lock, User } from '@element-plus/icons-vue'
 
-import i18n from '@/language' // 引入语言配置
+// import { useI18n } from 'vue-i18n'
 
+import i18n from '@/language'
+
+// 引入语言配置
+// const { locale } = useI18n()
 const formRef = ref()
 const loading = ref(false)
 const ruleForm = reactive({
@@ -37,6 +41,8 @@ const rules = ref<any>({
 })
 
 async function submitForm() {
+  // i18n.global.locale = 'en'
+  // locale.value = 'en'
   await formRef.value.validate()
   useUserStore().login(ruleForm).then(() => {
     const redirect: any = route.query.redirect

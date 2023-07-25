@@ -1,3 +1,7 @@
+// import { useI18n } from 'vue-i18n'
+// const { locale } = useI18n()  这种写法适合setup
+// import i18n from '@/language'
+
 interface useState {
   isCollapse: boolean
   refresh: boolean
@@ -6,10 +10,12 @@ interface useState {
   language: string
 }
 
-const { locale } = useI18n()
 export const useLayoutStore = defineStore({
   id: 'layout',
   persist: true, // 这里要开启持久化缓存，不然不会持久化缓存
+  //  {
+  //   paths: ['color'],
+  // },
   state: (): useState => ({
     isCollapse: false,
     refresh: false,
@@ -18,7 +24,8 @@ export const useLayoutStore = defineStore({
     language: 'zh',
     // (navigator.language).split('-')[0] || 'en'
   }),
-  getters: {},
+  getters: {
+  },
   actions: {
     setCollapse() {
       this.isCollapse = !this.isCollapse
@@ -37,7 +44,7 @@ export const useLayoutStore = defineStore({
     },
     setLanguage(local: string) { // 设置语言
       this.language = local
-      locale.value = local
+      // i18n.global.local = local
     },
   },
 })
