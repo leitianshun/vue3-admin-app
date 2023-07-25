@@ -119,6 +119,7 @@ declare global {
   const useCategoryStore: typeof import('./src/stores/modules/category')['useCategoryStore']
   const useCssModule: typeof import('vue')['useCssModule']
   const useCssVars: typeof import('vue')['useCssVars']
+  const useI18n: typeof import('vue-i18n')['useI18n']
   const useLayoutStore: typeof import('./src/stores/modules/layout')['useLayoutStore']
   const useLink: typeof import('vue-router')['useLink']
   const useRoute: typeof import('vue-router')['useRoute']

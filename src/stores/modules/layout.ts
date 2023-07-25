@@ -3,8 +3,10 @@ interface useState {
   refresh: boolean
   isDark: boolean
   color: string
+  language: string
 }
 
+const { locale } = useI18n()
 export const useLayoutStore = defineStore({
   id: 'layout',
   persist: true, // 这里要开启持久化缓存，不然不会持久化缓存
@@ -13,6 +15,8 @@ export const useLayoutStore = defineStore({
     refresh: false,
     isDark: false,
     color: '#1E90FF',
+    language: 'zh',
+    // (navigator.language).split('-')[0] || 'en'
   }),
   getters: {},
   actions: {
@@ -30,6 +34,10 @@ export const useLayoutStore = defineStore({
       const el = document.documentElement
       getComputedStyle(el).getPropertyValue('--el-color-primary')
       el.style.setProperty('--el-color-primary', this.color)
+    },
+    setLanguage(local: string) { // 设置语言
+      this.language = local
+      locale.value = local
     },
   },
 })
