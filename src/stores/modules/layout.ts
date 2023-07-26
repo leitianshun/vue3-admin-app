@@ -1,13 +1,16 @@
 // import { useI18n } from 'vue-i18n'
 // const { locale } = useI18n()  这种写法适合setup
+// local.value = 'zh'
+
 // import i18n from '@/language'
+// i18n.global.locale = 'zh'
+// 如果关闭了legacy 可以使用i18n.global.locale.value = 'zh'
 
 interface useState {
   isCollapse: boolean
   refresh: boolean
   isDark: boolean
   color: string
-  language: string
 }
 
 export const useLayoutStore = defineStore({
@@ -21,8 +24,6 @@ export const useLayoutStore = defineStore({
     refresh: false,
     isDark: false,
     color: '#1E90FF',
-    language: 'zh',
-    // (navigator.language).split('-')[0] || 'en'
   }),
   getters: {
   },
@@ -41,10 +42,6 @@ export const useLayoutStore = defineStore({
       const el = document.documentElement
       getComputedStyle(el).getPropertyValue('--el-color-primary')
       el.style.setProperty('--el-color-primary', this.color)
-    },
-    setLanguage(local: string) { // 设置语言
-      this.language = local
-      // i18n.global.local = local
     },
   },
 })

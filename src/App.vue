@@ -1,9 +1,15 @@
 <script setup lang="ts">
+import zh from 'element-plus/lib/locale/lang/zh-cn'
+import en from 'element-plus/dist/locale/en.mjs'
+
+const { locale } = useI18n()
 </script>
 
 <template>
   <div>
-    <router-view />
+    <el-config-provider :locale="locale === 'en' ? en : zh">
+      <router-view />
+    </el-config-provider>
   </div>
 </template>
 

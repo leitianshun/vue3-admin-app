@@ -1,3 +1,5 @@
+import i18n from '@/language'
+
 export const constantRoute = [
   {
     path: '/',
@@ -11,7 +13,7 @@ export const constantRoute = [
         path: 'home',
         component: () => import('@/views/home/home.vue'),
         meta: {
-          title: '首页',
+          title: i18n.global.t('menu.home'),
           hidden: false,
           keepAlive: true,
           icon: 'HomeFilled',
@@ -24,7 +26,7 @@ export const constantRoute = [
     component: () => import('@/views/login/login.vue'),
     name: 'login',
     meta: {
-      title: '登录',
+      title: i18n.global.t('login.login'),
       hidden: true,
       keepAlive: false,
     },
@@ -45,7 +47,7 @@ export const constantRoute = [
     name: 'screen',
     meta: {
       keepAlive: false,
-      title: '数据大屏',
+      title: i18n.global.t('menu.screen'),
       icon: 'DataBoard',
     },
   },
@@ -57,7 +59,7 @@ export const asyncRoutes = [
     name: 'Acl',
     component: () => import('@/layout/index.vue'),
     meta: {
-      title: '权限管理',
+      title: i18n.global.t('menu.acl'),
       icon: 'Lock',
     },
     redirect: '/acl/user',
@@ -67,7 +69,7 @@ export const asyncRoutes = [
         component: () => import('@/views/acl/user/index.vue'),
         name: 'User',
         meta: {
-          title: '用户管理',
+          title: i18n.global.t('menu.user'),
           icon: 'User',
         },
       },
@@ -76,7 +78,7 @@ export const asyncRoutes = [
         component: () => import('@/views/acl/role/index.vue'),
         name: 'Role',
         meta: {
-          title: '角色管理',
+          title: i18n.global.t('menu.role'),
           icon: 'UserFilled',
         },
       },
@@ -85,7 +87,7 @@ export const asyncRoutes = [
         component: () => import('@/views/acl/permission/index.vue'),
         name: 'Permission',
         meta: {
-          title: '菜单管理',
+          title: i18n.global.t('menu.menu'),
           icon: 'Memo',
         },
       },
@@ -97,7 +99,7 @@ export const asyncRoutes = [
     name: 'Product',
     redirect: '/product/trademark',
     meta: {
-      title: '商品管理',
+      title: i18n.global.t('menu.product'),
       icon: 'Handbag',
     },
     children: [
@@ -106,7 +108,7 @@ export const asyncRoutes = [
         name: 'Trademark',
         component: () => import('@/views/product/trademark/index.vue'),
         meta: {
-          title: '品牌管理',
+          title: i18n.global.t('menu.trademark'),
           icon: 'ShoppingCartFull',
         },
       },
@@ -115,7 +117,7 @@ export const asyncRoutes = [
         name: 'Attr',
         component: () => import('@/views/product/attr/index.vue'),
         meta: {
-          title: '属性管理',
+          title: i18n.global.t('menu.attr'),
           icon: 'ChromeFilled',
         },
       },
@@ -124,7 +126,7 @@ export const asyncRoutes = [
         name: 'Spu',
         component: () => import('@/views/product/spu/index.vue'),
         meta: {
-          title: 'SPU管理',
+          title: i18n.global.t('menu.spu'),
           icon: 'Calendar',
         },
       },
@@ -133,7 +135,7 @@ export const asyncRoutes = [
         name: 'Sku',
         component: () => import('@/views/product/sku/index.vue'),
         meta: {
-          title: 'SKU管理',
+          title: i18n.global.t('menu.sku'),
           icon: 'Orange',
         },
       },

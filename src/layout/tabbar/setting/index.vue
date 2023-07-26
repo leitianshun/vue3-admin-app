@@ -1,14 +1,13 @@
 <script setup lang='ts'>
 import screenfull from 'screenfull'
 
-// import { useI18n } from 'vue-i18n'
-
 // import i18n from '@/language'
-
+// import { useI18n } from 'vue-i18n'
 const { locale } = useI18n()
 
 const userStore = useUserStore()
 const layoutStore = useLayoutStore()
+
 function setFullScreen() {
   if (screenfull.isEnabled)
     screenfull.toggle()
@@ -43,7 +42,6 @@ onMounted(() => {
   layoutStore.isDark ? html.className = 'dark' : html.className = '' // 设置深色模式，防止刷新后样式失效
   getComputedStyle(html).getPropertyValue('--el-color-primary')
   html.style.setProperty('--el-color-primary', layoutStore.color) // 设置主题
-  locale.value = layoutStore.language
 })
 
 async function logout() {
@@ -73,9 +71,13 @@ async function logout() {
 }
 
 function setLanguage(val: string) {
-  layoutStore.setLanguage(val)
-  // i18n.global.locale = val
+  localStorage.setItem('language', val)
   locale.value = val
+  window.location.reload()
+  // if (i18n.mode === 'legacy')
+  //   i18n.global.locale = val
+  // else
+  //   i18n.global.locale.value = val
 }
 </script>
 
@@ -105,19 +107,11 @@ function setLanguage(val: string) {
         <span>
           语言切换
         </span>
-        <!-- <el-radio-group  class="ml-4">
-          <el-radio label="1" size="large" @click="setLanguage('zh')">
-            中文
-          </el-radio>
-          <el-radio label="2" size="large" @click="setLanguage('en')">
-            english
-          </el-radio>
-        </el-radio-group> -->
-        <el-button type="primary" size="default" @click="setLanguage('zh')">
+        <el-button type="success" size="small" :disabled="locale === 'zh'" @click="setLanguage('zh')">
           中文
         </el-button>
-        <el-button type="primary" size="default" @click="setLanguage('en')">
-          英文
+        <el-button type="primary" size="small" :disabled="locale === 'en'" @click="setLanguage('en')">
+          english
         </el-button>
       </div>
       <span class="mr-2">

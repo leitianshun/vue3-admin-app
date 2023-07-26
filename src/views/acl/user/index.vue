@@ -223,15 +223,15 @@ function reset() { // 重置按钮
   <div>
     <el-card class="h-18">
       <el-form :inline="true" class="flex justify-between items-center ">
-        <el-form-item label="用户名:">
-          <el-input v-model="keyword" placeholder="请输入用户名" clearable />
+        <el-form-item :label="$t('login.userName')">
+          <el-input v-model="keyword" :placeholder="$t('login.userPlaceholder')" clearable />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" :disabled="keyword ? false : true" @click="search">
-            搜索
+            {{ $t('common.search') }}
           </el-button>
           <el-button @click="reset">
-            重置
+            {{ $t('common.reset') }}
           </el-button>
         </el-form-item>
       </el-form>
@@ -239,10 +239,10 @@ function reset() { // 重置按钮
 
     <el-card class="mt-5">
       <el-button type="primary" icon="Plus" @click="addUsers">
-        添加
+        {{ $t('common.add') }}
       </el-button>
       <el-button type="danger" icon="Delete" :disabled="selectionList.length === 0" @click="batchDelete">
-        批量删除
+        {{ $t('common.batchDel') }}
       </el-button>
       <el-table ref="table" :data="userListData" border stripe height="calc(100vh - 430px)" class="mt-5" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="50" align="center" />
@@ -256,13 +256,13 @@ function reset() { // 重置按钮
         <el-table-column label="操作" align="center" width="300px">
           <template #default="{ row }">
             <el-button type="success" size="small" icon="User" @click="handleRole(row)">
-              分配角色
+              {{ $t('common.assignRole') }}
             </el-button>
             <el-button type="primary" size="small" icon="Edit" @click="handleUpdate(row)">
-              编辑
+              {{ $t('common.edit') }}
             </el-button>
             <el-button type="danger" size="small" icon="Delete" @click="handleDelete(row)">
-              删除
+              {{ $t('common.delete') }}
             </el-button>
           </template>
         </el-table-column>
@@ -288,10 +288,10 @@ function reset() { // 重置按钮
         </el-form>
         <template #footer>
           <el-button type="primary" size="default" @click="submit">
-            确定
+            {{ $t('common.confirm') }}
           </el-button>
           <el-button size="default" @click=" cancel">
-            取消
+            {{ $t('common.cancel') }}
           </el-button>
         </template>
       </el-drawer>
