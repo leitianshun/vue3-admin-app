@@ -26,8 +26,8 @@ async function getAllMenuList() { // 获取所有的菜单列表
 function addMenu(row: menuObj) { // 添加菜单
   dialogVisible.value = true
   menuParams.value = {}
-  menuParams.value.level = row.level
-  menuParams.value.pid = row.id
+  menuParams.value.level = row.level + 1 // level,表示要添加的菜单层级， 添加菜单时，添加到当前层级的下一级菜单
+  menuParams.value.pid = row.id // 表示给谁添加
 }
 function update(row: menuObj) { // 更新菜单
   dialogVisible.value = true
