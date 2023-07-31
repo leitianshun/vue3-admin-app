@@ -1,5 +1,8 @@
 <script setup lang='ts'>
-import Top from './top/index.vue'
+import Top from './components/top/index.vue'
+import Sex from './components/sex/index.vue'
+import Age from './components/age/index.vue'
+import Youke from './components/youke/index.vue'
 
 const screen = ref()
 onMounted(() => {
@@ -23,15 +26,16 @@ window.onresize = () => {
       <div class="w-full h-10 ">
         <Top />
       </div>
-      <div>中部</div>
-      <div class="flex">
-        <div class="flex-1">
-          左
+      <div class="flex ">
+        <div class="flex-1 h-[1040px] mt-3 flex flex-col justify-around">
+          <Youke class="flex-[1.2] " />
+          <Sex class="flex-1 border bg-green-200" />
+          <Age class="flex-1  border bg-yellow-500" />
         </div>
-        <div class="flex-[2]">
+        <div class="flex-[2] bg-green-300 mt-11">
           中
         </div>
-        <div class="flex-1">
+        <div class="flex-1 bg-pink-500">
           右
         </div>
       </div>

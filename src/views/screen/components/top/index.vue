@@ -11,7 +11,7 @@ onMounted(() => {
     time.value = dayjs().format('YYYY-MM-DD HH:mm:ss')
   }, 1000)
 })
-onBeforeUnmount(() => {
+onBeforeUnmount(() => { // 组件销毁前
   clearInterval(timer.value)
 })
 </script>
