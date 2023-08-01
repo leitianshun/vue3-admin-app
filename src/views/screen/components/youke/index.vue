@@ -1,5 +1,34 @@
 <script setup lang='ts'>
+import * as echarts from 'echarts'
+
+import 'echarts-liquidfill'
+
+// 水球图拓展插件
 const count = ref('1234562人')
+const chart = ref()
+const option = ref({
+  title: {
+    text: '水球图',
+  },
+  // xAxis: {
+  //   type: 'category',
+  //   data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+  // },
+  // yAxis: {
+  //   type: 'value',
+  // },
+  series: [
+    {
+      data: [0.5, 0.4, 0.3],
+      type: 'liquidFill',
+      radius: '95%',
+    },
+  ],
+})
+onMounted(() => {
+  const myChart = echarts.init(chart.value)
+  myChart.setOption(option.value)
+})
 </script>
 
 <template>
@@ -22,9 +51,7 @@ const count = ref('1234562人')
     <div class="number mt-5  flex my-1">
       <span v-for="(item, index) in count" :key="index" class="flex-1 inline-block h-12 text-xl font-bold  text-center">{{ item }}</span>
     </div>
-    <div class="w-full h-62 bg-red-500">
-      111
-    </div>
+    <div ref="chart" class="w-full h-62 " />
   </div>
 </template>
 

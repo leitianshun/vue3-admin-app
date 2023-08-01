@@ -29,7 +29,7 @@ window.onresize = () => {
       <div class="flex ">
         <div class="flex-1 h-[1040px] mt-3 flex flex-col justify-around">
           <Youke class="flex-[1.2] " />
-          <Sex class="flex-1 border bg-green-200" />
+          <Sex class="flex-1 border my-5 bg-green-200" />
           <Age class="flex-1  border bg-yellow-500" />
         </div>
         <div class="flex-[2] bg-green-300 mt-11">
