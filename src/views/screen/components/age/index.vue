@@ -3,15 +3,14 @@ import * as echarts from 'echarts'
 
 const chart = ref()
 const option = ref(
-  // title: {
-  //   text: '男女比例',
-  //   textStyle: {
-  //     color: 'skyblue',
-  //   },
-  //   left: '40%',
-  // },
-
   {
+    // title: {
+    //   text: '男女比例',
+    //   textStyle: {
+    //     color: 'skyblue',
+    //   },
+    //   left: '40%',
+    // },
     tooltip: {
       trigger: 'item',
     },
@@ -28,8 +27,9 @@ const option = ref(
       {
         name: 'Access From',
         type: 'pie',
-        radius: ['40%', '70%'],
+        radius: ['40%', '90%'],
         avoidLabelOverlap: false,
+        center: ['30%', '50%'], // 调整饼图的位置
         itemStyle: {
           borderRadius: 10,
           borderColor: '#fff',
@@ -37,7 +37,7 @@ const option = ref(
         },
         label: {
           show: true,
-          position: 'inside',
+          position: 'inside', // 设置内容展示在周围
           color: 'white',
         },
         // emphasis: {  //放大
@@ -51,7 +51,7 @@ const option = ref(
           show: false,
         },
         data: [
-          { value: 1048, name: '10岁以下 16%' },
+          { value: 1048, name: '10' },
           { value: 735, name: '21' },
           { value: 580, name: '35' },
           { value: 484, name: '41' },

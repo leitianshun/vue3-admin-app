@@ -3,6 +3,8 @@ import Top from './components/top/index.vue'
 import Sex from './components/sex/index.vue'
 import Age from './components/age/index.vue'
 import Youke from './components/youke/index.vue'
+import Map from './components/map/index.vue'
+import Line from './components/line/index.vue'
 
 const screen = ref()
 onMounted(() => {
@@ -32,8 +34,9 @@ window.onresize = () => {
           <Sex class="flex-1 border my-5 bg-green-200" />
           <Age class="flex-1  border bg-yellow-500" />
         </div>
-        <div class="flex-[2] bg-green-300 mt-11">
-          中
+        <div class="flex-[2] mt-11 flex flex-col">
+          <Map class="flex-[2.1]  " />
+          <Line class="flex-[1] bg-red-300 " />
         </div>
         <div class="flex-1 bg-pink-500">
           右
