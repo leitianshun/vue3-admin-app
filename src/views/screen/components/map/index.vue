@@ -11,6 +11,7 @@ const option = ref({
       roam: true, // 是否可缩放
       left: 50, // 调整地图位置
       top: 50,
+      zoom: 1,
       right: 50,
       bottom: -50,
       label: {
@@ -47,7 +48,7 @@ const option = ref({
           color: 'yellow',
         },
         label: {
-          fontSize: 30,
+          fontSize: 20,
         },
       },
     },

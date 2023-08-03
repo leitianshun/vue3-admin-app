@@ -5,6 +5,9 @@ import Age from './components/age/index.vue'
 import Youke from './components/youke/index.vue'
 import Map from './components/map/index.vue'
 import Line from './components/line/index.vue'
+import Year from './components/year/index.vue'
+import Counter from './components/counter/index.vue'
+import Rank from './components/rank/index.vue'
 
 const screen = ref()
 onMounted(() => {
@@ -37,11 +40,17 @@ window.onresize = () => {
           <Sex class="flex-1 border my-5 bg-green-200" />
           <Age class="flex-1 border bg-yellow-500" />
         </div>
+
         <div class="flex-[2] mt-11 mx-10 flex flex-col">
-          <Map class="flex-[2]" />
+          <Map class="flex-[3]" />
           <Line class="flex-1 mt-3" />
         </div>
-        <div class="flex-1 bg-pink-500">右</div>
+
+        <div class="flex-1 flex flex-col mt-3">
+          <Rank class="flex-1" />
+          <Year class="flex-1 my-5" />
+          <Counter class="flex-1" />
+        </div>
       </div>
     </div>
   </div>
