@@ -38,8 +38,8 @@ window.onresize = () => {
           <Age class="flex-1 border bg-yellow-500" />
         </div>
         <div class="flex-[2] mt-11 mx-10 flex flex-col">
-          <Map class="flex-[2.1]" />
-          <Line class="flex-[0.8]" />
+          <Map class="flex-[2]" />
+          <Line class="flex-1 mt-3" />
         </div>
         <div class="flex-1 bg-pink-500">右</div>
       </div>

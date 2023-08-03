@@ -12,7 +12,7 @@ const option = ref({
       left: 50, // 调整地图位置
       top: 50,
       right: 50,
-      bottom: 30,
+      bottom: -50,
       label: {
         show: true, // 显示标签
         color: 'white',

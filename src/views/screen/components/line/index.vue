@@ -7,10 +7,13 @@ onMounted(() => {
   myChart.setOption({
     // color: ['#80FFA5', '#00DDFF', '#37A2FF', '#FF0087', '#FFBF00'],
     title: {
-      // text: '未来30天游客量趋势图',
+      text: '访问量',
       textStyle: {
-        color: 'white',
+        // color: 'white',
+        fontStyle: 15,
       },
+      bottom: 248,
+      left: 13,
     },
     tooltip: {
       trigger: 'axis',
@@ -33,19 +36,38 @@ onMounted(() => {
       top: 80,
       left: '6%',
       right: '4%',
-      bottom: '23%',
+      bottom: '32%',
       // containLabel: true,
     },
     xAxis: [
       {
         type: 'category',
-        boundaryGap: false,
+        boundaryGap: false, // 两则不留白，占满
         data: ['7/5', '7/7', '7/9', '7/11', '7/13', '7/15', '7/17'],
+        splitLine: {
+          // 关闭分割线
+          show: false,
+        },
+        axisTick: {
+          // 刻度
+          show: true,
+        },
       },
     ],
     yAxis: [
       {
         type: 'value',
+        splitLine: {
+          show: false,
+        },
+        axisLine: {
+          // 显示轴线
+          show: true,
+        },
+        axisTick: {
+          // 刻度
+          show: true,
+        },
       },
     ],
     series: [
@@ -53,7 +75,7 @@ onMounted(() => {
         name: 'Line 1',
         type: 'line',
         stack: 'Total',
-        smooth: true,
+        smooth: true, // 平滑曲线
         lineStyle: {
           // width: 1,
         },
@@ -63,7 +85,7 @@ onMounted(() => {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
             {
               offset: 0,
-              color: 'rgb(128, 255, 165)',
+              color: 'rgb(128, 25, 152)',
             },
             {
               offset: 1,
@@ -82,7 +104,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-full h-full line">
+  <div class="w-full line">
     <div class="text-white">
       <div>未来30天游客量趋势图</div>
       <img src="../../images/dataScreen-title.png" class="w-20 mt-2" alt="" />
