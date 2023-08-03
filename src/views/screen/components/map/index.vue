@@ -1,7 +1,7 @@
 <script setup lang='ts'>
 import * as echarts from 'echarts'
 
-import chinaJson from './china.json'
+import chinaJson from './china.json' // 引入地图json文件
 
 const chart = ref()
 const option = ref(

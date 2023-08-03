@@ -27,7 +27,8 @@
     "baseUrl": "./", // 解析非相对模块的基地址，默认是当前目录
     "paths": { //路径映射，相对于baseUrl
       "@/*": ["src/*"] 
-    }
+    },
+    "allowSyntheticDefaultImports": true   //引入json文件时ts报错，开启这个即可
   },
   "include": [
     "src/**/*.ts",
