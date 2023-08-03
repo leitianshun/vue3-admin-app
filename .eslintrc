@@ -35,6 +35,8 @@
     "rules": {
         "no-console": "off",
         "vue/no-unused-vars": "off", //关闭未使用的变量警告
-        "unused-imports/no-unused-vars": "off" //关闭未使用的Import警告,未使用的参数警告
+        "unused-imports/no-unused-vars": "off",//关闭未使用的Import警告,未使用的参数警告
+        "vue/singleline-html-element-content-newline": "off"   //关闭此 Eslint 错误“html 标记前后的预期新换行符
+        // "vue/multiline-html-element-content-newline": "off"
     }
 }
