@@ -36,7 +36,7 @@ onMounted(() => {
       top: 80,
       left: '6%',
       right: '4%',
-      bottom: '32%',
+      bottom: '16%',
       // containLabel: true,
     },
     xAxis: [

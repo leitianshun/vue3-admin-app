@@ -3,60 +3,44 @@ import * as echarts from 'echarts'
 
 const chart = ref()
 const option = ref({
-  tooltip: {
-    trigger: 'item',
-  },
-  legend: {
-    top: 25,
-    right: '16%',
-    orient: 'vetical', // 图例组件布局朝向，为垂直方向
+  title: {
+    text: '散点图',
+    left: '50%',
     textStyle: {
       color: 'white',
-      fontSize: 15,
+    },
+  },
+  xAxis: {
+    type: 'category', // 均匀分布
+  },
+  yAxis: {
+    splitLine: {
+      show: false,
+    },
+    axisLine: {
+      show: true,
     },
   },
   series: [
     {
-      name: 'Access From',
-      type: 'pie',
-      radius: ['40%', '90%'],
-      avoidLabelOverlap: false,
-      center: ['30%', '50%'], // 调整饼图的位置
-      itemStyle: {
-        borderRadius: 10,
-        borderColor: '#fff',
-        borderWidth: 2,
-      },
+      type: 'scatter',
+      data: [10, 20, 30, 60, 80],
+      symbol: 'arrow',
+      symbolSize: 20,
       label: {
         show: true,
-        position: 'inside', // 设置内容展示在周围
-        color: 'white',
+        color: 'pink',
       },
-      // emphasis: {  //放大
-      //   label: {
-      //     show: true,
-      //     fontSize: 40,
-      //     fontWeight: 'bold',
-      //   },
-      // },
-      labelLine: {
-        show: false,
+      itemStyle: {
+        color: 'cyan',
       },
-      data: [
-        { value: 1048, name: '10' },
-        { value: 735, name: '21' },
-        { value: 580, name: '35' },
-        { value: 484, name: '41' },
-        { value: 300, name: '36' },
-      ],
     },
   ],
   grid: {
     // 调整位置，与盒子的宽高一致
-    left: 0,
-    top: 0,
-    right: 0,
-    bottom: 0,
+    left: 30,
+    top: 20,
+    bottom: 30,
   },
 })
 onMounted(() => {
@@ -67,17 +51,17 @@ onMounted(() => {
 
 <template>
   <div class="box2 w-full h-full">
-    <div class="ml-5 text-xl text-white">
-      <div>年龄比例</div>
+    <div class="text-xl ml-3 text-white">
+      <div>年度游客量对比</div>
       <img src="../../images/dataScreen-title.png" class="w-20 mt-2" alt="" />
     </div>
-    <div ref="chart" class="w-full h-50 mt-5" />
+    <div ref="chart" class="w-full h-65 mt-5" />
   </div>
 </template>
 
 <style scoped lang="scss">
 .box2 {
-  background: url('../../images/dataScreen-main-cb.png') no-repeat;
+  background: url('../../images/dataScreen-main-rc.png') no-repeat;
   background-size: 100% 100%;
 
   .man {
