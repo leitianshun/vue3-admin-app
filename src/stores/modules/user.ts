@@ -1,6 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router'
 
-// import cloneDeep from 'lodash/cloneDeep'
+// @ts-expect-error
+import cloneDeep from 'lodash/cloneDeep'
 import { anyRoute, asyncRoutes, constantRoute } from '@/router/routes'
 import type { loginForm } from '@/types/user'
 import { router } from '@/router/index'
@@ -43,7 +44,7 @@ export const useUserStore = defineStore({
     },
   },
   actions: {
-    async  login(data: loginForm) {
+    async login(data: loginForm) {
       try {
         const res = await login(data)
         if (res.code === 200)
@@ -62,8 +63,8 @@ export const useUserStore = defineStore({
         this.name = res.data.name
         this.buttons = res.data.buttons
         this.routes = res.data.routes
-        const userAsyncRoutes = filterAsyncRoute(asyncRoutes, res.data.routes)
-        // const userAsyncRoutes = filterAsyncRoute(cloneDeep(asyncRoutes), res.data.routes)  //这里可以深拷贝一下
+        const userAsyncRoutes = filterAsyncRoute(cloneDeep(asyncRoutes), res.data.routes)
+        // const userAsyncRoutes = filterAsyncRoute(cloneDeep(asyncRoutes), res.data.routes)  //这里可以深拷贝一下，解决路由丢失问题，不影响原有的异步路由
         console.log(userAsyncRoutes)
         this.menuRoutes = [...constantRoute, ...userAsyncRoutes, anyRoute]
         const asyncRoute = [...userAsyncRoutes, anyRoute]
