@@ -1,6 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router'
 
-// @ts-expect-error
 import cloneDeep from 'lodash/cloneDeep'
 import { anyRoute, asyncRoutes, constantRoute } from '@/router/routes'
 import type { loginForm } from '@/types/user'

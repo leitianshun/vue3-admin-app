@@ -4,7 +4,6 @@ import * as echarts from 'echarts'
 import 'echarts-liquidfill'
 
 // 水球图拓展插件
-const count = ref('1234562人')
 const chart = ref()
 const option = ref({
   title: {

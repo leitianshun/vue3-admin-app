@@ -20,9 +20,8 @@ const checkAll = ref<boolean>(false)
 const allRoleList = ref<rolesObj[]>([]) // 存储全部角色
 const checked = ref<any>([]) // 存储已选中过的角色
 const isIndeterminate = ref(true) // 用于设置不确定样式，为true就是未勾选
-const layoutStore = useLayoutStore()
 
-function validatorUserName(rule: any, value: any, callback: any) {
+function validatorUserName(value: any, callback: any) {
   // 自定义校验规则 validator
   if (value.trim().length >= 5) callback()
   else callback(new Error('用户姓名长度最小5位'))
@@ -184,13 +183,13 @@ async function handleRole(row: recordsType) {
   roleDrawerVisible.value = true // 等待页面数据加载完成后再打开弹窗
 }
 
-function handleCheckAllChange(val: boolean) {
+function handleCheckAllChange(val: any) {
   // 是否全选
   // val:true(全选)|false(没有全选)
   checked.value = val ? allRoleList.value.map((item) => item.id) : [] // 还可写为 checked.value = val ? allRoleList.value : []，这里分配时要取出id
   isIndeterminate.value = false
 }
-function handleCheckedCitiesChange(value: string[]) {
+function handleCheckedCitiesChange(value: any) {
   // 单选
   checked.value = value // 将选中的单条数据存储到变量中
   const checkedCount = value.length // 已经选中数量

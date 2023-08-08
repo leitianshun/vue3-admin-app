@@ -27,7 +27,7 @@ const rules = reactive({
     { required: true, validator: logoUrlRuleFun },
   ],
 })
-function logoUrlRuleFun(rule: any, value: any, callback: any) {
+function logoUrlRuleFun(value: any, callback: any) {
   if (value) callback()
   else callback(new Error('请上传品牌LOGO'))
 }
@@ -53,7 +53,7 @@ function getData() {
     }
   })
 }
-function handleTradmark(row?: tradmerk) {
+function handleTradmark(row?: any) {
   dialogFormVisible.value = true
   nextTick(() => {
     ruleFormRef.value?.clearValidate()

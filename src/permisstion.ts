@@ -1,7 +1,7 @@
 import setting from './setting'
 import { resetRouter, router } from '@/router/index'
 
-router.beforeEach(async (to: any, from: any, next: any) => {
+router.beforeEach(async (to: any, next: any) => {
   start()
   document.title = `${to.meta.title}` ? `${setting.title} - ${to.meta.title}` : `${setting.title}`
   const token = useUserStore().token
@@ -34,6 +34,6 @@ router.beforeEach(async (to: any, from: any, next: any) => {
   }
 })
 
-router.afterEach((to: any, from: any) => {
+router.afterEach(() => {
   close()
 })

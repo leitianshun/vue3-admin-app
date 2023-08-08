@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script setup lang="ts">
 defineProps(['menuList'])
 </script>
 
@@ -13,7 +13,7 @@ export default {
 
 <template>
   <!-- 没有子路由的 -->
-  <template v-for="(item, index) in menuList" :key="index">
+  <template v-for="item in menuList" :key="index">
     <!-- 没有子路由的 -->
     <el-menu-item v-if="!item.children && !item.meta.hidden" :index="item.path">
       <el-icon>
@@ -26,7 +26,10 @@ export default {
       </template>
     </el-menu-item>
     <!-- 有子路由且只有一个的，直接显示，不使用折叠 -->
-    <el-menu-item v-if="item.children && item.children.length === 1 && !item.meta.hidden" :index="item.path">
+    <el-menu-item
+      v-if="item.children && item.children.length === 1 && !item.meta.hidden"
+      :index="item.path"
+    >
       <el-icon>
         <component :is="item.children[0].meta.icon" />
       </el-icon>
@@ -37,7 +40,10 @@ export default {
       </template>
     </el-menu-item>
     <!-- 有子路由且子路由的个数大于1 -->
-    <el-sub-menu v-if="item.children && item.children.length > 1" :index="item.path">
+    <el-sub-menu
+      v-if="item.children && item.children.length > 1"
+      :index="item.path"
+    >
       <template #title>
         <el-icon>
           <component :is="item.meta.icon" />
@@ -61,5 +67,4 @@ export default {
   </template>
 </template>
 
-<style scoped lang='scss'>
-</style>
+<style scoped lang="scss"></style>

@@ -1,4 +1,4 @@
-export function hasButton(app: any, buttons?: any, code?: string) {
+export function hasButton(app: any,) {
     const userStore = useUserStore()
     app.directive('has', {
         mounted(el: any, options: any) { // el代表使用这个指令的dom，options可以拿到指令中传递的值
