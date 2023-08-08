@@ -66,6 +66,7 @@ declare global {
   const getUserInfo: typeof import('./src/api/user/user')['getUserInfo']
   const getUserList: typeof import('./src/api/acl/user/index')['getUserList']
   const h: typeof import('vue')['h']
+  const hasButton: typeof import('./src/directive/index')['hasButton']
   const inject: typeof import('vue')['inject']
   const isProxy: typeof import('vue')['isProxy']
   const isReactive: typeof import('vue')['isReactive']

@@ -31,5 +31,6 @@ for (const [key, component] of Object.entries(ElementPlusIcons))
 app.use(ElementPlus, {
   locale: zhCn,
 })
+hasButton(app)
 app.mount('#app')
 // createApp(App ).mount('#app')

@@ -127,6 +127,7 @@ watch(
           type="primary"
           :disabled="categoryStore.category3Id ? false : true"
           @click="addAttrs"
+          v-has="`btn.Attr.add`"
         >
           添加平台属性
         </el-button>
@@ -168,13 +169,22 @@ watch(
           </el-table-column>
           <el-table-column label="操作" width="150" align="center">
             <template #default="{ row }">
-              <el-button type="warning" icon="Edit" @click="handleEdit(row)" />
+              <el-button
+                type="warning"
+                icon="Edit"
+                v-has="`btn.Attr.update`"
+                @click="handleEdit(row)"
+              />
               <el-popconfirm
                 :title="`是否确认删除${row.attrName}?`"
                 @confirm="handleDelete(row)"
               >
                 <template #reference>
-                  <el-button type="danger" icon="Delete" />
+                  <el-button
+                    type="danger"
+                    icon="Delete"
+                    v-has="`btn.Attr.remove`"
+                  />
                 </template>
               </el-popconfirm>
             </template>

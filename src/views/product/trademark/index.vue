@@ -154,7 +154,9 @@ onMounted(() => {
 <template>
   <el-card class="box-card">
     <template #header>
+      <!-- v-if="userStore.buttons.includes('btn.Trademark.add')" -->
       <el-button
+        v-has="`btn.Trademark.add`"
         class="button"
         type="primary"
         icon="Plus"
@@ -173,8 +175,18 @@ onMounted(() => {
       </el-table-column>
       <el-table-column prop="品牌操作" label="品牌操作" align="center">
         <template #default="{ row }">
-          <el-button type="warning" icon="Edit" @click="handleTradmark(row)" />
-          <el-button type="danger" icon="Delete" @click="deleteTradmark(row)" />
+          <el-button
+            type="warning"
+            icon="Edit"
+            v-has="`btn.Trademark.update`"
+            @click="handleTradmark(row)"
+          />
+          <el-button
+            type="danger"
+            icon="Delete"
+            v-has="`btn.Trademark.remove`"
+            @click="deleteTradmark(row)"
+          />
         </template>
       </el-table-column>
     </el-table>
