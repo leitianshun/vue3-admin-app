@@ -63,7 +63,7 @@ export const useUserStore = defineStore({
         this.name = res.data.name
         this.buttons = res.data.buttons
         this.routes = res.data.routes
-        const userAsyncRoutes = filterAsyncRoute(cloneDeep(asyncRoutes), res.data.routes)
+        const userAsyncRoutes = filterAsyncRoute(cloneDeep(asyncRoutes), res.data.routes) // 这里要进行深拷贝，否则就会影响下次过滤，这样就可以保证每次过滤的异步路由都是完整的,而不是被上次过滤之后的不完整的路由。
         // const userAsyncRoutes = filterAsyncRoute(cloneDeep(asyncRoutes), res.data.routes)  //这里可以深拷贝一下，解决路由丢失问题，不影响原有的异步路由
         console.log(userAsyncRoutes)
         this.menuRoutes = [...constantRoute, ...userAsyncRoutes, anyRoute]
