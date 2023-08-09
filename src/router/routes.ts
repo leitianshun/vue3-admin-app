@@ -42,7 +42,7 @@ export const constantRoute = [
     },
   },
   {
-    path: '/screen/:id',
+    path: '/screen',
     component: () => import('@/views/screen/screen.vue'),
     name: 'screen',
     meta: {

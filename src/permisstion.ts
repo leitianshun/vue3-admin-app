@@ -1,7 +1,7 @@
 import setting from './setting'
 import { resetRouter, router } from '@/router/index'
-
-router.beforeEach(async (to: any, next: any) => {
+//@ts-ignore
+router.beforeEach(async (to: any, from: any, next: any) => {
   start()
   document.title = `${to.meta.title}` ? `${setting.title} - ${to.meta.title}` : `${setting.title}`
   const token = useUserStore().token
@@ -29,8 +29,8 @@ router.beforeEach(async (to: any, next: any) => {
     if (to.path === '/login')
       next()
     else
-      resetRouter()
-    next({ path: '/login', query: { redirect: to.path } })
+      next({ path: '/login', query: { redirect: to.path } })
+    resetRouter()
   }
 })
 
